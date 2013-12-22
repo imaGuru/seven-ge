@@ -1,71 +1,851 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="12.1">
-  <zoom_level>10</zoom_level>
+  <zoom_level>3</zoom_level>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>130</x>
-      <y>390</y>
-      <w>80</w>
-      <h>30</h>
+      <x>342</x>
+      <y>114</y>
+      <w>78</w>
+      <h>36</h>
     </coordinates>
-    <panel_attributes>IOModule</panel_attributes>
+    <panel_attributes>GameStateManager
+--
+- HashMap&lt;States&gt;
+- CurrentState: GameState
+--
++ getState(type): GameState
++ changeState(state: GameState)
++ getCurrentState(): GameState</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>220</x>
-      <y>390</y>
-      <w>100</w>
-      <h>30</h>
+      <x>270</x>
+      <y>117</y>
+      <w>54</w>
+      <h>33</h>
     </coordinates>
-    <panel_attributes>InputModule
+    <panel_attributes>/GameState/
+&lt;&lt;abstract&gt;&gt;
+--
+#name: string
+#id: static int
+--
++Update()
++Draw()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>315</x>
+      <y>120</y>
+      <w>32</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+uses</panel_attributes>
+    <additional_attributes>9;15;27;15</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>273</x>
+      <y>402</y>
+      <w>105</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>ResourceManager
+--
+- ResourceHashmap&lt;Resource&gt;
+--
++ getResource(path: String):FileStream
++ clearResources()
+--
+Responsibilities
+--Loads resources into memory for fast access
+times</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>270</x>
+      <y>531</y>
+      <w>99</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>/IOManager/
+&lt;&lt;interface&gt;&gt;
+--
+openFile(path:String,MODE:Char):FileStream
+closeFile(handle: FileStream)
+deleteFile(path:String)
+moveFile(target:String,source:String)
+copyFile(target:String,source:String)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>393</x>
+      <y>420</y>
+      <w>63</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>/Resource/
+--
+# string path
+# static id
+--
+#load()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>270</x>
+      <y>291</y>
+      <w>87</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>/InputManager/
+&lt;&lt;interface&gt;&gt;
+--
++ addInputEvent(InputEvent:Object)
++ processInput():InputEventQueue
+--
+Responsibilities
+--Translates platform specific input
+events into gameplay relevant events</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Note</type>
+    <coordinates>
+      <x>417</x>
+      <y>294</y>
+      <w>39</w>
+      <h>33</h>
+    </coordinates>
+    <panel_attributes>InputEvent:
+Down (delta)
+Up
+Drag (start,stop)
+Tap
+Double Tap
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>470</x>
-      <y>390</y>
-      <w>150</w>
-      <h>30</h>
+      <x>378</x>
+      <y>291</y>
+      <w>33</w>
+      <h>54</h>
     </coordinates>
-    <panel_attributes>GameStateManager</panel_attributes>
+    <panel_attributes>InputEvent
+--
+#sX
+#sY
+#tX
+#tY
+#delta
+#type
+--
++getters
++setters</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>348</x>
+      <y>297</y>
+      <w>35</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>9;9;30;9</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>402</x>
+      <y>297</y>
+      <w>20</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>9;9;15;9</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>270</x>
+      <y>159</y>
+      <w>87</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>SceneManager
+--
+- SceneGraph
+--
+- getNode(Entity)
++ loadScene(Resource)
++ addEntity(child:Entity,parent:Entity)
++ getEntityByTag(tag:string):Entities
++ getEntityByID(ID:int):Entity
++ getEntityByName(name:string):Entity
++ removeEntity(ID)
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>130</x>
-      <y>350</y>
-      <w>490</w>
+      <x>297</x>
+      <y>588</y>
+      <w>36</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>AndroidIO
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>306</x>
+      <y>561</y>
+      <w>14</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>9;9;9;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>294</x>
+      <y>348</y>
+      <w>30</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>AndroidInput
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>300</x>
+      <y>321</y>
+      <w>14</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>9;9;9;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>432</x>
+      <y>516</y>
+      <w>114</w>
       <h>30</h>
     </coordinates>
-    <panel_attributes>EventBus</panel_attributes>
+    <panel_attributes>Renderer
+--
+DrawQueue:Queue&lt;Drawable&gt;
+--
++draw()
++addToRender(Drawable)
++addToRender(Drawables:List&lt;drawable)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>130</x>
-      <y>310</y>
-      <w>490</w>
-      <h>30</h>
+      <x>297</x>
+      <y>216</y>
+      <w>48</w>
+      <h>27</h>
     </coordinates>
-    <panel_attributes>GameManager</panel_attributes>
+    <panel_attributes>/Entity/
+&lt;&lt;abstract&gt;&gt;
+--
+# ID:static int
+# Name:string
+# Tag:string</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>270</x>
+      <y>258</y>
+      <w>57</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>GameObject
+--
+#Position
+#Orientation
+--
++Draw()</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>330</x>
-      <y>390</y>
-      <w>130</w>
+      <y>258</y>
+      <w>24</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>Layer
+--
+#Depth</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>306</x>
+      <y>234</y>
+      <w>38</w>
+      <h>29</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>9;9;9;18;33;18;33;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>288</x>
+      <y>234</y>
+      <w>32</w>
+      <h>29</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;9;27;18;9;18;9;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>273</x>
+      <y>363</y>
+      <w>66</w>
       <h>30</h>
     </coordinates>
-    <panel_attributes>GraphicsModule</panel_attributes>
+    <panel_attributes>EventTranslator
+--
+addEvent()
+processEvents()
+--
+Different responses defined
+in a switch statement</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Note</type>
+    <coordinates>
+      <x>348</x>
+      <y>366</y>
+      <w>42</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Actions:
+Select
+Move
+Create
+Remove</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>426</x>
+      <y>555</y>
+      <w>36</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>VertexArray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>468</x>
+      <y>555</y>
+      <w>36</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>ShaderProgram</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>510</x>
+      <y>555</y>
+      <w>36</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>Texture2D</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Interface</type>
+    <coordinates>
+      <x>486</x>
+      <y>66</y>
+      <w>42</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>GLSurface.Renderer
+--
+SurfaceCreated
+SurfaceChaged
+OnDrawFrame</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>402</x>
+      <y>66</y>
+      <w>75</w>
+      <h>33</h>
+    </coordinates>
+    <panel_attributes>GameEngine
+--
+GSManager:GameStateManager
+IManager:InputManager
+GERenderer:Renderer
+--
+setMaxFPS(milliseconds:int)
+setDebug(enabled:bool)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>468</x>
+      <y>60</y>
+      <w>41</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>36;9;9;9</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>366</x>
+      <y>72</y>
+      <w>41</w>
+      <h>47</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>9;42;9;9;36;9</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>474</x>
+      <y>402</y>
+      <w>45</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>ResourceModel
+--
+List&lt;Mesh&gt;
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>474</x>
+      <y>423</y>
+      <w>45</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>ResourceAudio
+--
+MemoryStream
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>474</x>
+      <y>444</y>
+      <w>45</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>ResourceTexture
+--
+MemoryStream</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>339</x>
+      <y>468</y>
+      <w>42</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>Mesh
+--
+VertexArray
+List&lt;Material&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>339</x>
+      <y>447</y>
+      <w>42</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>Material
+--
+Texture2D
+ShaderProgram
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>489</x>
+      <y>186</y>
+      <w>63</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>Graph
+--
+#Node root
+#List&lt;Node&gt; elements
+--
++getVertices():List&lt;Node&gt;
++getRoot():Node
++addVertex(Node)
++addEdge(Node,Node)
++removeVertex(Node)
++removeEdge(Node,Node)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>495</x>
+      <y>237</y>
+      <w>51</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>Node
+--
+-Children:List&lt;Nodes&gt;
+-Parent:Node
+--
+getParent()
+getChildren()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>441</x>
+      <y>219</y>
+      <w>42</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>datastruct
+--
++Graph
++Node</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>369</x>
+      <y>159</y>
+      <w>57</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>world
+--
++SceneManager
++ObjectBuilder
+-GameObject
+-Entity
+-Layer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>267</x>
+      <y>156</y>
+      <w>168</w>
+      <h>129</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>348</x>
+      <y>216</y>
+      <w>81</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>ObjectBuilder()
+--
+Hashmap&lt;path&gt; Prototypes
+--
++getObject(path:string):GameObject</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>438</x>
+      <y>177</y>
+      <w>117</w>
+      <h>93</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>288</x>
+      <y>72</y>
+      <w>57</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>core
+--
++GameEngine
++GameStateManager
++GameState</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>384</x>
+      <y>510</y>
+      <w>45</w>
+      <h>33</h>
+    </coordinates>
+    <panel_attributes>graphics
+--
++Renderer
++VertexArray
++Texture2D
++ShaderProgram
++GLCommand</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>267</x>
+      <y>57</y>
+      <w>267</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>276</x>
+      <y>444</y>
+      <w>51</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>resource
+--
++ResourceManager
++Resource
++ResourceModel
++ResourceAudio
++ResourceTexture
+-Mesh
+-Material</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>369</x>
+      <y>417</y>
+      <w>29</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;&gt;</panel_attributes>
+    <additional_attributes>24;9;9;9</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>270</x>
+      <y>198</y>
+      <w>32</w>
+      <h>38</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;&gt;&gt;</panel_attributes>
+    <additional_attributes>27;33;9;33;9;9</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>447</x>
+      <y>402</y>
+      <w>32</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>9;30;21;30;21;9;27;9</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>447</x>
+      <y>423</y>
+      <w>32</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>9;9;27;9</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>447</x>
+      <y>423</y>
+      <w>32</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>9;9;21;9;21;27;27;27</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>267</x>
+      <y>288</y>
+      <w>192</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>276</x>
+      <y>504</y>
+      <w>42</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>io
+--
++InputManager</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>267</x>
+      <y>501</y>
+      <w>108</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>408</x>
+      <y>360</y>
+      <w>42</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>gameplay
+--
++InputManager
++EventTranslator
++InputEvent</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>267</x>
+      <y>399</y>
+      <w>255</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>384</x>
+      <y>546</y>
+      <w>36</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>/GLCommand/
+&lt;&lt;interface&gt;&gt;
+--
+Execute()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>381</x>
+      <y>504</y>
+      <w>168</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>429</x>
+      <y>111</y>
+      <w>96</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>DebugLogging
+--
+--Static wrapper for enabling and disabling
+logging to logcat</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>

@@ -16,6 +16,9 @@ public class GameEngine implements Renderer {
 	private final float[] projectionMatrix = new float[16];
 	private long startTime=0;
 	private long dt=0, sleepTime=0;
+	private static final long FRAME_TIME=32;
+	private static final int MAX_FRAME_SKIPS=5;
+	private int framesSkipped=0;
 	
 	GameEngine(Context context)
 	{
@@ -24,18 +27,24 @@ public class GameEngine implements Renderer {
 	@Override
 	public void onDrawFrame(GL10 arg0) {
 	    dt = (System.currentTimeMillis() - startTime);
-	    sleepTime = 32-dt;
+	    sleepTime = FRAME_TIME-dt;
 	    if (sleepTime>0)
 	    {
 			try {
 				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {}
 	    }
-	    Log.v(TAG, "FPS: "+ (double)1/(System.currentTimeMillis()-startTime)*1000);
+	    framesSkipped = 0;
+	    while (sleepTime < 0 && framesSkipped < MAX_FRAME_SKIPS) {
+	    	sleepTime += FRAME_TIME;
+	    	//gamestate.update
+	    	framesSkipped++;
+	    }
+	    Log.v(TAG, "FramesSkipped: "+framesSkipped+" FPS: "+ (double)1/(System.currentTimeMillis()-startTime)*1000);
 	    startTime = System.currentTimeMillis();
-	    glClear(GL_COLOR_BUFFER_BIT);
 	    //gamestate.update
 	    //gamestate.draw
+	    glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	@Override

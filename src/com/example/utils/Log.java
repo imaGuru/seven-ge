@@ -39,7 +39,7 @@ public class Log
 	{
 		if (LOG_ENABLED)
 		{
-			Log.v(tag, msg);
+			android.util.Log.v(tag, msg);
 		}
 	}
 
@@ -47,7 +47,7 @@ public class Log
 	{
 		if (LOG_ENABLED)
 		{
-			Log.w(tag, msg);
+			android.util.Log.w(tag, msg);
 		}
 	}
 

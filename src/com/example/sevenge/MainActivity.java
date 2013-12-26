@@ -31,6 +31,7 @@ public class MainActivity extends Activity {
 		if(supportsEs2)
 		{
 			glSurfaceView.setEGLContextClientVersion(2);
+			glSurfaceView.setEGLConfigChooser(8 , 8, 8, 8, 16, 0);
 			glSurfaceView.setRenderer(new GameEngine(this));
 			glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 			rendererSet = true;

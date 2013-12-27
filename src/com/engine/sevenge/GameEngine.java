@@ -1,12 +1,13 @@
-package com.example.sevenge;
+package com.engine.sevenge;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import com.engine.sevenge.utils.Log;
+
 import android.content.Context;
 import static android.opengl.GLES20.*;
 import android.opengl.GLSurfaceView.Renderer;
-import android.util.Log;
 import static android.opengl.Matrix.*;
 
 public class GameEngine implements Renderer {
@@ -23,6 +24,7 @@ public class GameEngine implements Renderer {
 	GameEngine(Context context)
 	{
 		this.context = context;
+		//init gamestates
 	}
 	@Override
 	public void onDrawFrame(GL10 arg0) {

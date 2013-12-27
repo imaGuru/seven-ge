@@ -1,4 +1,4 @@
-package com.example.utils;
+package com.engine.sevenge.utils;
 
 /**
  * Static wrapper around android.util.Log. Enable/Disable log output using the LOG_ENABLED

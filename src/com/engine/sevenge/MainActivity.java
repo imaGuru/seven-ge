@@ -1,4 +1,6 @@
-package com.example.sevenge;
+package com.engine.sevenge;
+
+import com.example.sevenge.R;
 
 import android.app.Activity;
 import android.app.ActivityManager;

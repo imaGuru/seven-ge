@@ -1,4 +1,4 @@
-package com.example.sevenge.graphics;
+package com.engine.sevenge.graphics;
 
 import java.util.ArrayList;
 import java.util.List;

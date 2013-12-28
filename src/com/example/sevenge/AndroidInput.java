@@ -46,8 +46,8 @@ public class AndroidInput implements Input, OnTouchListener
 		{
 			if (touchEvent == null)
 				return;
-			
-			if(touchEvent.pointerID == INVALID_POINTER_ID)
+
+			if (touchEvent.pointerID == INVALID_POINTER_ID)
 				return;
 
 			switch (touchEvent.type)
@@ -72,7 +72,9 @@ public class AndroidInput implements Input, OnTouchListener
 					dragEvent.startY = dragStartY[touchEvent.pointerID];
 					dragEvent.eventTime = touchEvent.eventTime;
 					touchEventsBuffer.add(dragEvent);
-					Log.v(TAG,dragEvent.type+", pointer : " + dragEvent.pointerID +" , pos : ("+dragEvent.x+","+dragEvent.y+")");
+					Log.v(TAG, dragEvent.type + ", pointer : "
+							+ dragEvent.pointerID + " , pos : (" + dragEvent.x
+							+ "," + dragEvent.y + ")");
 				}
 				break;
 			default:
@@ -101,7 +103,9 @@ public class AndroidInput implements Input, OnTouchListener
 					tapEvent.y = touchEvent.y;
 					tapEvent.eventTime = touchEvent.eventTime;
 					touchEventsBuffer.add(tapEvent);
-					Log.v(TAG,tapEvent.type+", pointer : " + tapEvent.pointerID +" , pos : ("+tapEvent.x+","+tapEvent.y+")");
+					Log.v(TAG, tapEvent.type + ", pointer : "
+							+ tapEvent.pointerID + " , pos : (" + tapEvent.x
+							+ "," + tapEvent.y + ")");
 				}
 				break;
 			default:
@@ -128,24 +132,42 @@ public class AndroidInput implements Input, OnTouchListener
 	}
 
 	@Override
-	public boolean isTouched(int pointerIds)
+	public boolean isTouched(int pointerId)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		synchronized (this)
+		{
+			int index = getIndex(pointerId);
+			if (index < 0 || index >= MAX_TOUCHPOINTS)
+				return false;
+			else
+				return isPointerTouched[pointerId];
+		}
 	}
 
 	@Override
-	public int getTouchX(int pointerIds)
+	public int getTouchX(int pointerId)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		synchronized (this)
+		{
+			int index = getIndex(pointerId);
+			if (index < 0 || index >= MAX_TOUCHPOINTS)
+				return 0;
+			else
+				return pointerX[index];
+		}
 	}
 
 	@Override
-	public int getTouchY(int pointerIds)
+	public int getTouchY(int pointerId)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		synchronized (this)
+		{
+			int index = getIndex(pointerId);
+			if (index < 0 || index >= MAX_TOUCHPOINTS)
+				return 0;
+			else
+				return pointerY[index];
+		}
 	}
 
 	@Override
@@ -162,6 +184,18 @@ public class AndroidInput implements Input, OnTouchListener
 			touchEventsBuffer.clear();
 			return touchEvents;
 		}
+	}
+
+	private int getIndex(int pointerId)
+	{
+		for (int i = 0; i < MAX_TOUCHPOINTS; i++)
+		{
+			if (pointerIds[i] == pointerId)
+			{
+				return i;
+			}
+		}
+		return INVALID_POINTER_ID;
 	}
 
 	@Override
@@ -209,7 +243,9 @@ public class AndroidInput implements Input, OnTouchListener
 					isPointerTouched[i] = true;
 					pointerIds[i] = pointerId;
 					touchEventsBuffer.add(touchEvent);
-					Log.v(TAG,touchEvent.type+", pointer : " + touchEvent.pointerID +" , pos : ("+touchEvent.x+","+touchEvent.y+")");
+					Log.v(TAG, touchEvent.type + ", pointer : "
+							+ touchEvent.pointerID + " , pos : ("
+							+ touchEvent.x + "," + touchEvent.y + ")");
 					break;
 				case MotionEvent.ACTION_UP:
 				case MotionEvent.ACTION_POINTER_UP:
@@ -223,7 +259,9 @@ public class AndroidInput implements Input, OnTouchListener
 					isPointerTouched[i] = false;
 					pointerIds[i] = INVALID_POINTER_ID;
 					touchEventsBuffer.add(touchEvent);
-					Log.v(TAG,touchEvent.type+", pointer : " + touchEvent.pointerID +" , pos : ("+touchEvent.x+","+touchEvent.y+")");
+					Log.v(TAG, touchEvent.type + ", pointer : "
+							+ touchEvent.pointerID + " , pos : ("
+							+ touchEvent.x + "," + touchEvent.y + ")");
 					break;
 				case MotionEvent.ACTION_MOVE:
 					touchEvent = touchEventPool.newObject();
@@ -235,7 +273,9 @@ public class AndroidInput implements Input, OnTouchListener
 					isPointerTouched[i] = true;
 					pointerIds[i] = pointerId;
 					touchEventsBuffer.add(touchEvent);
-					Log.v(TAG,touchEvent.type+", pointer : " + touchEvent.pointerID +" , pos : ("+touchEvent.x+","+touchEvent.y+")");
+					Log.v(TAG, touchEvent.type + ", pointer : "
+							+ touchEvent.pointerID + " , pos : ("
+							+ touchEvent.x + "," + touchEvent.y + ")");
 					break;
 				}
 

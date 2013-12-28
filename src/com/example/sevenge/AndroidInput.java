@@ -3,6 +3,7 @@ package com.example.sevenge;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.sevenge.Input.TouchEvent;
 import com.example.sevenge.Input.TouchEvent.TouchType;
 import com.example.utils.Log;
 import com.example.utils.Pool;
@@ -24,11 +25,91 @@ public class AndroidInput implements Input, OnTouchListener
 	Pool<TouchEvent> touchEventPool;
 	List<TouchEvent> touchEvents;
 	List<TouchEvent> touchEventsBuffer;
+	AndroidInputTranslator translator = new AndroidInputTranslator();
 
 	boolean[] isPointerTouched = new boolean[MAX_TOUCHPOINTS];
 	int[] pointerX = new int[MAX_TOUCHPOINTS];
 	int[] pointerY = new int[MAX_TOUCHPOINTS];
 	int[] pointerIds = new int[MAX_TOUCHPOINTS];
+
+	class AndroidInputTranslator
+	{
+		static final int MAX_MS_TAP_INTERVAL = 200;
+
+		boolean[] isDragged = new boolean[MAX_TOUCHPOINTS];
+		int[] dragStartX = new int[MAX_TOUCHPOINTS];
+		int[] dragStartY = new int[MAX_TOUCHPOINTS];
+
+		long[] touchStartTime = new long[MAX_TOUCHPOINTS];
+
+		void detectDrag(TouchEvent touchEvent)
+		{
+			if (touchEvent == null)
+				return;
+			
+			if(touchEvent.pointerID == INVALID_POINTER_ID)
+				return;
+
+			switch (touchEvent.type)
+			{
+			case DOWN:
+				isDragged[touchEvent.pointerID] = true;
+				dragStartX[touchEvent.pointerID] = touchEvent.x;
+				dragStartY[touchEvent.pointerID] = touchEvent.y;
+				break;
+			case UP:
+				isDragged[touchEvent.pointerID] = false;
+				break;
+			case MOVE:
+				if (isDragged[touchEvent.pointerID] == true)
+				{
+					TouchEvent dragEvent = touchEventPool.newObject();
+					dragEvent.type = TouchType.DRAG;
+					dragEvent.pointerID = touchEvent.pointerID;
+					dragEvent.x = touchEvent.x;
+					dragEvent.y = touchEvent.y;
+					dragEvent.startX = dragStartX[touchEvent.pointerID];
+					dragEvent.startY = dragStartY[touchEvent.pointerID];
+					dragEvent.eventTime = touchEvent.eventTime;
+					touchEventsBuffer.add(dragEvent);
+					Log.v(TAG,dragEvent.type+", pointer : " + dragEvent.pointerID +" , pos : ("+dragEvent.x+","+dragEvent.y+")");
+				}
+				break;
+			default:
+				break;
+			}
+		}
+
+		void detectTap(TouchEvent touchEvent)
+		{
+
+			if (touchEvent == null)
+				return;
+
+			switch (touchEvent.type)
+			{
+			case DOWN:
+				touchStartTime[touchEvent.pointerID] = touchEvent.eventTime;
+				break;
+			case UP:
+				if (touchEvent.eventTime - touchStartTime[touchEvent.pointerID] <= MAX_MS_TAP_INTERVAL)
+				{
+					TouchEvent tapEvent = touchEventPool.newObject();
+					tapEvent.type = TouchType.TAP;
+					tapEvent.pointerID = touchEvent.pointerID;
+					tapEvent.x = touchEvent.x;
+					tapEvent.y = touchEvent.y;
+					tapEvent.eventTime = touchEvent.eventTime;
+					touchEventsBuffer.add(tapEvent);
+					Log.v(TAG,tapEvent.type+", pointer : " + tapEvent.pointerID +" , pos : ("+tapEvent.x+","+tapEvent.y+")");
+				}
+				break;
+			default:
+				break;
+			}
+
+		}
+	}
 
 	public AndroidInput()
 	{
@@ -43,6 +124,7 @@ public class AndroidInput implements Input, OnTouchListener
 		touchEventPool = new Pool<TouchEvent>(factory, 100);
 		touchEvents = new ArrayList<TouchEvent>();
 		touchEventsBuffer = new ArrayList<TouchEvent>();
+
 	}
 
 	@Override
@@ -88,10 +170,10 @@ public class AndroidInput implements Input, OnTouchListener
 
 		synchronized (this)
 		{
-			int action = event.getActionMasked(); 
+			int action = event.getActionMasked();
 			int pointerIndex = event.getActionIndex();
 			int pointerCount = event.getPointerCount();
-			TouchEvent touchEvent;
+			TouchEvent touchEvent = null;
 
 			for (int i = 0; i < MAX_TOUCHPOINTS; i++)
 			{
@@ -115,6 +197,7 @@ public class AndroidInput implements Input, OnTouchListener
 
 				switch (action)
 				{
+
 				case MotionEvent.ACTION_DOWN:
 				case MotionEvent.ACTION_POINTER_DOWN:
 					touchEvent = touchEventPool.newObject();
@@ -122,10 +205,11 @@ public class AndroidInput implements Input, OnTouchListener
 					touchEvent.pointerID = pointerId;
 					touchEvent.x = pointerX[i] = (int) (event.getX(i));
 					touchEvent.y = pointerY[i] = (int) (event.getY(i));
+					touchEvent.eventTime = event.getEventTime();
 					isPointerTouched[i] = true;
 					pointerIds[i] = pointerId;
 					touchEventsBuffer.add(touchEvent);
-					Log.v(TAG, "down");
+					Log.v(TAG,touchEvent.type+", pointer : " + touchEvent.pointerID +" , pos : ("+touchEvent.x+","+touchEvent.y+")");
 					break;
 				case MotionEvent.ACTION_UP:
 				case MotionEvent.ACTION_POINTER_UP:
@@ -135,10 +219,11 @@ public class AndroidInput implements Input, OnTouchListener
 					touchEvent.pointerID = pointerId;
 					touchEvent.x = pointerX[i] = (int) (event.getX(i));
 					touchEvent.y = pointerY[i] = (int) (event.getY(i));
+					touchEvent.eventTime = event.getEventTime();
 					isPointerTouched[i] = false;
 					pointerIds[i] = INVALID_POINTER_ID;
 					touchEventsBuffer.add(touchEvent);
-					Log.v(TAG, "up");
+					Log.v(TAG,touchEvent.type+", pointer : " + touchEvent.pointerID +" , pos : ("+touchEvent.x+","+touchEvent.y+")");
 					break;
 				case MotionEvent.ACTION_MOVE:
 					touchEvent = touchEventPool.newObject();
@@ -146,14 +231,18 @@ public class AndroidInput implements Input, OnTouchListener
 					touchEvent.pointerID = pointerId;
 					touchEvent.x = pointerX[i] = (int) (event.getX(i));
 					touchEvent.y = pointerY[i] = (int) (event.getY(i));
+					touchEvent.eventTime = event.getEventTime();
 					isPointerTouched[i] = true;
 					pointerIds[i] = pointerId;
 					touchEventsBuffer.add(touchEvent);
-					Log.v(TAG, "move");
+					Log.v(TAG,touchEvent.type+", pointer : " + touchEvent.pointerID +" , pos : ("+touchEvent.x+","+touchEvent.y+")");
 					break;
 				}
-			}
 
+				translator.detectDrag(touchEvent);
+				translator.detectTap(touchEvent);
+
+			}
 		}
 
 		try

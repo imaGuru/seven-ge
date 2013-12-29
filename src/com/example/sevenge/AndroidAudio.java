@@ -13,7 +13,7 @@ public class AndroidAudio implements Audio
 	AssetManager assets;
 	SoundPool soundPool;
 
-	public static int MAX_SIMULTANEOUS_SOUNDS = 10;
+	public final static int MAX_SIMULTANEOUS_SOUNDS = 10;
 
 	public AndroidAudio(Activity activity)
 	{
@@ -24,7 +24,7 @@ public class AndroidAudio implements Audio
 	}
 
 	@Override
-	public Music newMusic(String filename)
+	public Music getMusic(String filename)
 	{
 		try
 		{
@@ -37,7 +37,7 @@ public class AndroidAudio implements Audio
 	}
 
 	@Override
-	public Sound newSound(String filename)
+	public Sound getSound(String filename)
 	{
 		try
 		{

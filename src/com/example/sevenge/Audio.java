@@ -2,7 +2,7 @@ package com.example.sevenge;
 
 public interface Audio
 {
-	public Music newMusic(String filename);
+	public Music getMusic(String filename);
 
-	public Sound newSound(String filename);
+	public Sound getSound(String filename);
 }

@@ -1,7 +1,14 @@
 package com.example.sevenge;
 
+import android.content.res.AssetFileDescriptor;
+
 public class AndroidMusic implements Music
 {
+
+	public AndroidMusic(AssetFileDescriptor assetDescriptor)
+	{
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public void play()

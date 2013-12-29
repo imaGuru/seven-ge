@@ -1,12 +1,12 @@
 package com.engine.sevenge.graphics;
 
+import static android.opengl.GLES20.GL_FLOAT;
+import static android.opengl.GLES20.glEnableVertexAttribArray;
+import static android.opengl.GLES20.glVertexAttribPointer;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.glVertexAttribPointer;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
 
 public class VertexArray {
 	private final FloatBuffer floatBuffer;

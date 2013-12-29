@@ -1,15 +1,15 @@
 package com.engine.sevenge.graphics;
 
-import static android.opengl.GLES20.glUseProgram;
-import static android.opengl.GLES20.glCreateProgram;
-import static android.opengl.GLES20.glAttachShader;
-import static android.opengl.GLES20.glLinkProgram;
-import static android.opengl.GLES20.glGetProgramInfoLog;
-import static android.opengl.GLES20.glGetProgramiv;
-import static android.opengl.GLES20.glDeleteProgram;
-import static android.opengl.GLES20.glValidateProgram;
 import static android.opengl.GLES20.GL_LINK_STATUS;
 import static android.opengl.GLES20.GL_VALIDATE_STATUS;
+import static android.opengl.GLES20.glAttachShader;
+import static android.opengl.GLES20.glCreateProgram;
+import static android.opengl.GLES20.glDeleteProgram;
+import static android.opengl.GLES20.glGetProgramInfoLog;
+import static android.opengl.GLES20.glGetProgramiv;
+import static android.opengl.GLES20.glLinkProgram;
+import static android.opengl.GLES20.glUseProgram;
+import static android.opengl.GLES20.glValidateProgram;
 
 import com.engine.sevenge.utils.Log;
 
@@ -22,9 +22,10 @@ public class ShaderProgram {
 	protected static final String A_COLOR = "a_Color";
 	protected static final String A_TEXTURE_COORDINATES = "a_TextureCoordinates";
 	private static final String TAG = "ShaderProgram";
-	
+
 	protected final int programID;
-	ShaderProgram(int vertexShaderID, int fragmentShaderID) {
+
+	public ShaderProgram(int vertexShaderID, int fragmentShaderID) {
 		programID = glCreateProgram();
 		if (programID == 0) {
 			Log.w(TAG, "Could not create new program");
@@ -42,19 +43,21 @@ public class ShaderProgram {
 			Log.w(TAG, "Linking of program failed.");
 		}
 	}
-	public void use(){
+
+	public void use() {
 		glUseProgram(programID);
 	}
-	public int getGLID()
-	{
+
+	public int getGLID() {
 		return programID;
 	}
+
 	public boolean validateProgram() {
 		glValidateProgram(programID);
 		final int[] validateStatus = new int[1];
 		glGetProgramiv(programID, GL_VALIDATE_STATUS, validateStatus, 0);
 		Log.v(TAG, "Results of validating program: " + validateStatus[0]
-		+ "\nLog:" + glGetProgramInfoLog(programID));
+				+ "\nLog:" + glGetProgramInfoLog(programID));
 		return validateStatus[0] != 0;
 	}
 }

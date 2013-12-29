@@ -1,6 +1,8 @@
 package com.engine.sevenge;
 
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_VERTEX_SHADER;
+import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glViewport;
@@ -9,21 +11,42 @@ import static android.opengl.Matrix.orthoM;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.R;
 import android.content.Context;
+import android.graphics.Shader;
 import android.opengl.GLSurfaceView.Renderer;
 
+import com.engine.sevenge.graphics.ShaderProgram;
+import com.engine.sevenge.utils.Helper;
 import com.engine.sevenge.utils.Log;
 
 public class GameEngine implements Renderer {
 
 	private Context context;
 	private static final String TAG = "GameEngine";
-	private final float[] projectionMatrix = new float[16];
 	private long startTime = 0;
 	private long dt = 0, sleepTime = 0;
 	private static final long FRAME_TIME = 32;
 	private static final int MAX_FRAME_SKIPS = 5;
 	private int framesSkipped = 0;
+
+	private static final String A_COLOR = "a_Color";
+	private static final int COLOR_COMPONENT_COUNT = 3;
+	private static final int BYTES_PER_FLOAT = 4;
+	private static final int STRIDE = (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT)
+			* BYTES_PER_FLOAT;
+
+	private int aColorLocation;
+
+	private static final String U_COLOR = "u_Color";
+	private int uColorLocation;
+
+	private static final String A_POSITION = "a_Position";
+	private int aPositionLocation;
+
+	private static final String U_MATRIX = "u_Matrix";
+	private final float[] projectionMatrix = new float[16];
+	private int uMatrixLocation;
 
 	GameEngine(Context context) {
 		this.context = context;
@@ -73,6 +96,11 @@ public class GameEngine implements Renderer {
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		Shader vertexShader = new Shader(Helper.readRawTextFile(context, R.raw.simple_vertex_shader),GL_VERTEX_SHADER);
+		
+		ShaderProgram program = new ShaderProgram(vertexShaderID, fragmentShaderID)
+		uColorLocation = glGetUniformLocation(program, U_COLOR);
+		aPositionLocation = glGetAttribLocation(program, A_POSITION);
+		uMatrixLocation = glGetUniformLocation(program, U_MATRIX);
 	}
-
 }

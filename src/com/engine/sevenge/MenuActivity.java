@@ -7,10 +7,13 @@ import android.os.Bundle;
 
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class MenuActivity extends Activity
 {
@@ -28,7 +31,7 @@ public class MenuActivity extends Activity
 				"Demo 4", "Demo 5" };
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, values);
+				R.layout.listview_custom, values);
 
 		listView.setAdapter(adapter);
 
@@ -48,6 +51,32 @@ public class MenuActivity extends Activity
 						.parse("https://github.com/SeventhSon/seven-ge"));
 				startActivity(browserIntent);
 
+			}
+
+		});
+
+		listView.setOnItemClickListener(new OnItemClickListener()
+		{
+
+			@Override
+			public void onItemClick(AdapterView<?> aV, View view, int position,
+					long id)
+			{
+				if (position > 0)
+				{
+
+					String item = ((TextView) view).getText().toString();
+					Toast.makeText(getBaseContext(),
+							item + " not yet implemented", Toast.LENGTH_LONG)
+							.show();
+				}
+				else
+				{
+					Intent i = new Intent(getApplicationContext(),
+							MainActivity.class);
+					i.putExtra("demo", position+1);
+					startActivity(i);
+				}
 			}
 
 		});

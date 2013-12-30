@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.example.sevenge.R;
+import com.engine.sevenge.R;
 
 public class MainActivity extends Activity {
 

@@ -1,4 +1,4 @@
-package com.example.sevenge;
+package com.engine.sevenge;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -14,31 +14,38 @@ public class MainActivity extends Activity {
 
 	private GLSurfaceView glSurfaceView;
 	private boolean rendererSet = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		glSurfaceView = new GLSurfaceView(this);
-		
+
 		final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-		final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000|| (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1
-				&& (Build.FINGERPRINT.startsWith("generic")
+		final ConfigurationInfo configurationInfo = activityManager
+				.getDeviceConfigurationInfo();
+		final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000
+				|| (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1 && (Build.FINGERPRINT
+						.startsWith("generic")
 						|| Build.FINGERPRINT.startsWith("unknown")
 						|| Build.MODEL.contains("google_sdk")
-						|| Build.MODEL.contains("Emulator")
-						|| Build.MODEL.contains("Android SDK built for x86")));;
-		
-		if(supportsEs2)
-		{
+						|| Build.MODEL.contains("Emulator") || Build.MODEL
+							.contains("Android SDK built for x86")));
+		;
+
+		if (supportsEs2) {
 			glSurfaceView.setEGLContextClientVersion(2);
-			glSurfaceView.setEGLConfigChooser(8 , 8, 8, 8, 16, 0);
+			glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 			glSurfaceView.setRenderer(new GameEngine(this));
 			glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 			rendererSet = true;
-			Toast.makeText(this, "OpenGL ES working fine! Renderer set.", Toast.LENGTH_LONG).show();
+			/*
+			 * Toast.makeText(this, "OpenGL ES working fine! Renderer set.",
+			 * Toast.LENGTH_LONG).show();
+			 */
 			setContentView(glSurfaceView);
 		} else {
-			Toast.makeText(this, "This device does not support OpenGL ES 2.0", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "This device does not support OpenGL ES 2.0",
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 	}
@@ -49,23 +56,19 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 	@Override
-	protected void onPause()
-	{
+	protected void onPause() {
 		super.onPause();
-		if(rendererSet)
-		{
+		if (rendererSet) {
 			glSurfaceView.onPause();
 		}
 	}
-	
+
 	@Override
-	protected void onResume()
-	{
+	protected void onResume() {
 		super.onResume();
-		if(rendererSet)
-		{
+		if (rendererSet) {
 			glSurfaceView.onResume();
 		}
 	}

@@ -40,8 +40,8 @@ public class MainActivity extends Activity {
 			glSurfaceView.setRenderer(new GameEngine(this));
 			glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 			rendererSet = true;
-			Toast.makeText(this, "OpenGL ES working fine! Renderer set.",
-					Toast.LENGTH_LONG).show();
+			/*Toast.makeText(this, "OpenGL ES working fine! Renderer set.",
+					Toast.LENGTH_LONG).show();*/
 			setContentView(glSurfaceView);
 		} else {
 			Toast.makeText(this, "This device does not support OpenGL ES 2.0",

@@ -1,51 +1,36 @@
 package com.engine.sevenge;
 
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
-import static android.opengl.GLES20.GL_VERTEX_SHADER;
-import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
-import static android.opengl.GLES20.glClear;
-import static android.opengl.GLES20.glGetUniformLocation;
-import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glViewport;
-import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.GL_TRIANGLES;
-import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.Matrix.orthoM;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import com.engine.sevenge.R;
-
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 
 import com.engine.sevenge.graphics.LRenderer;
-import com.engine.sevenge.graphics.Shader;
-import com.engine.sevenge.graphics.ShaderProgram;
 import com.engine.sevenge.graphics.Triangle;
-import com.engine.sevenge.graphics.VertexArray;
-import com.engine.sevenge.utils.Helper;
 import com.engine.sevenge.utils.Log;
 
 public class GameEngine implements Renderer {
-	
+
 	private static final String TAG = "GameEngine";
-	
+
 	private Context context;
-	
+
 	private long startTime = 0;
 	private long dt = 0, sleepTime = 0;
 	private int framesSkipped = 0;
-	
+
 	private static final long FRAME_TIME = 32;
 	private static final int MAX_FRAME_SKIPS = 5;
-	
+
 	private final float[] projectionMatrix = new float[16];
-	
+
 	private final LRenderer renderer = new LRenderer();
-	
+
 	private Triangle triangle;
 
 	GameEngine(Context context) {
@@ -70,7 +55,7 @@ public class GameEngine implements Renderer {
 			framesSkipped++;
 		}
 		Log.v(TAG, "FramesSkipped: " + framesSkipped + " FPS: " + (double) 1
-			/(System.currentTimeMillis() - startTime) * 1000);
+				/ (System.currentTimeMillis() - startTime) * 1000);
 		startTime = System.currentTimeMillis();
 		// gamestate.update
 		// gamestate.draw
@@ -98,6 +83,7 @@ public class GameEngine implements Renderer {
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		triangle = new Triangle(new float[]{-0.75f,-0.5f,1f,0f,0f, 0.75f,-0.5f,0f,1f,0f, 0f,0.75f,0f,0f,1f}, context);
+		triangle = new Triangle(new float[] { -0.75f, -0.5f, 1f, 0f, 0f, 0.75f,
+				-0.5f, 0f, 1f, 0f, 0f, 0.75f, 0f, 0f, 1f }, context);
 	}
 }

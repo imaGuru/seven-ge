@@ -1,4 +1,4 @@
-package com.example.sevenge;
+package com.engine.sevenge.audio;
 
 import java.io.IOException;
 
@@ -6,103 +6,84 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 
-public class AndroidMusic implements Music, OnCompletionListener
-{
+public class AndroidMusic implements Music, OnCompletionListener {
 	MediaPlayer mediaPlayer;
 	boolean isPrepared = false;
 
-	public AndroidMusic(AssetFileDescriptor assetDescriptor)
-	{
+	public AndroidMusic(AssetFileDescriptor assetDescriptor) {
 		mediaPlayer = new MediaPlayer();
-		try
-		{
+		try {
 			mediaPlayer.setDataSource(assetDescriptor.getFileDescriptor(),
 					assetDescriptor.getStartOffset(),
 					assetDescriptor.getLength());
 			mediaPlayer.prepare();
 			isPrepared = true;
 			mediaPlayer.setOnCompletionListener(this);
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new RuntimeException("Couldn't load music");
 		}
 	}
 
 	@Override
-	public void play()
-	{
+	public void play() {
 		if (mediaPlayer.isPlaying())
 			return;
-		try
-		{
-			synchronized (this)
-			{
+		try {
+			synchronized (this) {
 				if (!isPrepared)
 					mediaPlayer.prepare();
 				mediaPlayer.start();
 			}
-		} catch (IllegalStateException e)
-		{
+		} catch (IllegalStateException e) {
 			e.printStackTrace();
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void stop()
-	{
+	public void stop() {
 		mediaPlayer.stop();
-		synchronized (this)
-		{
+		synchronized (this) {
 			isPrepared = false;
 		}
 	}
 
 	@Override
-	public void pause()
-	{
+	public void pause() {
 		if (mediaPlayer.isPlaying())
 			mediaPlayer.pause();
 	}
 
 	@Override
-	public void setLooping(boolean isLooping)
-	{
+	public void setLooping(boolean isLooping) {
 		mediaPlayer.setLooping(isLooping);
 
 	}
 
 	@Override
-	public void setVolume(float volume)
-	{
+	public void setVolume(float volume) {
 		mediaPlayer.setVolume(volume, volume);
 	}
 
 	@Override
-	public boolean isPlaying()
-	{
+	public boolean isPlaying() {
 		return mediaPlayer.isPlaying();
 	}
 
 	@Override
-	public boolean isStopped()
-	{
+	public boolean isStopped() {
 		return !isPrepared;
 	}
 
 	@Override
-	public boolean isLooping()
-	{
+	public boolean isLooping() {
 		return mediaPlayer.isLooping();
 	}
 
 	@Override
-	public void dispose()
-	{
-		if (mediaPlayer.isPlaying())
-		{
+	public void dispose() {
+		if (mediaPlayer.isPlaying()) {
 			mediaPlayer.stop();
 		}
 		mediaPlayer.release();
@@ -110,10 +91,8 @@ public class AndroidMusic implements Music, OnCompletionListener
 	}
 
 	@Override
-	public void onCompletion(MediaPlayer arg0)
-	{
-		synchronized (this)
-		{
+	public void onCompletion(MediaPlayer arg0) {
+		synchronized (this) {
 			isPrepared = false;
 		}
 

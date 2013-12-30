@@ -1,4 +1,4 @@
-package com.example.sevenge;
+package com.engine.sevenge.audio;
 
 import java.io.IOException;
 
@@ -8,15 +8,13 @@ import android.content.res.AssetManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
-public class AndroidAudio implements Audio
-{
+public class AndroidAudio implements Audio {
 	AssetManager assets;
 	SoundPool soundPool;
 
 	public final static int MAX_SIMULTANEOUS_SOUNDS = 10;
 
-	public AndroidAudio(Activity activity)
-	{
+	public AndroidAudio(Activity activity) {
 		activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		this.assets = activity.getAssets();
 		this.soundPool = new SoundPool(MAX_SIMULTANEOUS_SOUNDS,
@@ -24,28 +22,22 @@ public class AndroidAudio implements Audio
 	}
 
 	@Override
-	public Music getMusic(String filename)
-	{
-		try
-		{
+	public Music getMusic(String filename) {
+		try {
 			AssetFileDescriptor assetDescriptor = assets.openFd(filename);
 			return new AndroidMusic(assetDescriptor);
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			throw new RuntimeException("Couldn't load music '" + filename + "'");
 		}
 	}
 
 	@Override
-	public Sound getSound(String filename)
-	{
-		try
-		{
+	public Sound getSound(String filename) {
+		try {
 			AssetFileDescriptor assetDescriptor = assets.openFd(filename);
 			int soundId = soundPool.load(assetDescriptor, 0);
 			return new AndroidSound(soundPool, soundId);
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			throw new RuntimeException("Couldn't load sound '" + filename + "'");
 		}
 	}

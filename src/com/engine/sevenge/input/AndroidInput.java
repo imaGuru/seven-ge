@@ -1,20 +1,18 @@
-package com.example.sevenge;
+package com.engine.sevenge.input;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.example.sevenge.Input.TouchEvent;
-import com.example.sevenge.Input.TouchEvent.TouchType;
-import com.example.utils.Log;
-import com.example.utils.Pool;
-import com.example.utils.Pool.PoolObjectFactory;
 
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-public class AndroidInput implements Input, OnTouchListener
-{
+import com.engine.sevenge.input.Input.TouchEvent.TouchType;
+import com.engine.sevenge.utils.Log;
+import com.engine.sevenge.utils.Pool;
+import com.engine.sevenge.utils.Pool.PoolObjectFactory;
+
+public class AndroidInput implements Input, OnTouchListener {
 	private final String TAG = "AndroidInput";
 
 	private static final int MAX_TOUCHPOINTS = 5;
@@ -32,8 +30,7 @@ public class AndroidInput implements Input, OnTouchListener
 	int[] pointerY = new int[MAX_TOUCHPOINTS];
 	int[] pointerIds = new int[MAX_TOUCHPOINTS];
 
-	class AndroidInputTranslator
-	{
+	class AndroidInputTranslator {
 		static final int MAX_MS_TAP_INTERVAL = 200;
 
 		boolean[] isDragged = new boolean[MAX_TOUCHPOINTS];
@@ -42,16 +39,14 @@ public class AndroidInput implements Input, OnTouchListener
 
 		long[] touchStartTime = new long[MAX_TOUCHPOINTS];
 
-		void detectDrag(TouchEvent touchEvent)
-		{
+		void detectDrag(TouchEvent touchEvent) {
 			if (touchEvent == null)
 				return;
 
 			if (touchEvent.pointerID == INVALID_POINTER_ID)
 				return;
 
-			switch (touchEvent.type)
-			{
+			switch (touchEvent.type) {
 			case DOWN:
 				isDragged[touchEvent.pointerID] = true;
 				dragStartX[touchEvent.pointerID] = touchEvent.x;
@@ -61,8 +56,7 @@ public class AndroidInput implements Input, OnTouchListener
 				isDragged[touchEvent.pointerID] = false;
 				break;
 			case MOVE:
-				if (isDragged[touchEvent.pointerID] == true)
-				{
+				if (isDragged[touchEvent.pointerID] == true) {
 					TouchEvent dragEvent = touchEventPool.newObject();
 					dragEvent.type = TouchType.DRAG;
 					dragEvent.pointerID = touchEvent.pointerID;
@@ -82,20 +76,17 @@ public class AndroidInput implements Input, OnTouchListener
 			}
 		}
 
-		void detectTap(TouchEvent touchEvent)
-		{
+		void detectTap(TouchEvent touchEvent) {
 
 			if (touchEvent == null)
 				return;
 
-			switch (touchEvent.type)
-			{
+			switch (touchEvent.type) {
 			case DOWN:
 				touchStartTime[touchEvent.pointerID] = touchEvent.eventTime;
 				break;
 			case UP:
-				if (touchEvent.eventTime - touchStartTime[touchEvent.pointerID] <= MAX_MS_TAP_INTERVAL)
-				{
+				if (touchEvent.eventTime - touchStartTime[touchEvent.pointerID] <= MAX_MS_TAP_INTERVAL) {
 					TouchEvent tapEvent = touchEventPool.newObject();
 					tapEvent.type = TouchType.TAP;
 					tapEvent.pointerID = touchEvent.pointerID;
@@ -115,12 +106,10 @@ public class AndroidInput implements Input, OnTouchListener
 		}
 	}
 
-	public AndroidInput()
-	{
-		PoolObjectFactory<TouchEvent> factory = new PoolObjectFactory<TouchEvent>()
-		{
-			public TouchEvent createObject()
-			{
+	public AndroidInput() {
+		PoolObjectFactory<TouchEvent> factory = new PoolObjectFactory<TouchEvent>() {
+			@Override
+			public TouchEvent createObject() {
 				return new TouchEvent();
 			}
 		};
@@ -132,10 +121,8 @@ public class AndroidInput implements Input, OnTouchListener
 	}
 
 	@Override
-	public boolean isTouched(int pointerId)
-	{
-		synchronized (this)
-		{
+	public boolean isTouched(int pointerId) {
+		synchronized (this) {
 			int index = getIndex(pointerId);
 			if (index < 0 || index >= MAX_TOUCHPOINTS)
 				return false;
@@ -145,10 +132,8 @@ public class AndroidInput implements Input, OnTouchListener
 	}
 
 	@Override
-	public int getTouchX(int pointerId)
-	{
-		synchronized (this)
-		{
+	public int getTouchX(int pointerId) {
+		synchronized (this) {
 			int index = getIndex(pointerId);
 			if (index < 0 || index >= MAX_TOUCHPOINTS)
 				return 0;
@@ -158,10 +143,8 @@ public class AndroidInput implements Input, OnTouchListener
 	}
 
 	@Override
-	public int getTouchY(int pointerId)
-	{
-		synchronized (this)
-		{
+	public int getTouchY(int pointerId) {
+		synchronized (this) {
 			int index = getIndex(pointerId);
 			if (index < 0 || index >= MAX_TOUCHPOINTS)
 				return 0;
@@ -171,12 +154,9 @@ public class AndroidInput implements Input, OnTouchListener
 	}
 
 	@Override
-	public List<TouchEvent> getTouchEvents()
-	{
-		synchronized (this)
-		{
-			for (int i = 0; i < touchEvents.size(); i++)
-			{
+	public List<TouchEvent> getTouchEvents() {
+		synchronized (this) {
+			for (int i = 0; i < touchEvents.size(); i++) {
 				touchEventPool.free(touchEvents.get(i));
 			}
 			touchEvents.clear();
@@ -186,12 +166,9 @@ public class AndroidInput implements Input, OnTouchListener
 		}
 	}
 
-	private int getIndex(int pointerId)
-	{
-		for (int i = 0; i < MAX_TOUCHPOINTS; i++)
-		{
-			if (pointerIds[i] == pointerId)
-			{
+	private int getIndex(int pointerId) {
+		for (int i = 0; i < MAX_TOUCHPOINTS; i++) {
+			if (pointerIds[i] == pointerId) {
 				return i;
 			}
 		}
@@ -199,20 +176,16 @@ public class AndroidInput implements Input, OnTouchListener
 	}
 
 	@Override
-	public boolean onTouch(View v, MotionEvent event)
-	{
+	public boolean onTouch(View v, MotionEvent event) {
 
-		synchronized (this)
-		{
+		synchronized (this) {
 			int action = event.getActionMasked();
 			int pointerIndex = event.getActionIndex();
 			int pointerCount = event.getPointerCount();
 			TouchEvent touchEvent = null;
 
-			for (int i = 0; i < MAX_TOUCHPOINTS; i++)
-			{
-				if (i >= pointerCount)
-				{
+			for (int i = 0; i < MAX_TOUCHPOINTS; i++) {
+				if (i >= pointerCount) {
 					isPointerTouched[i] = false;
 					pointerIds[i] = INVALID_POINTER_ID;
 					continue;
@@ -220,8 +193,7 @@ public class AndroidInput implements Input, OnTouchListener
 
 				int pointerId = event.getPointerId(i);
 				if (event.getAction() != MotionEvent.ACTION_MOVE
-						&& i != pointerIndex)
-				{
+						&& i != pointerIndex) {
 					// if it's an up/down/cancel/out event, mask the id to see
 					// if we should
 					// process it for this touch
@@ -229,8 +201,7 @@ public class AndroidInput implements Input, OnTouchListener
 					continue;
 				}
 
-				switch (action)
-				{
+				switch (action) {
 
 				case MotionEvent.ACTION_DOWN:
 				case MotionEvent.ACTION_POINTER_DOWN:
@@ -285,11 +256,9 @@ public class AndroidInput implements Input, OnTouchListener
 			}
 		}
 
-		try
-		{
+		try {
 			Thread.sleep(SLEEP_TIME_BETWEEN_INTERCEPTING_TOUCH_EVENTS);
-		} catch (InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -1,16 +1,11 @@
-package com.example.sevenge;
+package com.engine.sevenge.input;
 
 import java.util.List;
 
-import android.view.MotionEvent;
+public interface Input {
 
-public interface Input
-{
-
-	public static class TouchEvent
-	{
-		enum TouchType
-		{
+	public static class TouchEvent {
+		enum TouchType {
 			DOWN, MOVE, UP, TAP, DRAG;
 		}
 
@@ -26,10 +21,10 @@ public interface Input
 		public int startY;
 	}
 
-	public static class Test extends TouchEvent{
+	public static class Test extends TouchEvent {
 		public int magic;
 	}
-	
+
 	public boolean isTouched(int pointerID);
 
 	public int getTouchX(int pointerID);

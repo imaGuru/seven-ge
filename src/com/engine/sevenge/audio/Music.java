@@ -1,7 +1,6 @@
-package com.example.sevenge;
+package com.engine.sevenge.audio;
 
-public interface Music
-{
+public interface Music {
 	public void play();
 
 	public void stop();

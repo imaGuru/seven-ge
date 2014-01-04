@@ -1,50 +1,25 @@
 package resourcemanager;
 
+import java.util.HashMap;
+import java.util.Map;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import com.engine.sevenge.R;
 
 import android.content.Context;
 
 public class ResourceManager {
+	private Map<String, Resource> resourceMap = new HashMap<String, Resource>();
 
-	public void loadResources(Context ctx) throws JSONException {
-		String textureList = readTxt(ctx,R.raw.texture_list);
-		JSONArray jArr = new JSONArray(textureList);
-		JSONObject jObj;
-		for (int i = 0; i < jArr.length(); i++) {
-			jObj = jArr.getJSONObject(i);
-			String id = jObj.getString("id");
-			String path = jObj.getString("path");
-			//create texture save it in hashmap
-		}
+	public void loadResources(Context ctx) throws JSONException{
+		Loader loader = new Loader();
+		loader.loadTextures(ctx);
+		loader.loadAudio(ctx);
+
 	}
 
-	private String readTxt(Context ctx,int id) {
-
-		InputStream is;
-		String content = "";
-		try {
-			is = ctx.getResources().openRawResource(id);
-
-			byte[] input = new byte[is.available()];
-			while (is.read(input) != -1) {
-			}
-			content += new String(input);
-			is.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return content;
+	public void putInMap(String key, Resource res) {
+		resourceMap.put(key, res);
 
 	}
 }

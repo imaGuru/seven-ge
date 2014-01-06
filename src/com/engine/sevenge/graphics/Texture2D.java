@@ -48,6 +48,10 @@ public class Texture2D {
 		textureID = textureObjectIds[0];
 	}
 
+	public void bindTexture() {
+
+	}
+
 	public int getGLID() {
 		return textureID;
 	}

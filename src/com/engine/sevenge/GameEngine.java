@@ -28,6 +28,7 @@ public class GameEngine implements Renderer {
 	private static final int MAX_FRAME_SKIPS = 5;
 
 	private final float[] projectionMatrix = new float[16];
+	private final float[] viewMatrix = new float[16];
 
 	private final LRenderer renderer = new LRenderer();
 

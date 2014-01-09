@@ -1,7 +1,7 @@
 package com.engine.sevenge.graphics;
 
-import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glGetAttribLocation;
+import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 
 public class ColorShaderProgram extends ShaderProgram {

@@ -1,12 +1,11 @@
 package com.engine.sevenge;
 
-import static android.opengl.GLES20.glClearColor;
-import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
+import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glViewport;
+import static android.opengl.Matrix.multiplyMM;
 import static android.opengl.Matrix.orthoM;
 import static android.opengl.Matrix.setLookAtM;
-import static android.opengl.Matrix.multiplyMM;
 
 import java.util.Random;
 
@@ -31,6 +30,7 @@ public class GameEngine implements Renderer {
 
 	private Context context;
 	private float x = 0, y = 0;
+	private float mHeight = 0, mWidth = 0;
 	private long startTime = 0;
 	private long dt = 0, sleepTime = 0;
 	private int framesSkipped = 0;
@@ -89,13 +89,17 @@ public class GameEngine implements Renderer {
 			viewMatrix[i] = 0.0f;
 			viewProjectionMatrix[i] = 0.0f;
 		}
-		orthoM(projectionMatrix, 0, 0, width, 0, height, 0, 50f);
+		orthoM(projectionMatrix, 0, 0, width, 0, height, 0, 1f);
+		mWidth = width;
+		mHeight = height;
+		x = -width / 2;
+		y = -height / 2;
 	}
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		renderer = new LRenderer();
-		Texture2D tex = new Texture2D(context, R.drawable.rocktexture);
+		Texture2D tex = new Texture2D(context, R.drawable.apple);
 		Shader vs = new Shader(Helper.readRawTextFile(context,
 				R.raw.texture_vertex_shader), GL_VERTEX_SHADER);
 		Shader fs = new Shader(Helper.readRawTextFile(context,
@@ -104,9 +108,13 @@ public class GameEngine implements Renderer {
 				vs.getGLID(), fs.getGLID());
 		spriteBatch = new SpriteBatch(tex, spriteShader, 1000);
 		Random rng = new Random();
-		for (int i = 0; i < 1000; i++)
-			spriteBatch.add(new Sprite(100f, 100f, rng.nextFloat() * 3000f, rng
-					.nextFloat() * 3000f).getTransformedVertices());
+		for (int i = 0; i < 1000; i++) {
+			Sprite sprite = new Sprite(100f, 100f, new float[] { 0.0f, 0.0f,
+					0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f }, tex);
+			sprite.rotate(rng.nextFloat() * 6.28f);
+			sprite.translate(rng.nextFloat() * 3000f, rng.nextFloat() * 3000f);
+			spriteBatch.add(sprite.getTransformedVertices());
+		}
 		spriteBatch.upload();
 	}
 }

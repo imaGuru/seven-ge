@@ -1,13 +1,10 @@
 package com.engine.sevenge.graphics;
 
-import static android.opengl.GLES20.glGetUniformLocation;
-import static android.opengl.GLES20.glGetAttribLocation;
-import static android.opengl.GLES20.glUniformMatrix4fv;
-import static android.opengl.GLES20.glActiveTexture;
-import static android.opengl.GLES20.glBindTexture;
-import static android.opengl.GLES20.glUniform1i;
 import static android.opengl.GLES20.GL_TEXTURE0;
-import static android.opengl.GLES20.GL_TEXTURE_2D;
+import static android.opengl.GLES20.glGetAttribLocation;
+import static android.opengl.GLES20.glGetUniformLocation;
+import static android.opengl.GLES20.glUniform1i;
+import static android.opengl.GLES20.glUniformMatrix4fv;
 
 public class TextureShaderProgram extends ShaderProgram {
 	private final int uMatrixLocation;

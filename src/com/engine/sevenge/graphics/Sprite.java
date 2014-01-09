@@ -8,19 +8,29 @@ public class Sprite {
 	float scale;
 	RectF base;
 	PointF translation;
+	Texture2D texture;
+	float[] uvs;
 
-	public Sprite(float w, float h, float x, float y) {
+	public Sprite(float w, float h, float[] uvCoords, Texture2D tex) {
 		// Initialise our intital size around the 0,0 point
 		base = new RectF(-w / 2, h / 2, w / 2, -h / 2);
 
 		// Initial translation
-		translation = new PointF(x, y);
+		translation = new PointF(0, 0);
 
 		// We start with our inital size
 		scale = 1f;
 
 		// We start in our inital angle
 		angle = 0f;
+
+		uvs = uvCoords;
+
+		texture = tex;
+	}
+
+	public void setUVs(float[] uvCoords) {
+		uvs = uvCoords;
 	}
 
 	public void translate(float deltax, float deltay) {
@@ -77,8 +87,8 @@ public class Sprite {
 		four.y += translation.y;
 
 		// We now return our float array of vertices.
-		return new float[] { one.x, one.y, 0.0f, 0f, 0f, two.x, two.y, 0.0f,
-				0f, 1f, three.x, three.y, 0.0f, 0.25f, 1f, four.x, four.y,
-				0.0f, 0.25f, 0f };
+		return new float[] { one.x, one.y, 0.0f, uvs[0], uvs[1], two.x, two.y,
+				0.0f, uvs[2], uvs[3], three.x, three.y, 0.0f, uvs[4], uvs[5],
+				four.x, four.y, 0.0f, uvs[6], uvs[7] };
 	}
 }

@@ -9,13 +9,28 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 public class VertexArray {
-	private final FloatBuffer floatBuffer;
+	private FloatBuffer floatBuffer;
 	private static final int BYTES_PER_FLOAT = 4;
+	private int memoryAllocated = 0;
 
 	public VertexArray(float[] vertexData) {
 		floatBuffer = ByteBuffer
 				.allocateDirect(vertexData.length * BYTES_PER_FLOAT)
 				.order(ByteOrder.nativeOrder()).asFloatBuffer().put(vertexData);
+		memoryAllocated = vertexData.length * BYTES_PER_FLOAT;
+	}
+
+	public void reuploadData(float[] vertexData) {
+		floatBuffer.rewind();
+		if (vertexData.length * BYTES_PER_FLOAT <= memoryAllocated)
+			floatBuffer.put(vertexData);
+		else {
+			floatBuffer = ByteBuffer
+					.allocateDirect(vertexData.length * BYTES_PER_FLOAT)
+					.order(ByteOrder.nativeOrder()).asFloatBuffer()
+					.put(vertexData);
+			memoryAllocated = vertexData.length * BYTES_PER_FLOAT;
+		}
 	}
 
 	public void setVertexAttribPointer(int dataOffset, int attributeLocation,

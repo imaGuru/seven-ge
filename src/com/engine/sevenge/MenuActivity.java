@@ -15,13 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class MenuActivity extends Activity
-{
+public class MenuActivity extends Activity {
 	ImageButton imageButton;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
+	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_menu);
@@ -37,12 +35,10 @@ public class MenuActivity extends Activity
 
 		imageButton = (ImageButton) findViewById(R.id.githubButton);
 
-		imageButton.setOnClickListener(new OnClickListener()
-		{
+		imageButton.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View arg0)
-			{
+			public void onClick(View arg0) {
 
 				// Toast.makeText(MenuActivity.this,
 				// "ImageButton is clicked!", Toast.LENGTH_SHORT).show();
@@ -55,26 +51,21 @@ public class MenuActivity extends Activity
 
 		});
 
-		listView.setOnItemClickListener(new OnItemClickListener()
-		{
+		listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> aV, View view, int position,
-					long id)
-			{
-				if (position > 0)
-				{
+					long id) {
+				if (position > 0) {
 
 					String item = ((TextView) view).getText().toString();
 					Toast.makeText(getBaseContext(),
 							item + " not yet implemented", Toast.LENGTH_LONG)
 							.show();
-				}
-				else
-				{
+				} else {
 					Intent i = new Intent(getApplicationContext(),
 							MainActivity.class);
-					i.putExtra("demo", position+1);
+					i.putExtra("demo", position + 1);
 					startActivity(i);
 				}
 			}

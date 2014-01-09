@@ -1,8 +1,7 @@
 
-
 [ 
 { "id":"atlas1", "path":"/path/to" },
 { "id":"atlas2", "path":"/path/to" }, 
 { "id":"atlas3", "path":"/path/to" }, 
-{ "id":"atlas4", "path":"/path/to" }, 
+{ "id":"atlas4", "path":"/path/to" }
 ]

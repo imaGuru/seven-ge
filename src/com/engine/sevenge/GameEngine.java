@@ -30,7 +30,7 @@ public class GameEngine implements Renderer {
 	private static final String TAG = "GameEngine";
 
 	private Context context;
-
+	private float x = 0, y = 0;
 	private long startTime = 0;
 	private long dt = 0, sleepTime = 0;
 	private int framesSkipped = 0;
@@ -55,7 +55,7 @@ public class GameEngine implements Renderer {
 	public void onDrawFrame(GL10 arg0) {
 		dt = (System.currentTimeMillis() - startTime);
 		sleepTime = FRAME_TIME - dt;
-		if (sleepTime > 0 && false) {
+		if (sleepTime > 0) {
 			try {
 				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {
@@ -72,6 +72,11 @@ public class GameEngine implements Renderer {
 		startTime = System.currentTimeMillis();
 		// gamestate.update
 		// gamestate.draw
+		x += 1f;
+		y += 1f;
+		setLookAtM(viewMatrix, 0, x, y, 1f, x, y, 0f, 0f, 1.0f, 0.0f);
+		multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+		spriteBatch.setVPMatrix(viewProjectionMatrix);
 		renderer.addToRender(spriteBatch);
 		renderer.render();
 	}
@@ -84,20 +89,7 @@ public class GameEngine implements Renderer {
 			viewMatrix[i] = 0.0f;
 			viewProjectionMatrix[i] = 0.0f;
 		}
-		final float aspectRatio = width > height ? (float) width
-				/ (float) height : (float) height / (float) width;
-		if (width > height) {
-			// Landscape
-			orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f,
-					-1f, 1f);
-		} else {
-			// Portrait or square
-			orthoM(projectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio,
-					-1f, 1f);
-		}
-		setLookAtM(viewMatrix, 0, 0f, 0f, 0.9f, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-		multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-		spriteBatch.setVPMatrix(viewProjectionMatrix);
+		orthoM(projectionMatrix, 0, 0, width, 0, height, 0, 50f);
 	}
 
 	@Override
@@ -110,12 +102,11 @@ public class GameEngine implements Renderer {
 				R.raw.texture_fragment_shader), GL_FRAGMENT_SHADER);
 		TextureShaderProgram spriteShader = new TextureShaderProgram(
 				vs.getGLID(), fs.getGLID());
-		spriteBatch = new SpriteBatch(tex, spriteShader, 2000);
+		spriteBatch = new SpriteBatch(tex, spriteShader, 1000);
 		Random rng = new Random();
-		for (int i = 0; i < 2000; i++)
-			spriteBatch.add(new Sprite(0.1f, 0.1f,
-					rng.nextFloat() * 2.2f - 1.0f,
-					rng.nextFloat() * 3.2f - 1.6f).getTransformedVertices());
+		for (int i = 0; i < 1000; i++)
+			spriteBatch.add(new Sprite(100f, 100f, rng.nextFloat() * 3000f, rng
+					.nextFloat() * 3000f).getTransformedVertices());
 		spriteBatch.upload();
 	}
 }

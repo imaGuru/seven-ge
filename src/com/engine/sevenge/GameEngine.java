@@ -39,8 +39,8 @@ public class GameEngine implements Renderer {
 
 	private SpriteBatch spriteBatch;
 	private Camera2D camera;
-	
-	private float x = 0, y = 0, scale=1f;
+
+	private float x = 0, y = 0, scale = 1f;
 	private float mHeight = 0, mWidth = 0;
 
 	GameEngine(Context context) {

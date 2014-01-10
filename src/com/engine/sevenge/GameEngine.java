@@ -4,8 +4,6 @@ import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glViewport;
 import static android.opengl.Matrix.multiplyMM;
-import static android.opengl.Matrix.orthoM;
-import static android.opengl.Matrix.setLookAtM;
 
 import java.util.Random;
 
@@ -15,6 +13,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 
+import com.engine.sevenge.graphics.Camera2D;
 import com.engine.sevenge.graphics.LRenderer;
 import com.engine.sevenge.graphics.Shader;
 import com.engine.sevenge.graphics.Sprite;
@@ -29,8 +28,6 @@ public class GameEngine implements Renderer {
 	private static final String TAG = "GameEngine";
 
 	private Context context;
-	private float x = 0, y = 0;
-	private float mHeight = 0, mWidth = 0;
 	private long startTime = 0;
 	private long dt = 0, sleepTime = 0;
 	private int framesSkipped = 0;
@@ -38,13 +35,13 @@ public class GameEngine implements Renderer {
 	private static final long FRAME_TIME = 32;
 	private static final int MAX_FRAME_SKIPS = 5;
 
-	private float[] projectionMatrix = new float[16];
-	private float[] viewMatrix = new float[16];
-	private float[] viewProjectionMatrix = new float[16];
-
 	private LRenderer renderer;
 
 	private SpriteBatch spriteBatch;
+	private Camera2D camera;
+	
+	private float x = 0, y = 0, scale=1f;
+	private float mHeight = 0, mWidth = 0;
 
 	GameEngine(Context context) {
 		this.context = context;
@@ -74,9 +71,10 @@ public class GameEngine implements Renderer {
 		// gamestate.draw
 		x += 1f;
 		y += 1f;
-		setLookAtM(viewMatrix, 0, x, y, 1f, x, y, 0f, 0f, 1.0f, 0.0f);
-		multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-		spriteBatch.setVPMatrix(viewProjectionMatrix);
+		scale -= 0.001f;
+		camera.lookAt(x, y);
+		camera.zoom(scale);
+		spriteBatch.setVPMatrix(camera.getViewProjectionMatrix());
 		renderer.addToRender(spriteBatch);
 		renderer.render();
 	}
@@ -84,21 +82,17 @@ public class GameEngine implements Renderer {
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		glViewport(0, 0, width, height);
-		for (int i = 0; i < 16; i++) {
-			projectionMatrix[i] = 0.0f;
-			viewMatrix[i] = 0.0f;
-			viewProjectionMatrix[i] = 0.0f;
-		}
-		orthoM(projectionMatrix, 0, 0, width, 0, height, 0, 1f);
 		mWidth = width;
 		mHeight = height;
 		x = -width / 2;
 		y = -height / 2;
+		camera.setProjection(width, height);
 	}
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		renderer = new LRenderer();
+		camera = new Camera2D();
 		Texture2D tex = new Texture2D(context, R.drawable.apple);
 		Shader vs = new Shader(Helper.readRawTextFile(context,
 				R.raw.texture_vertex_shader), GL_VERTEX_SHADER);

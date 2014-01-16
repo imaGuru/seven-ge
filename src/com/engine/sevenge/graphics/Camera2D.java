@@ -15,6 +15,7 @@ public class Camera2D {
 	private float[] invertedViewProjectionMatrix = new float[16];
 	private float[] unprojectedCoords = new float[4];
 	private float[] deviceCoords = new float[4];
+	private float[] cameraXY = new float[2];
 	private boolean isChangedView = true, isChangedProjection = true,
 			isChangedInvertedViewProjection = true;
 	private float vHeight, vWidth, vScale = 1f;
@@ -34,6 +35,8 @@ public class Camera2D {
 
 	public void lookAt(float x, float y) {
 		setLookAtM(viewMatrix, 0, x, y, 1f, x, y, 0f, 0f, 1.0f, 0.0f);
+		cameraXY[0]=x;
+		cameraXY[1]=y;
 		isChangedView = true;
 		isChangedInvertedViewProjection = true;
 	}
@@ -76,5 +79,9 @@ public class Camera2D {
 			isChangedProjection = false;
 		}
 		return viewProjectionMatrix;
+	}
+	public float[] getCameraXY()
+	{
+		return cameraXY;
 	}
 }

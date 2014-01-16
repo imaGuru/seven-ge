@@ -26,9 +26,9 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		glSurfaceView = new GLSurfaceView(this);
-		input =  new AndroidInput();
-		glSurfaceView.setOnTouchListener( (OnTouchListener) input);
-		
+		input = new AndroidInput();
+		glSurfaceView.setOnTouchListener((OnTouchListener) input);
+
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			int demo = extras.getInt("demo");
@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
 		if (supportsEs2) {
 			glSurfaceView.setEGLContextClientVersion(2);
 			glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-			glSurfaceView.setRenderer(new GameEngine(this,input));
+			glSurfaceView.setRenderer(new GameEngine(this, input));
 			glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 			rendererSet = true;
 			/*

@@ -19,12 +19,11 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		glSurfaceView = new GLSurfaceView(this);
-		
+
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-		    int demo = extras.getInt("demo");
-		    Toast.makeText(this, "Demo "+demo,
-					Toast.LENGTH_LONG).show();
+			int demo = extras.getInt("demo");
+			Toast.makeText(this, "Demo " + demo, Toast.LENGTH_LONG).show();
 		}
 
 		final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);

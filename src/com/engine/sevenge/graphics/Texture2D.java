@@ -5,6 +5,7 @@ import static android.opengl.GLES20.GL_LINEAR_MIPMAP_LINEAR;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.GL_TEXTURE_MAG_FILTER;
 import static android.opengl.GLES20.GL_TEXTURE_MIN_FILTER;
+import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glDeleteTextures;
 import static android.opengl.GLES20.glGenTextures;
@@ -21,7 +22,7 @@ public class Texture2D {
 	private static final String TAG = "Texture2D";
 	private final int textureID;
 
-	Texture2D(Context context, int resourceID) {
+	public Texture2D(Context context, int resourceID) {
 		final int[] textureObjectIds = new int[1];
 		glGenTextures(1, textureObjectIds, 0);
 		if (textureObjectIds[0] == 0) {
@@ -46,6 +47,11 @@ public class Texture2D {
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		textureID = textureObjectIds[0];
+	}
+
+	public void bindTexture(int textureUnit) {
+		glActiveTexture(textureUnit);
+		glBindTexture(GL_TEXTURE_2D, textureID);
 	}
 
 	public int getGLID() {

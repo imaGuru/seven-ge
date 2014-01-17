@@ -23,7 +23,6 @@ public class AndroidInput implements Input, OnTouchListener {
 	Pool<TouchEvent> touchEventPool;
 	List<TouchEvent> touchEvents;
 	List<TouchEvent> touchEventsBuffer;
-	AndroidInputTranslator translator = new AndroidInputTranslator();
 
 	boolean[] isPointerTouched = new boolean[MAX_TOUCHPOINTS];
 	int[] pointerX = new int[MAX_TOUCHPOINTS];
@@ -250,8 +249,8 @@ public class AndroidInput implements Input, OnTouchListener {
 					break;
 				}
 
-				translator.detectDrag(touchEvent);
-				translator.detectTap(touchEvent);
+				// translator.detectDrag(touchEvent);
+				// translator.detectTap(touchEvent);
 
 			}
 		}

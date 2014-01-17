@@ -4,9 +4,8 @@ import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glViewport;
 import static android.opengl.Matrix.multiplyMM;
-import static android.opengl.Matrix.orthoM;
-import static android.opengl.Matrix.setLookAtM;
 
+import java.util.List;
 import java.util.Random;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -14,13 +13,17 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
+import android.util.FloatMath;
 
+import com.engine.sevenge.graphics.Camera2D;
 import com.engine.sevenge.graphics.LRenderer;
 import com.engine.sevenge.graphics.Shader;
 import com.engine.sevenge.graphics.Sprite;
 import com.engine.sevenge.graphics.SpriteBatch;
 import com.engine.sevenge.graphics.Texture2D;
 import com.engine.sevenge.graphics.TextureShaderProgram;
+import com.engine.sevenge.input.Input;
+import com.engine.sevenge.input.Input.TouchEvent;
 import com.engine.sevenge.utils.Helper;
 import com.engine.sevenge.utils.Log;
 
@@ -29,8 +32,6 @@ public class GameEngine implements Renderer {
 	private static final String TAG = "GameEngine";
 
 	private Context context;
-	private float x = 0, y = 0;
-	private float mHeight = 0, mWidth = 0;
 	private long startTime = 0;
 	private long dt = 0, sleepTime = 0;
 	private int framesSkipped = 0;
@@ -38,16 +39,33 @@ public class GameEngine implements Renderer {
 	private static final long FRAME_TIME = 32;
 	private static final int MAX_FRAME_SKIPS = 5;
 
-	private float[] projectionMatrix = new float[16];
-	private float[] viewMatrix = new float[16];
-	private float[] viewProjectionMatrix = new float[16];
-
 	private LRenderer renderer;
 
 	private SpriteBatch spriteBatch;
+	private Camera2D camera;
+	Input input;
 
-	GameEngine(Context context) {
+	// game related
+	private float camX = 0, camY = 0, scale = 0.0f;
+	private float mHeight = 0, mWidth = 0;
+
+	enum Mode {
+		NONE, DRAG, ZOOM
+	}
+
+	private Mode mode = Mode.NONE;
+	private float dragStartX;
+	private float dragStartY;
+	private float newDistance;
+	private float oldDistance;
+	private int[] pointersX = new int[2];
+	private int[] pointersY = new int[2];
+	private int midPointX;
+	private int midPointY;
+
+	GameEngine(Context context, Input input) {
 		this.context = context;
+		this.input = input;
 		// init gamestates
 	}
 
@@ -70,13 +88,12 @@ public class GameEngine implements Renderer {
 		Log.v(TAG, "FramesSkipped: " + framesSkipped + " FPS: " + (double) 1
 				/ (System.currentTimeMillis() - startTime) * 1000);
 		startTime = System.currentTimeMillis();
+
 		// gamestate.update
+		update();
+
 		// gamestate.draw
-		x += 1f;
-		y += 1f;
-		setLookAtM(viewMatrix, 0, x, y, 1f, x, y, 0f, 0f, 1.0f, 0.0f);
-		multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-		spriteBatch.setVPMatrix(viewProjectionMatrix);
+		spriteBatch.setVPMatrix(camera.getViewProjectionMatrix());
 		renderer.addToRender(spriteBatch);
 		renderer.render();
 	}
@@ -84,21 +101,18 @@ public class GameEngine implements Renderer {
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		glViewport(0, 0, width, height);
-		for (int i = 0; i < 16; i++) {
-			projectionMatrix[i] = 0.0f;
-			viewMatrix[i] = 0.0f;
-			viewProjectionMatrix[i] = 0.0f;
-		}
-		orthoM(projectionMatrix, 0, 0, width, 0, height, 0, 1f);
 		mWidth = width;
 		mHeight = height;
-		x = -width / 2;
-		y = -height / 2;
+		camX = -width / 2;
+		camY = -height / 2;
+		camera.setProjectionOrtho(width, height);
 	}
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		renderer = new LRenderer();
+		camera = new Camera2D();
+		camera.lookAt(camX, camY);
 		Texture2D tex = new Texture2D(context, R.drawable.apple);
 		Shader vs = new Shader(Helper.readRawTextFile(context,
 				R.raw.texture_vertex_shader), GL_VERTEX_SHADER);
@@ -117,4 +131,96 @@ public class GameEngine implements Renderer {
 		}
 		spriteBatch.upload();
 	}
+
+	public void update() {
+
+		List<TouchEvent> touchEvents = input.getTouchEvents();
+
+		for (TouchEvent touchEvent : touchEvents) {
+			switch (touchEvent.type) {
+
+			case DOWN:
+				mode = Mode.DRAG;
+				dragStartX = touchEvent.x;
+				dragStartY = touchEvent.y;
+				float[] coords = camera.unProject(touchEvent.x, touchEvent.y);
+				camera.lookAt(coords[0], coords[1]);
+				pointersX[touchEvent.pointerID] = touchEvent.x;
+				pointersY[touchEvent.pointerID] = touchEvent.y;
+
+				// second finger
+				if (touchEvent.pointerID == 1) {
+
+					oldDistance = getSpacing();
+					midPointX = getMidpointX();
+					midPointY = getMidpointY();
+					if (oldDistance > 10f) {
+						mode = Mode.ZOOM;
+					}
+
+				}
+
+				break;
+			case UP:
+
+				if (mode == Mode.ZOOM && touchEvent.pointerID < 2) {
+					oldDistance = 0;
+					mode = Mode.NONE;
+				} else if (mode == Mode.DRAG) {
+					mode = Mode.NONE;
+				}
+
+				break;
+			case MOVE:
+				if (mode == Mode.DRAG) {
+					float distanceX = touchEvent.x - dragStartX;
+					float distanceY = touchEvent.y - dragStartY;
+					// float newX = (camX - distanceX);
+					// float newY = (camY - distanceY);
+
+					// camX = newX;
+					// camY = newY;
+
+					// dragStartX = touchEvent.x;
+					// dragStartY = touchEvent.y;
+
+				} else if (mode == Mode.ZOOM) {
+					pointersX[touchEvent.pointerID] = touchEvent.x;
+					pointersY[touchEvent.pointerID] = touchEvent.y;
+
+					newDistance = getSpacing();
+
+					if (newDistance > 10f) {
+
+						float offset = newDistance / oldDistance;
+						Log.d("TEST", offset + "");
+
+						camera.zoom(offset);
+						newDistance = oldDistance;
+					}
+
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	private float getSpacing() {
+		float x = pointersX[0] - pointersX[1];
+		float y = pointersY[0] - pointersY[1];
+		return FloatMath.sqrt(x * x + y * y);
+	}
+
+	private int getMidpointX() {
+		float x = pointersX[0] + pointersX[1];
+		return (int) (x / 2);
+	}
+
+	private int getMidpointY() {
+		float y = pointersY[0] + pointersY[1];
+		return (int) (y / 2);
+	}
+
 }

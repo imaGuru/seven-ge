@@ -1,5 +1,9 @@
 package com.engine.sevenge;
 
+import com.engine.sevenge.audio.AndroidAudio;
+import com.engine.sevenge.input.AndroidInput;
+import com.engine.sevenge.input.Input;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -8,17 +12,22 @@ import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
 	private GLSurfaceView glSurfaceView;
 	private boolean rendererSet = false;
+	private Input input;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		glSurfaceView = new GLSurfaceView(this);
+		input = new AndroidInput();
+		glSurfaceView.setOnTouchListener((OnTouchListener) input);
 
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
@@ -41,7 +50,7 @@ public class MainActivity extends Activity {
 		if (supportsEs2) {
 			glSurfaceView.setEGLContextClientVersion(2);
 			glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-			glSurfaceView.setRenderer(new GameEngine(this));
+			glSurfaceView.setRenderer(new GameEngine(this, input));
 			glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 			rendererSet = true;
 			/*

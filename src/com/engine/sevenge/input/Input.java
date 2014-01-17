@@ -5,7 +5,7 @@ import java.util.List;
 public interface Input {
 
 	public static class TouchEvent {
-		enum TouchType {
+		public enum TouchType {
 			DOWN, MOVE, UP, TAP, DRAG;
 		}
 

@@ -26,14 +26,14 @@ public class MenuActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_menu);
-		ResourceManager tempResMan= new ResourceManager();
+		/*ResourceManager tempResMan= new ResourceManager();
 		try {
 			tempResMan.loadResources(getBaseContext(), tempResMan);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		*/
 		
 		final ListView listView = (ListView) findViewById(R.id.listview);
 		String[] values = new String[] { "Demo 1", "Demo 2", "Demo 3",

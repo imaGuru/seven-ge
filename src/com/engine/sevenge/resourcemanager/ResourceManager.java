@@ -33,8 +33,4 @@ public class ResourceManager {
 		res = resourceMap.get(id);
 		return res;
 	}
-//
-//	public Texture getTexture(String id) {
-//		return (Texture) resourceMap.get(id);
-//	}
 }

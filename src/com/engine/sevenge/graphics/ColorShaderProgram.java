@@ -11,8 +11,8 @@ public class ColorShaderProgram extends ShaderProgram {
 	private final int aPositionLocation;
 	private final int aColorLocation;
 
-	public ColorShaderProgram(int vertexShaderID, int fragmentShaderID) {
-		super(vertexShaderID, fragmentShaderID);
+	public ColorShaderProgram(Shader vs, Shader fs) {
+		super(vs, fs);
 		// Retrieve uniform locations for the shader program.
 		uMatrixLocation = glGetUniformLocation(programID, U_MATRIX);
 		// Retrieve attribute locations for the shader program.

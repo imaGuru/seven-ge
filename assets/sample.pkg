@@ -1,4 +1,9 @@
 {
-	textures: [{ "id":"atlas1", "resID":"" }]
-	sprites:[{ "id":"sprite1", "textureID":"/path/to", "height":"100","width":"100","x":"0","y":"1","z":"2","w":"3" }]
+	"textures" : [{ "id":"apple", "path":"Textures/apple.png" }],
+	"sprites" : [{ "id":"appleSprite", "textureID":"apple", "programID":"spriteShader", "height":"50","width":"50","uvs":[0,0,0,1,1,1,1,0] }],
+	"shaders" : [{"id":"shader1","type":"vertex","path":"Shaders/texture_vertex_shader.glsl"},
+				{"id":"shader2","type":"fragment","path":"Shaders/texture_fragment_shader.glsl"}],
+	"programs" : [{"id":"spriteShader","vertexShader":"shader1","fragmentShader":"shader2"}],
+	"sounds" : [],
+	"music" : []
 }

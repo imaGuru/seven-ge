@@ -13,8 +13,8 @@ public class TextureShaderProgram extends ShaderProgram {
 	private final int aPositionLocation;
 	private final int aTextureCoordinatesLocation;
 
-	public TextureShaderProgram(int vertexShaderID, int fragmentShaderID) {
-		super(vertexShaderID, fragmentShaderID);
+	public TextureShaderProgram(Shader vs, Shader fs) {
+		super(vs, fs);
 
 		uMatrixLocation = glGetUniformLocation(programID, U_MATRIX);
 		uTextureUnitLocation = glGetUniformLocation(programID, U_TEXTURE_UNIT);

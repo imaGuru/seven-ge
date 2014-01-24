@@ -1,9 +1,5 @@
 package com.engine.sevenge;
 
-import org.json.JSONException;
-
-import com.engine.sevenge.resourcemanager.ResourceManager;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -26,15 +22,13 @@ public class MenuActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_menu);
-		/*ResourceManager tempResMan= new ResourceManager();
-		try {
-			tempResMan.loadResources(getBaseContext(), tempResMan);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-		
+		/*
+		 * ResourceManager tempResMan= new ResourceManager(); try {
+		 * tempResMan.loadResources(getBaseContext(), tempResMan); } catch
+		 * (JSONException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); }
+		 */
+
 		final ListView listView = (ListView) findViewById(R.id.listview);
 		String[] values = new String[] { "Demo 1", "Demo 2", "Demo 3",
 				"Demo 4", "Demo 5" };

@@ -1,9 +1,6 @@
 package com.engine.sevenge;
 
-import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
-import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glViewport;
-import static android.opengl.Matrix.multiplyMM;
 
 import java.util.List;
 import java.util.Random;
@@ -17,17 +14,16 @@ import android.util.FloatMath;
 
 import com.engine.sevenge.graphics.Camera2D;
 import com.engine.sevenge.graphics.LRenderer;
-import com.engine.sevenge.graphics.Shader;
 import com.engine.sevenge.graphics.Sprite;
 import com.engine.sevenge.graphics.SpriteBatch;
 import com.engine.sevenge.graphics.Texture2D;
 import com.engine.sevenge.graphics.TextureShaderProgram;
 import com.engine.sevenge.input.Input;
 import com.engine.sevenge.input.Input.TouchEvent;
-import com.engine.sevenge.utils.Helper;
+import com.engine.sevenge.io.IO;
 import com.engine.sevenge.utils.Log;
 
-public class GameEngine implements Renderer {
+public class GameRenderer implements Renderer {
 
 	private static final String TAG = "GameEngine";
 
@@ -44,6 +40,7 @@ public class GameEngine implements Renderer {
 	private SpriteBatch spriteBatch;
 	private Camera2D camera;
 	Input input;
+	IO io;
 
 	// game related
 	private float camX = 0, camY = 0, scale = 0.0f;
@@ -63,10 +60,11 @@ public class GameEngine implements Renderer {
 	private int midPointX;
 	private int midPointY;
 
-	GameEngine(Context context, Input input) {
+	GameRenderer(Context context) {
 		this.context = context;
-		this.input = input;
 		// init gamestates
+		input = SevenGE.input;
+		io = SevenGE.io;
 	}
 
 	@Override
@@ -110,23 +108,23 @@ public class GameEngine implements Renderer {
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+		SevenGE.resourceManager.loadResources(SevenGE.io.asset("sample.pkg"));
 		renderer = new LRenderer();
 		camera = new Camera2D();
 		camera.lookAt(camX, camY);
-		Texture2D tex = new Texture2D(context, R.drawable.apple);
-		Shader vs = new Shader(Helper.readRawTextFile(context,
-				R.raw.texture_vertex_shader), GL_VERTEX_SHADER);
-		Shader fs = new Shader(Helper.readRawTextFile(context,
-				R.raw.texture_fragment_shader), GL_FRAGMENT_SHADER);
-		TextureShaderProgram spriteShader = new TextureShaderProgram(
-				vs.getGLID(), fs.getGLID());
-		spriteBatch = new SpriteBatch(tex, spriteShader, 1000);
+		TextureShaderProgram tsp = (TextureShaderProgram) SevenGE.resourceManager
+				.getResource("spriteShader");
+		Texture2D tex = (Texture2D) SevenGE.resourceManager
+				.getResource("apple");
+		spriteBatch = new SpriteBatch(tex, tsp, 1000);
 		Random rng = new Random();
-		for (int i = 0; i < 1000; i++) {
-			Sprite sprite = new Sprite(100f, 100f, new float[] { 0.0f, 0.0f,
-					0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f }, tex);
+		for (int i = 0; i < 500; i++) {
+			Sprite sprite = (Sprite) SevenGE.resourceManager
+					.getResource("appleSprite");
 			sprite.rotate(rng.nextFloat() * 6.28f);
-			sprite.translate(rng.nextFloat() * 3000f, rng.nextFloat() * 3000f);
+			sprite.translate(rng.nextFloat() * 2000f - 1000f,
+					rng.nextFloat() * 2000f - 1000f);
+			// sprite.translate(0, 0);
 			spriteBatch.add(sprite.getTransformedVertices());
 		}
 		spriteBatch.upload();

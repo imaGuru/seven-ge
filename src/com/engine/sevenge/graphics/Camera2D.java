@@ -1,11 +1,10 @@
 package com.engine.sevenge.graphics;
 
+import static android.opengl.Matrix.invertM;
 import static android.opengl.Matrix.multiplyMM;
 import static android.opengl.Matrix.multiplyMV;
-import static android.opengl.Matrix.invertM;
 import static android.opengl.Matrix.orthoM;
 import static android.opengl.Matrix.setLookAtM;
-import android.graphics.PointF;
 
 public class Camera2D {
 
@@ -35,8 +34,8 @@ public class Camera2D {
 
 	public void lookAt(float x, float y) {
 		setLookAtM(viewMatrix, 0, x, y, 1f, x, y, 0f, 0f, 1.0f, 0.0f);
-		cameraXY[0]=x;
-		cameraXY[1]=y;
+		cameraXY[0] = x;
+		cameraXY[1] = y;
 		isChangedView = true;
 		isChangedInvertedViewProjection = true;
 	}
@@ -80,8 +79,8 @@ public class Camera2D {
 		}
 		return viewProjectionMatrix;
 	}
-	public float[] getCameraXY()
-	{
+
+	public float[] getCameraXY() {
 		return cameraXY;
 	}
 }

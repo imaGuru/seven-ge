@@ -10,7 +10,6 @@ import java.nio.ShortBuffer;
 
 public class SpriteBatch implements Drawable {
 
-	private static final String TAG = "SpriteBatch";
 	private float[] VPMatrix = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
 	private Texture2D texture;
 	private VertexArray vertexArray;

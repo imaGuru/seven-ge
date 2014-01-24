@@ -11,34 +11,34 @@ import static android.opengl.GLES20.glDeleteTextures;
 import static android.opengl.GLES20.glGenTextures;
 import static android.opengl.GLES20.glGenerateMipmap;
 import static android.opengl.GLES20.glTexParameteri;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
 
+import com.engine.sevenge.io.FileHandle;
+import com.engine.sevenge.resourcemanager.Resource;
 import com.engine.sevenge.utils.Log;
 
-public class Texture2D {
+public class Texture2D extends Resource {
 	private static final String TAG = "Texture2D";
-	private final int textureID;
+	private final int[] textureID;
 
-	public Texture2D(Context context, int resourceID) {
-		final int[] textureObjectIds = new int[1];
-		glGenTextures(1, textureObjectIds, 0);
-		if (textureObjectIds[0] == 0) {
+	public Texture2D(FileHandle fh) {
+		textureID = new int[1];
+		glGenTextures(1, textureID, 0);
+		if (textureID[0] == 0) {
 			Log.w(TAG, "Could not generate a new OpenGL texture object.");
-			textureID = 0;
 			return;
 		}
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inScaled = false;
-		final Bitmap bitmap = BitmapFactory.decodeResource(
-				context.getResources(), resourceID, options);
+		final Bitmap bitmap = BitmapFactory.decodeStream(fh.getInputStream(),
+				null, options);
 		if (bitmap == null) {
-			Log.w(TAG, "Resource ID " + resourceID + " could not be decoded.");
-			glDeleteTextures(1, textureObjectIds, 0);
+			Log.w(TAG, "Texture could not be decoded.");
+			glDeleteTextures(1, textureID, 0);
 		}
-		glBindTexture(GL_TEXTURE_2D, textureObjectIds[0]);
+		glBindTexture(GL_TEXTURE_2D, textureID[0]);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 				GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -46,15 +46,19 @@ public class Texture2D {
 		bitmap.recycle();
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		textureID = textureObjectIds[0];
 	}
 
 	public void bindTexture(int textureUnit) {
 		glActiveTexture(textureUnit);
-		glBindTexture(GL_TEXTURE_2D, textureID);
+		glBindTexture(GL_TEXTURE_2D, textureID[0]);
 	}
 
 	public int getGLID() {
-		return textureID;
+		return textureID[0];
+	}
+
+	@Override
+	public void dispose() {
+		glDeleteTextures(1, textureID, 0);
 	}
 }

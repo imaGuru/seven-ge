@@ -3,15 +3,19 @@ package com.engine.sevenge.graphics;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
-public class Sprite {
-	float angle;
-	float scale;
-	RectF base;
-	PointF translation;
-	Texture2D texture;
+import com.engine.sevenge.resourcemanager.Resource;
+
+public class Sprite extends Resource {
+	private float angle;
+	private float scale;
+	private RectF base;
+	private PointF translation;
+	private Texture2D texture;
+	private TextureShaderProgram spriteShader;
 	float[] uvs;
 
-	public Sprite(float w, float h, float[] uvCoords, Texture2D tex) {
+	public Sprite(float w, float h, float[] uvCoords, Texture2D tex,
+			TextureShaderProgram ss) {
 		// Initialise our intital size around the 0,0 point
 		base = new RectF(-w / 2, h / 2, w / 2, -h / 2);
 
@@ -27,24 +31,26 @@ public class Sprite {
 		uvs = uvCoords;
 
 		texture = tex;
+
+		spriteShader = ss;
 	}
 
 	public void setUVs(float[] uvCoords) {
 		uvs = uvCoords;
 	}
 
-	public void translate(float deltax, float deltay) {
+	public void translate(float x, float y) {
 		// Update our location.
-		translation.x += deltax;
-		translation.y += deltay;
+		translation.x = x;
+		translation.y = y;
 	}
 
-	public void scale(float deltas) {
-		scale += deltas;
+	public void scale(float s) {
+		scale = s;
 	}
 
-	public void rotate(float deltaa) {
-		angle += deltaa;
+	public void rotate(float a) {
+		angle = a;
 	}
 
 	public float[] getTransformedVertices() {
@@ -90,5 +96,11 @@ public class Sprite {
 		return new float[] { one.x, one.y, 0.0f, uvs[0], uvs[1], two.x, two.y,
 				0.0f, uvs[2], uvs[3], three.x, three.y, 0.0f, uvs[4], uvs[5],
 				four.x, four.y, 0.0f, uvs[6], uvs[7] };
+	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+
 	}
 }

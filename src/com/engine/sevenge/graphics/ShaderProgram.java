@@ -11,9 +11,10 @@ import static android.opengl.GLES20.glLinkProgram;
 import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glValidateProgram;
 
+import com.engine.sevenge.resourcemanager.Resource;
 import com.engine.sevenge.utils.Log;
 
-class ShaderProgram {
+class ShaderProgram extends Resource {
 	// Uniform constants
 	protected static final String U_MATRIX = "u_Matrix";
 	protected static final String U_TEXTURE_UNIT = "u_TextureUnit";
@@ -25,13 +26,13 @@ class ShaderProgram {
 
 	protected final int programID;
 
-	public ShaderProgram(int vertexShaderID, int fragmentShaderID) {
+	public ShaderProgram(Shader vs, Shader fs) {
 		programID = glCreateProgram();
 		if (programID == 0) {
 			Log.w(TAG, "Could not create new program");
 		}
-		glAttachShader(programID, vertexShaderID);
-		glAttachShader(programID, fragmentShaderID);
+		glAttachShader(programID, vs.getGLID());
+		glAttachShader(programID, fs.getGLID());
 		glLinkProgram(programID);
 		final int[] linkStatus = new int[1];
 		glGetProgramiv(programID, GL_LINK_STATUS, linkStatus, 0);
@@ -59,5 +60,11 @@ class ShaderProgram {
 		Log.v(TAG, "Results of validating program: " + validateStatus[0]
 				+ "\nLog:" + glGetProgramInfoLog(programID));
 		return validateStatus[0] != 0;
+	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+
 	}
 }

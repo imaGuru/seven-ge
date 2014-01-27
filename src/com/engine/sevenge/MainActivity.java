@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.engine.sevenge.audio.AndroidAudio;
+import com.engine.sevenge.audio.Audio;
 import com.engine.sevenge.input.Input;
 import com.engine.sevenge.io.IO;
 import com.engine.sevenge.resourcemanager.ResourceManager;
@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
 		SevenGE.input = new Input();
 		SevenGE.io = new IO(this);
 		SevenGE.renderer = new GameRenderer(this);
-		SevenGE.audio = new AndroidAudio(this);
+		SevenGE.audio = new Audio(this);
 		SevenGE.resourceManager = new ResourceManager();
 
 		if (supportsEs2) {

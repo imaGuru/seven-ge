@@ -5,5 +5,5 @@
 				{"id":"shader2","type":"fragment","path":"Shaders/texture_fragment_shader.glsl"}],
 	"programs" : [{"id":"spriteShader","vertexShader":"shader1","fragmentShader":"shader2"}],
 	"sounds" : [],
-	"music" : []
+	"music" : [{"id":"music1","path":"Music/intro.mp3"}]
 }

@@ -1,21 +1,95 @@
 package com.engine.sevenge.audio;
 
-public interface Music {
-	public void play();
+import java.io.IOException;
 
-	public void stop();
+import com.engine.sevenge.resourcemanager.Resource;
 
-	public void pause();
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 
-	public void setLooping(boolean looping);
+public class Music extends Resource implements OnCompletionListener {
+	MediaPlayer mediaPlayer;
+	boolean isPrepared = false;
 
-	public void setVolume(float volume);
+	public Music(AssetFileDescriptor assetDescriptor) {
+		mediaPlayer = new MediaPlayer();
+		try {
+			mediaPlayer.setDataSource(assetDescriptor.getFileDescriptor(),
+					assetDescriptor.getStartOffset(),
+					assetDescriptor.getLength());
+			mediaPlayer.prepare();
+			isPrepared = true;
+			mediaPlayer.setOnCompletionListener(this);
+		} catch (Exception e) {
+			throw new RuntimeException("Couldn't load music");
+		}
+	}
 
-	public boolean isPlaying();
+	public void play() {
+		if (mediaPlayer.isPlaying())
+			return;
+		try {
+			synchronized (this) {
+				if (!isPrepared)
+					mediaPlayer.prepare();
+				mediaPlayer.start();
+			}
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-	public boolean isStopped();
+	public void stop() {
+		mediaPlayer.stop();
+		synchronized (this) {
+			isPrepared = false;
+		}
+	}
 
-	public boolean isLooping();
+	public void pause() {
+		if (mediaPlayer.isPlaying())
+			mediaPlayer.pause();
+	}
 
-	public void dispose();
+	public void setLooping(boolean isLooping) {
+		mediaPlayer.setLooping(isLooping);
+
+	}
+
+	public void setVolume(float volume) {
+		mediaPlayer.setVolume(volume, volume);
+	}
+
+	public boolean isPlaying() {
+		return mediaPlayer.isPlaying();
+	}
+
+	public boolean isStopped() {
+		return !isPrepared;
+	}
+
+	public boolean isLooping() {
+		return mediaPlayer.isLooping();
+	}
+
+	@Override
+	public void dispose() {
+		if (mediaPlayer.isPlaying()) {
+			mediaPlayer.stop();
+		}
+		mediaPlayer.release();
+
+	}
+
+	@Override
+	public void onCompletion(MediaPlayer arg0) {
+		synchronized (this) {
+			isPrepared = false;
+		}
+
+	}
+
 }

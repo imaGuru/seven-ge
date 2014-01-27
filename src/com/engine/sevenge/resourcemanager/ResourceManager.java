@@ -71,6 +71,13 @@ public class ResourceManager {
 								(Shader) getResource(jProgram
 										.getString("fragmentShader"))));
 			}
+			jarr = pkg.getJSONArray("music");
+			for (i = 0; i < jarr.length(); i++) {
+				JSONObject jMusic = jarr.getJSONObject(i);
+				resourceMap.put(
+						jMusic.getString("id"),
+						SevenGE.audio.getMusic(jMusic.getString("path")));
+			}
 			System.gc();
 
 		} catch (JSONException e) {

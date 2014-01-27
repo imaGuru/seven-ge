@@ -12,6 +12,7 @@ import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.FloatMath;
 
+import com.engine.sevenge.audio.Music;
 import com.engine.sevenge.graphics.Camera2D;
 import com.engine.sevenge.graphics.LRenderer;
 import com.engine.sevenge.graphics.Sprite;
@@ -109,6 +110,9 @@ public class GameRenderer implements Renderer {
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		SevenGE.resourceManager.loadResources(SevenGE.io.asset("sample.pkg"));
+		Music music = (Music) SevenGE.resourceManager.getResource("music1");
+		music.setLooping(true);
+		music.play();
 		renderer = new LRenderer();
 		camera = new Camera2D();
 		camera.lookAt(camX, camY);
@@ -124,7 +128,6 @@ public class GameRenderer implements Renderer {
 			sprite.rotate(rng.nextFloat() * 6.28f);
 			sprite.translate(rng.nextFloat() * 2000f - 1000f,
 					rng.nextFloat() * 2000f - 1000f);
-			// sprite.translate(0, 0);
 			spriteBatch.add(sprite.getTransformedVertices());
 		}
 		spriteBatch.upload();

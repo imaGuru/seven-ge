@@ -1,7 +1,25 @@
 package com.engine.sevenge.audio;
 
-public interface Sound {
-	public void play(float volume);
+import com.engine.sevenge.resourcemanager.Resource;
 
-	public void dispose();
+import android.media.SoundPool;
+
+public class Sound extends Resource{
+
+	int soundId;
+	SoundPool soundPool;
+
+	public Sound(SoundPool soundPool, int soundId) {
+		this.soundId = soundId;
+		this.soundPool = soundPool;
+	}
+
+	public void play(float volume) {
+		soundPool.play(soundId, volume, volume, 0, 0, 1);
+	}
+
+	@Override
+	public void dispose() {
+		soundPool.unload(soundId);
+	}
 }

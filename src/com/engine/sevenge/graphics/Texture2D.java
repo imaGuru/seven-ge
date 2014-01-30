@@ -15,11 +15,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
 
+import com.engine.sevenge.assets.Asset;
 import com.engine.sevenge.io.FileHandle;
-import com.engine.sevenge.resourcemanager.Resource;
 import com.engine.sevenge.utils.Log;
 
-public class Texture2D extends Resource {
+public class Texture2D extends Asset {
 	private static final String TAG = "Texture2D";
 	private final int[] textureID;
 

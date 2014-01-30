@@ -11,10 +11,10 @@ import static android.opengl.GLES20.glLinkProgram;
 import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glValidateProgram;
 
-import com.engine.sevenge.resourcemanager.Resource;
+import com.engine.sevenge.assets.Asset;
 import com.engine.sevenge.utils.Log;
 
-class ShaderProgram extends Resource {
+class ShaderProgram extends Asset {
 	// Uniform constants
 	protected static final String U_MATRIX = "u_Matrix";
 	protected static final String U_TEXTURE_UNIT = "u_TextureUnit";

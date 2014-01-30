@@ -56,8 +56,8 @@ public class GameRenderer implements Renderer {
 	private float dragStartY;
 	private float newDistance;
 	private float oldDistance;
-	private int[] pointersX = new int[2];
-	private int[] pointersY = new int[2];
+	private int[] pointersX = new int[20];
+	private int[] pointersY = new int[20];
 	private int midPointX;
 	private int midPointY;
 
@@ -109,22 +109,22 @@ public class GameRenderer implements Renderer {
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		SevenGE.resourceManager.loadResources(SevenGE.io.asset("sample.pkg"));
-		Music music = (Music) SevenGE.resourceManager.getResource("music1");
+		SevenGE.resourceManager.loadAssets(SevenGE.io.asset("sample.pkg"));
+		Music music = (Music) SevenGE.resourceManager.getAsset("music1");
 		music.setLooping(true);
 		music.play();
 		renderer = new LRenderer();
 		camera = new Camera2D();
 		camera.lookAt(camX, camY);
 		TextureShaderProgram tsp = (TextureShaderProgram) SevenGE.resourceManager
-				.getResource("spriteShader");
+				.getAsset("spriteShader");
 		Texture2D tex = (Texture2D) SevenGE.resourceManager
-				.getResource("apple");
+				.getAsset("apple");
 		spriteBatch = new SpriteBatch(tex, tsp, 1000);
 		Random rng = new Random();
 		for (int i = 0; i < 500; i++) {
 			Sprite sprite = (Sprite) SevenGE.resourceManager
-					.getResource("appleSprite");
+					.getAsset("appleSprite");
 			sprite.rotate(rng.nextFloat() * 6.28f);
 			sprite.translate(rng.nextFloat() * 2000f - 1000f,
 					rng.nextFloat() * 2000f - 1000f);
@@ -132,6 +132,7 @@ public class GameRenderer implements Renderer {
 		}
 		spriteBatch.upload();
 	}
+	
 
 	public void update() {
 
@@ -139,8 +140,10 @@ public class GameRenderer implements Renderer {
 
 		for (TouchEvent touchEvent : touchEvents) {
 			switch (touchEvent.type) {
-
 			case DOWN:
+				
+				if(touchEvent.pointerID == 0){
+
 				mode = Mode.DRAG;
 				dragStartX = touchEvent.x;
 				dragStartY = touchEvent.y;
@@ -149,6 +152,8 @@ public class GameRenderer implements Renderer {
 				pointersX[touchEvent.pointerID] = touchEvent.x;
 				pointersY[touchEvent.pointerID] = touchEvent.y;
 
+				}
+				
 				// second finger
 				if (touchEvent.pointerID == 1) {
 
@@ -173,7 +178,7 @@ public class GameRenderer implements Renderer {
 
 				break;
 			case MOVE:
-				if (mode == Mode.DRAG) {
+				if (mode == Mode.DRAG && touchEvent.pointerID < 2) {
 					float distanceX = touchEvent.x - dragStartX;
 					float distanceY = touchEvent.y - dragStartY;
 					// float newX = (camX - distanceX);
@@ -185,7 +190,7 @@ public class GameRenderer implements Renderer {
 					// dragStartX = touchEvent.x;
 					// dragStartY = touchEvent.y;
 
-				} else if (mode == Mode.ZOOM) {
+				} else if (mode == Mode.ZOOM && touchEvent.pointerID < 2) {
 					pointersX[touchEvent.pointerID] = touchEvent.x;
 					pointersY[touchEvent.pointerID] = touchEvent.y;
 
@@ -193,7 +198,7 @@ public class GameRenderer implements Renderer {
 
 					if (newDistance > 10f) {
 
-						float offset = newDistance / oldDistance;
+						float offset =  oldDistance/newDistance;
 						Log.d("TEST", offset + "");
 
 						camera.zoom(offset);

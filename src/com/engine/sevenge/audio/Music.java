@@ -2,13 +2,13 @@ package com.engine.sevenge.audio;
 
 import java.io.IOException;
 
-import com.engine.sevenge.resourcemanager.Resource;
+import com.engine.sevenge.assets.Asset;
 
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 
-public class Music extends Resource implements OnCompletionListener {
+public class Music extends Asset implements OnCompletionListener {
 	MediaPlayer mediaPlayer;
 	boolean isPrepared = false;
 

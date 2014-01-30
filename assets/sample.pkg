@@ -1,9 +1,8 @@
 {
-	"textures" : [{ "id":"apple", "path":"Textures/apple.png" }],
-	"sprites" : [{ "id":"appleSprite", "textureID":"apple", "programID":"spriteShader", "height":"50","width":"50","uvs":[0,0,0,1,1,1,1,0] }],
+	"audio" : [{"id":"music1","type":"music","path":"Music/intro.mp3"}],
+	"programs" : [{"id":"spriteShader","vertexShader":"shader1","fragmentShader":"shader2"}],
 	"shaders" : [{"id":"shader1","type":"vertex","path":"Shaders/texture_vertex_shader.glsl"},
 				{"id":"shader2","type":"fragment","path":"Shaders/texture_fragment_shader.glsl"}],
-	"programs" : [{"id":"spriteShader","vertexShader":"shader1","fragmentShader":"shader2"}],
-	"sounds" : [],
-	"music" : [{"id":"music1","path":"Music/intro.mp3"}]
+	"sprites" : [{ "id":"appleSprite", "textureID":"apple", "programID":"spriteShader", "height":"50","width":"50","uvs":[0,0,0,1,1,1,1,0] }],
+	"textures" : [{ "id":"apple", "path":"Textures/apple.png" }]
 }

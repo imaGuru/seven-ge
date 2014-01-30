@@ -8,10 +8,10 @@ import static android.opengl.GLES20.glGetShaderInfoLog;
 import static android.opengl.GLES20.glGetShaderiv;
 import static android.opengl.GLES20.glShaderSource;
 
-import com.engine.sevenge.resourcemanager.Resource;
+import com.engine.sevenge.assets.Asset;
 import com.engine.sevenge.utils.Log;
 
-public class Shader extends Resource {
+public class Shader extends Asset {
 	private static final String TAG = "Shader";
 	private final int shaderObjectId;
 

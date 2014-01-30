@@ -1,10 +1,10 @@
 package com.engine.sevenge.audio;
 
-import com.engine.sevenge.resourcemanager.Resource;
+import com.engine.sevenge.assets.Asset;
 
 import android.media.SoundPool;
 
-public class Sound extends Resource{
+public class Sound extends Asset{
 
 	int soundId;
 	SoundPool soundPool;

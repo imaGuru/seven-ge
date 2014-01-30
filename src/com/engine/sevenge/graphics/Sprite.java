@@ -3,9 +3,9 @@ package com.engine.sevenge.graphics;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
-import com.engine.sevenge.resourcemanager.Resource;
+import com.engine.sevenge.assets.Asset;
 
-public class Sprite extends Resource {
+public class Sprite extends Asset {
 	private float angle;
 	private float scale;
 	private RectF base;

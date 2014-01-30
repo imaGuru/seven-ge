@@ -30,8 +30,7 @@ public class MenuActivity extends Activity {
 		 */
 
 		final ListView listView = (ListView) findViewById(R.id.listview);
-		String[] values = new String[] { "Demo 1", "Demo 2", "Demo 3",
-				"Demo 4", "Demo 5" };
+		String[] values = new String[] { "Demo 1" , "Demo 2"};
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				R.layout.listview_custom, values);

@@ -41,11 +41,10 @@ public class FileHandle {
 		}
 		return inputStream;
 	}
-	
-	public OutputStream getOutputStream()
-	{
+
+	public OutputStream getOutputStream() {
 		OutputStream outputStream = null;
-		if(assets !=null){
+		if (assets != null) {
 			Log.e(TAG, "You are trying to write an asset! That's illegal");
 			return outputStream;
 		} else

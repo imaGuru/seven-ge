@@ -2,11 +2,11 @@ package com.engine.sevenge.audio;
 
 import java.io.IOException;
 
-import com.engine.sevenge.assets.Asset;
-
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+
+import com.engine.sevenge.assets.Asset;
 
 public class Music extends Asset implements OnCompletionListener {
 	MediaPlayer mediaPlayer;

@@ -22,9 +22,8 @@ public class TextureShaderProgramLoader extends AssetLoader {
 				JSONObject jProgram = jarr.getJSONObject(i);
 				assetManager.registerAsset(
 						jProgram.getString("id"),
-						new TextureShaderProgram(
-								(Shader) assetManager.getAsset(jProgram
-										.getString("vertexShader")),
+						new TextureShaderProgram((Shader) assetManager
+								.getAsset(jProgram.getString("vertexShader")),
 								(Shader) assetManager.getAsset(jProgram
 										.getString("fragmentShader"))));
 			}

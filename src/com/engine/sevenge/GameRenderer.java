@@ -45,6 +45,7 @@ public class GameRenderer implements Renderer {
 
 	// game related
 	private float camX = 0, camY = 0;
+
 	enum Mode {
 		NONE, DRAG, ZOOM
 	}
@@ -114,21 +115,28 @@ public class GameRenderer implements Renderer {
 		camera.zoom(2.0f);
 		TextureShaderProgram tsp = (TextureShaderProgram) SevenGE.assetManager
 				.getAsset("spriteShader");
-		Texture2D tex = (Texture2D) SevenGE.assetManager
-				.getAsset("spaceSheet");
+		Texture2D tex = (Texture2D) SevenGE.assetManager.getAsset("spaceSheet");
 		spriteBatch = new SpriteBatch(tex, tsp, 1000);
 		Random rng = new Random();
 		for (int i = 0; i < 350; i++) {
 			Sprite sprite;
-			if(rng.nextInt(10)<3)
-				sprite = new Sprite((SubTexture2D) SevenGE.assetManager.getAsset("meteorBrown_big1"));
-			else if(rng.nextInt(10)<6)
-				sprite = new Sprite((SubTexture2D) SevenGE.assetManager.getAsset("meteorBrown_small2"));
-			else if(rng.nextInt(10)<9)
-				sprite = new Sprite((SubTexture2D) SevenGE.assetManager.getAsset("meteorBrown_tiny2"));
+			if (rng.nextInt(10) < 3)
+				sprite = new Sprite(
+						(SubTexture2D) SevenGE.assetManager
+								.getAsset("meteorBrown_big1"));
+			else if (rng.nextInt(10) < 6)
+				sprite = new Sprite(
+						(SubTexture2D) SevenGE.assetManager
+								.getAsset("meteorBrown_small2"));
+			else if (rng.nextInt(10) < 9)
+				sprite = new Sprite(
+						(SubTexture2D) SevenGE.assetManager
+								.getAsset("meteorBrown_tiny2"));
 			else
-				sprite = new Sprite((SubTexture2D) SevenGE.assetManager.getAsset("enemyRed1"));
-				
+				sprite = new Sprite(
+						(SubTexture2D) SevenGE.assetManager
+								.getAsset("enemyRed1"));
+
 			sprite.rotate(rng.nextFloat() * 6.28f);
 			sprite.translate(rng.nextFloat() * 3000f - 1500f,
 					rng.nextFloat() * 3000f - 1500f);
@@ -136,7 +144,6 @@ public class GameRenderer implements Renderer {
 		}
 		spriteBatch.upload();
 	}
-	
 
 	public void update() {
 
@@ -145,19 +152,20 @@ public class GameRenderer implements Renderer {
 		for (TouchEvent touchEvent : touchEvents) {
 			switch (touchEvent.type) {
 			case DOWN:
-				
-				if(touchEvent.pointerID == 0){
 
-				mode = Mode.DRAG;
-				dragStartX = touchEvent.x;
-				dragStartY = touchEvent.y;
-				float[] coords = camera.unProject(touchEvent.x, touchEvent.y);
-				camera.lookAt(coords[0], coords[1]);
-				pointersX[touchEvent.pointerID] = touchEvent.x;
-				pointersY[touchEvent.pointerID] = touchEvent.y;
+				if (touchEvent.pointerID == 0) {
+
+					mode = Mode.DRAG;
+					dragStartX = touchEvent.x;
+					dragStartY = touchEvent.y;
+					float[] coords = camera.unProject(touchEvent.x,
+							touchEvent.y);
+					camera.lookAt(coords[0], coords[1]);
+					pointersX[touchEvent.pointerID] = touchEvent.x;
+					pointersY[touchEvent.pointerID] = touchEvent.y;
 
 				}
-				
+
 				// second finger
 				if (touchEvent.pointerID == 1) {
 
@@ -198,7 +206,7 @@ public class GameRenderer implements Renderer {
 
 					if (newDistance > 10f) {
 
-						float offset =  oldDistance/newDistance;
+						float offset = oldDistance / newDistance;
 						Log.d("TEST", offset + "");
 
 						camera.zoom(offset);

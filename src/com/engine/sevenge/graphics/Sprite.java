@@ -75,26 +75,26 @@ public class Sprite {
 		four.y += translation.y;
 
 		float[] uvs = subTexture.getUVs();
-		
-		verticesData[0]=one.x;
-		verticesData[1]=one.y;
-		verticesData[2]=uvs[0];
-		verticesData[3]=uvs[1];
-		
-		verticesData[4]=two.x;
-		verticesData[5]=two.y;
-		verticesData[6]=uvs[2];
-		verticesData[7]=uvs[3];
-		
-		verticesData[8]=three.x;
-		verticesData[9]=three.y;
-		verticesData[10]=uvs[4];
-		verticesData[11]=uvs[5];
-		
-		verticesData[12]=four.x;
-		verticesData[13]=four.y;
-		verticesData[14]=uvs[6];
-		verticesData[15]=uvs[7];
+
+		verticesData[0] = one.x;
+		verticesData[1] = one.y;
+		verticesData[2] = uvs[0];
+		verticesData[3] = uvs[1];
+
+		verticesData[4] = two.x;
+		verticesData[5] = two.y;
+		verticesData[6] = uvs[2];
+		verticesData[7] = uvs[3];
+
+		verticesData[8] = three.x;
+		verticesData[9] = three.y;
+		verticesData[10] = uvs[4];
+		verticesData[11] = uvs[5];
+
+		verticesData[12] = four.x;
+		verticesData[13] = four.y;
+		verticesData[14] = uvs[6];
+		verticesData[15] = uvs[7];
 
 		return verticesData;
 	}

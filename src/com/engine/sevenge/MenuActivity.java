@@ -23,7 +23,7 @@ public class MenuActivity extends Activity {
 		setContentView(R.layout.activity_menu);
 
 		final ListView listView = (ListView) findViewById(R.id.listview);
-		String[] values = new String[] { "Demo 1" , "Demo 2"};
+		String[] values = new String[] { "Demo 1", "Demo 2" };
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				R.layout.listview_custom, values);

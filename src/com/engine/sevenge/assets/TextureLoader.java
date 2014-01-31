@@ -20,8 +20,10 @@ public class TextureLoader extends AssetLoader {
 			jarr = new JSONArray(content);
 			for (int i = 0; i < jarr.length(); i++) {
 				JSONObject jTexture = jarr.getJSONObject(i);
-				assetManager.registerAsset(jTexture.getString("id"), new Texture2D(
-						SevenGE.io.asset(jTexture.getString("path"))));
+				assetManager.registerAsset(
+						jTexture.getString("id"),
+						new Texture2D(SevenGE.io.asset(jTexture
+								.getString("path"))));
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

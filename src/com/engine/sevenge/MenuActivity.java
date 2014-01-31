@@ -19,15 +19,8 @@ public class MenuActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_menu);
-		/*
-		 * ResourceManager tempResMan= new ResourceManager(); try {
-		 * tempResMan.loadResources(getBaseContext(), tempResMan); } catch
-		 * (JSONException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
-		 */
 
 		final ListView listView = (ListView) findViewById(R.id.listview);
 		String[] values = new String[] { "Demo 1" , "Demo 2"};
@@ -43,10 +36,6 @@ public class MenuActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
-
-				// Toast.makeText(MenuActivity.this,
-				// "ImageButton is clicked!", Toast.LENGTH_SHORT).show();
-
 				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri
 						.parse("https://github.com/SeventhSon/seven-ge"));
 				startActivity(browserIntent);
@@ -68,7 +57,7 @@ public class MenuActivity extends Activity {
 							.show();
 				} else {
 					Intent i = new Intent(getApplicationContext(),
-							MainActivity.class);
+							GameActivity.class);
 					i.putExtra("demo", position + 1);
 					startActivity(i);
 				}

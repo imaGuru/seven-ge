@@ -12,11 +12,10 @@ import android.widget.Toast;
 
 import com.engine.sevenge.assets.AssetManager;
 import com.engine.sevenge.audio.Audio;
-import com.engine.sevenge.audio.Music;
 import com.engine.sevenge.input.Input;
 import com.engine.sevenge.io.IO;
 
-public class MainActivity extends Activity {
+public class GameActivity extends Activity {
 
 	private GLSurfaceView glSurfaceView;
 	private boolean rendererSet = false;
@@ -45,7 +44,7 @@ public class MainActivity extends Activity {
 		SevenGE.io = new IO(this);
 		SevenGE.renderer = new GameRenderer(this);
 		SevenGE.audio = new Audio(this);
-		SevenGE.resourceManager = new AssetManager();
+		SevenGE.assetManager = new AssetManager();
 
 		if (supportsEs2) {
 			glSurfaceView = new GLSurfaceView(this);
@@ -75,8 +74,6 @@ public class MainActivity extends Activity {
 		super.onPause();
 		if (rendererSet) {
 			glSurfaceView.onPause();
-			//Music music = (Music) SevenGE.resourceManager.getResource("music1");
-			//music.pause();
 		}
 	}
 
@@ -85,8 +82,6 @@ public class MainActivity extends Activity {
 		super.onResume();
 		if (rendererSet) {
 			glSurfaceView.onResume();
-			//Music music = (Music) SevenGE.resourceManager.getResource("music1");
-			//music.play();
 		}
 	}
 

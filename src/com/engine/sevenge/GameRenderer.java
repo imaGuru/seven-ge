@@ -14,7 +14,7 @@ import android.util.FloatMath;
 
 import com.engine.sevenge.audio.Music;
 import com.engine.sevenge.graphics.Camera2D;
-import com.engine.sevenge.graphics.LRenderer;
+import com.engine.sevenge.graphics.GLRenderer;
 import com.engine.sevenge.graphics.Sprite;
 import com.engine.sevenge.graphics.SpriteBatch;
 import com.engine.sevenge.graphics.Texture2D;
@@ -36,7 +36,7 @@ public class GameRenderer implements Renderer {
 	private static final long FRAME_TIME = 32;
 	private static final int MAX_FRAME_SKIPS = 5;
 
-	private LRenderer renderer;
+	private GLRenderer renderer;
 
 	private SpriteBatch spriteBatch;
 	private Camera2D camera;
@@ -109,21 +109,21 @@ public class GameRenderer implements Renderer {
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		SevenGE.resourceManager.loadAssets(SevenGE.io.asset("sample.pkg"));
-		Music music = (Music) SevenGE.resourceManager.getAsset("music1");
+		SevenGE.assetManager.loadAssets(SevenGE.io.asset("sample.pkg"));
+		Music music = (Music) SevenGE.assetManager.getAsset("music1");
 		music.setLooping(true);
 		music.play();
-		renderer = new LRenderer();
+		renderer = new GLRenderer();
 		camera = new Camera2D();
 		camera.lookAt(camX, camY);
-		TextureShaderProgram tsp = (TextureShaderProgram) SevenGE.resourceManager
+		TextureShaderProgram tsp = (TextureShaderProgram) SevenGE.assetManager
 				.getAsset("spriteShader");
-		Texture2D tex = (Texture2D) SevenGE.resourceManager
+		Texture2D tex = (Texture2D) SevenGE.assetManager
 				.getAsset("apple");
 		spriteBatch = new SpriteBatch(tex, tsp, 1000);
 		Random rng = new Random();
 		for (int i = 0; i < 500; i++) {
-			Sprite sprite = (Sprite) SevenGE.resourceManager
+			Sprite sprite = (Sprite) SevenGE.assetManager
 					.getAsset("appleSprite");
 			sprite.rotate(rng.nextFloat() * 6.28f);
 			sprite.translate(rng.nextFloat() * 2000f - 1000f,

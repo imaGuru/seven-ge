@@ -3,30 +3,25 @@ package com.engine.sevenge.graphics;
 import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_CULL_FACE;
-import static android.opengl.GLES20.GL_DITHER;
 import static android.opengl.GLES20.GL_ONE;
 import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
 import static android.opengl.GLES20.glBlendFunc;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
-import static android.opengl.GLES20.glDisable;
 import static android.opengl.GLES20.glEnable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LRenderer {
+public class GLRenderer {
 	private List<Drawable> RenderQueue;
 	private int i;
 
-	public LRenderer() {
+	public GLRenderer() {
 		RenderQueue = new ArrayList<Drawable>(50);
-		// glEnable(GL_DEPTH_TEST);
-		glDisable(GL_DITHER);
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-		// glClearDepthf(1.0f);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 

@@ -16,23 +16,21 @@ public class Sprite extends Asset {
 
 	public Sprite(float w, float h, float[] uvCoords, Texture2D tex,
 			TextureShaderProgram ss) {
-		// Initialise our intital size around the 0,0 point
 		base = new RectF(-w / 2, h / 2, w / 2, -h / 2);
-
-		// Initial translation
 		translation = new PointF(0, 0);
-
-		// We start with our inital size
 		scale = 1f;
-
-		// We start in our inital angle
 		angle = 0f;
-
 		uvs = uvCoords;
-
 		texture = tex;
-
 		spriteShader = ss;
+	}
+
+	public Texture2D getTexture2D() {
+		return texture;
+	}
+
+	public TextureShaderProgram getTextureShaderProgram() {
+		return spriteShader;
 	}
 
 	public void setUVs(float[] uvCoords) {
@@ -54,25 +52,19 @@ public class Sprite extends Asset {
 	}
 
 	public float[] getTransformedVertices() {
-		// Start with scaling
 		float x1 = base.left * scale;
 		float x2 = base.right * scale;
 		float y1 = base.bottom * scale;
 		float y2 = base.top * scale;
 
-		// We now detach from our Rect because when rotating,
-		// we need the seperate points, so we do so in opengl order
 		PointF one = new PointF(x1, y2);
 		PointF two = new PointF(x1, y1);
 		PointF three = new PointF(x2, y1);
 		PointF four = new PointF(x2, y2);
 
-		// We create the sin and cos function once,
-		// so we do not have calculate them each time.
 		float s = (float) Math.sin(angle);
 		float c = (float) Math.cos(angle);
 
-		// Then we rotate each point
 		one.x = x1 * c - y2 * s;
 		one.y = x1 * s + y2 * c;
 		two.x = x1 * c - y1 * s;
@@ -82,7 +74,6 @@ public class Sprite extends Asset {
 		four.x = x2 * c - y2 * s;
 		four.y = x2 * s + y2 * c;
 
-		// Finally we translate the sprite to its correct position.
 		one.x += translation.x;
 		one.y += translation.y;
 		two.x += translation.x;
@@ -92,7 +83,6 @@ public class Sprite extends Asset {
 		four.x += translation.x;
 		four.y += translation.y;
 
-		// We now return our float array of vertices.
 		return new float[] { one.x, one.y, 0.0f, uvs[0], uvs[1], two.x, two.y,
 				0.0f, uvs[2], uvs[3], three.x, three.y, 0.0f, uvs[4], uvs[5],
 				four.x, four.y, 0.0f, uvs[6], uvs[7] };
@@ -100,7 +90,6 @@ public class Sprite extends Asset {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 
 	}
 }

@@ -10,7 +10,6 @@ public class AudioLoader extends AssetLoader {
 
 	public AudioLoader(AssetManager as) {
 		super(as);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

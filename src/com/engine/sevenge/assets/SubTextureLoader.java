@@ -4,10 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.engine.sevenge.graphics.Sprite;
 import com.engine.sevenge.graphics.SubTexture2D;
 import com.engine.sevenge.graphics.Texture2D;
-import com.engine.sevenge.graphics.TextureShaderProgram;
 
 public class SubTextureLoader extends AssetLoader {
 

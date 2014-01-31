@@ -18,7 +18,7 @@ import com.engine.sevenge.io.FileHandle;
 public class AssetManager {
 	private Map<String, Asset> assets = new HashMap<String, Asset>();
 	private Map<String, AssetLoader> loaders = new HashMap<String, AssetLoader>();
-	private final String TAG = "AssetManager";
+	//private final String TAG = "AssetManager";
 
 	public AssetManager() {
 		loaders.put(Texture2D.class.getName(), new TextureLoader(this));

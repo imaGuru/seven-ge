@@ -10,19 +10,19 @@ import java.nio.ShortBuffer;
 
 public class SpriteBatch implements Drawable {
 
-	private float[] VPMatrix = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
-	private Texture2D texture;
+	private float[] VPMatrix;
+	private final Texture2D texture;
 	private VertexArray vertexArray;
 	private ShortBuffer indexBuffer;
 	private TextureShaderProgram program;
-	private float[] spriteData;
-	private short[] indices;
-	boolean spriteDataChanged = false, VAOinitialized = false;
+	private final float[] spriteData;
+	private final short[] indices;
+	private boolean VAOinitialized = false;
 
 	private int spriteCount = 0, i = 0, size = 0, offset = 0;
-	int indexOffset, vertexOffset;
+	private int indexOffset, vertexOffset;
 
-	private static final int POSITION_COMPONENT_COUNT = 3;
+	private static final int POSITION_COMPONENT_COUNT = 2;
 	private static final int TEXTURE_COORDINATES_COMPONENT_COUNT = 2;
 	private static final int BYTES_PER_FLOAT = 4;
 	private static final int BYTES_PER_SHORT = 2;

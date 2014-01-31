@@ -22,12 +22,16 @@ import com.engine.sevenge.utils.Log;
 public class Texture2D extends Asset {
 	private static final String TAG = "Texture2D";
 	private final int[] textureID;
+	private final int width;
+	private final int height;
 
 	public Texture2D(FileHandle fh) {
 		textureID = new int[1];
 		glGenTextures(1, textureID, 0);
 		if (textureID[0] == 0) {
 			Log.w(TAG, "Could not generate a new OpenGL texture object.");
+			width = 0;
+			height = 0;
 			return;
 		}
 		final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -43,6 +47,8 @@ public class Texture2D extends Asset {
 				GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
+		width = bitmap.getWidth();
+		height = bitmap.getHeight();
 		bitmap.recycle();
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -60,5 +66,13 @@ public class Texture2D extends Asset {
 	@Override
 	public void dispose() {
 		glDeleteTextures(1, textureID, 0);
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public int getWidth() {
+		return width;
 	}
 }

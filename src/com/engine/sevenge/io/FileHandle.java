@@ -1,19 +1,21 @@
 package com.engine.sevenge.io;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
-import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.util.Log;
 
 public class FileHandle {
 	private String file;
 	private AssetManager assets = null;
+	private final String TAG = "IO";
 
 	public FileHandle(String file) {
 		this.file = file;
@@ -38,6 +40,21 @@ public class FileHandle {
 			return null;
 		}
 		return inputStream;
+	}
+	
+	public OutputStream getOutputStream()
+	{
+		OutputStream outputStream = null;
+		if(assets !=null){
+			Log.e(TAG, "You are trying to write an asset! That's illegal");
+			return outputStream;
+		} else
+			try {
+				outputStream = new FileOutputStream(file);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		return outputStream;
 	}
 
 	public String readString() {

@@ -8,13 +8,13 @@ import static android.opengl.Matrix.setLookAtM;
 
 public class Camera2D {
 
-	private float[] projectionMatrix = new float[16];
-	private float[] viewMatrix = new float[16];
-	private float[] viewProjectionMatrix = new float[16];
-	private float[] invertedViewProjectionMatrix = new float[16];
-	private float[] unprojectedCoords = new float[4];
-	private float[] deviceCoords = new float[4];
-	private float[] cameraXY = new float[2];
+	private final float[] projectionMatrix = new float[16];
+	private final float[] viewMatrix = new float[16];
+	private final float[] viewProjectionMatrix = new float[16];
+	private final float[] invertedViewProjectionMatrix = new float[16];
+	private final float[] unprojectedCoords = new float[4];
+	private final float[] deviceCoords = new float[4];
+	private final float[] cameraXY = new float[2];
 	private boolean isChangedView = true, isChangedProjection = true,
 			isChangedInvertedViewProjection = true;
 	private float vHeight, vWidth, vScale = 1f;

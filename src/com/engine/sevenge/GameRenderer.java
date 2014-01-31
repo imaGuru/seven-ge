@@ -17,6 +17,7 @@ import com.engine.sevenge.graphics.Camera2D;
 import com.engine.sevenge.graphics.GLRenderer;
 import com.engine.sevenge.graphics.Sprite;
 import com.engine.sevenge.graphics.SpriteBatch;
+import com.engine.sevenge.graphics.SubTexture2D;
 import com.engine.sevenge.graphics.Texture2D;
 import com.engine.sevenge.graphics.TextureShaderProgram;
 import com.engine.sevenge.input.Input;
@@ -28,7 +29,6 @@ public class GameRenderer implements Renderer {
 
 	private static final String TAG = "GameEngine";
 
-	private Context context;
 	private long startTime = 0;
 	private long dt = 0, sleepTime = 0;
 	private int framesSkipped = 0;
@@ -44,9 +44,7 @@ public class GameRenderer implements Renderer {
 	IO io;
 
 	// game related
-	private float camX = 0, camY = 0, scale = 0.0f;
-	private float mHeight = 0, mWidth = 0;
-
+	private float camX = 0, camY = 0;
 	enum Mode {
 		NONE, DRAG, ZOOM
 	}
@@ -62,7 +60,6 @@ public class GameRenderer implements Renderer {
 	private int midPointY;
 
 	GameRenderer(Context context) {
-		this.context = context;
 		// init gamestates
 		input = SevenGE.input;
 		io = SevenGE.io;
@@ -100,8 +97,6 @@ public class GameRenderer implements Renderer {
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		glViewport(0, 0, width, height);
-		mWidth = width;
-		mHeight = height;
 		camX = -width / 2;
 		camY = -height / 2;
 		camera.setProjectionOrtho(width, height);
@@ -116,18 +111,27 @@ public class GameRenderer implements Renderer {
 		renderer = new GLRenderer();
 		camera = new Camera2D();
 		camera.lookAt(camX, camY);
+		camera.zoom(2.0f);
 		TextureShaderProgram tsp = (TextureShaderProgram) SevenGE.assetManager
 				.getAsset("spriteShader");
 		Texture2D tex = (Texture2D) SevenGE.assetManager
-				.getAsset("apple");
+				.getAsset("spaceSheet");
 		spriteBatch = new SpriteBatch(tex, tsp, 1000);
 		Random rng = new Random();
-		for (int i = 0; i < 500; i++) {
-			Sprite sprite = (Sprite) SevenGE.assetManager
-					.getAsset("appleSprite");
+		for (int i = 0; i < 350; i++) {
+			Sprite sprite;
+			if(rng.nextInt(10)<3)
+				sprite = new Sprite((SubTexture2D) SevenGE.assetManager.getAsset("meteorBrown_big1"));
+			else if(rng.nextInt(10)<6)
+				sprite = new Sprite((SubTexture2D) SevenGE.assetManager.getAsset("meteorBrown_small2"));
+			else if(rng.nextInt(10)<9)
+				sprite = new Sprite((SubTexture2D) SevenGE.assetManager.getAsset("meteorBrown_tiny2"));
+			else
+				sprite = new Sprite((SubTexture2D) SevenGE.assetManager.getAsset("enemyRed1"));
+				
 			sprite.rotate(rng.nextFloat() * 6.28f);
-			sprite.translate(rng.nextFloat() * 2000f - 1000f,
-					rng.nextFloat() * 2000f - 1000f);
+			sprite.translate(rng.nextFloat() * 3000f - 1500f,
+					rng.nextFloat() * 3000f - 1500f);
 			spriteBatch.add(sprite.getTransformedVertices());
 		}
 		spriteBatch.upload();
@@ -179,10 +183,6 @@ public class GameRenderer implements Renderer {
 				break;
 			case MOVE:
 				if (mode == Mode.DRAG && touchEvent.pointerID < 2) {
-					float distanceX = touchEvent.x - dragStartX;
-					float distanceY = touchEvent.y - dragStartY;
-					// float newX = (camX - distanceX);
-					// float newY = (camY - distanceY);
 
 					// camX = newX;
 					// camY = newY;

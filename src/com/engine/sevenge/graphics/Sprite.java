@@ -3,42 +3,33 @@ package com.engine.sevenge.graphics;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
-import com.engine.sevenge.assets.Asset;
-
-public class Sprite extends Asset {
+public class Sprite {
 	private float angle;
 	private float scale;
-	private RectF base;
-	private PointF translation;
-	private Texture2D texture;
-	private TextureShaderProgram spriteShader;
-	float[] uvs;
+	private SubTexture2D subTexture;
+	private final RectF base;
+	private final PointF translation;
+	private final float[] verticesData;
 
-	public Sprite(float w, float h, float[] uvCoords, Texture2D tex,
-			TextureShaderProgram ss) {
-		base = new RectF(-w / 2, h / 2, w / 2, -h / 2);
+	public Sprite(SubTexture2D subTex) {
+		base = new RectF(-subTex.getWidth() / 2, subTex.getHeight() / 2,
+				subTex.getWidth() / 2, -subTex.getHeight() / 2);
 		translation = new PointF(0, 0);
 		scale = 1f;
 		angle = 0f;
-		uvs = uvCoords;
-		texture = tex;
-		spriteShader = ss;
+		verticesData = new float[16];
+		subTexture = subTex;
 	}
 
 	public Texture2D getTexture2D() {
-		return texture;
+		return subTexture.getTexture();
 	}
 
-	public TextureShaderProgram getTextureShaderProgram() {
-		return spriteShader;
-	}
-
-	public void setUVs(float[] uvCoords) {
-		uvs = uvCoords;
+	public void setSubTexture(SubTexture2D subTex) {
+		subTexture = subTex;
 	}
 
 	public void translate(float x, float y) {
-		// Update our location.
 		translation.x = x;
 		translation.y = y;
 	}
@@ -51,7 +42,7 @@ public class Sprite extends Asset {
 		angle = a;
 	}
 
-	public float[] getTransformedVertices() {
+	public final float[] getTransformedVertices() {
 		float x1 = base.left * scale;
 		float x2 = base.right * scale;
 		float y1 = base.bottom * scale;
@@ -83,13 +74,28 @@ public class Sprite extends Asset {
 		four.x += translation.x;
 		four.y += translation.y;
 
-		return new float[] { one.x, one.y, 0.0f, uvs[0], uvs[1], two.x, two.y,
-				0.0f, uvs[2], uvs[3], three.x, three.y, 0.0f, uvs[4], uvs[5],
-				four.x, four.y, 0.0f, uvs[6], uvs[7] };
-	}
+		float[] uvs = subTexture.getUVs();
+		
+		verticesData[0]=one.x;
+		verticesData[1]=one.y;
+		verticesData[2]=uvs[0];
+		verticesData[3]=uvs[1];
+		
+		verticesData[4]=two.x;
+		verticesData[5]=two.y;
+		verticesData[6]=uvs[2];
+		verticesData[7]=uvs[3];
+		
+		verticesData[8]=three.x;
+		verticesData[9]=three.y;
+		verticesData[10]=uvs[4];
+		verticesData[11]=uvs[5];
+		
+		verticesData[12]=four.x;
+		verticesData[13]=four.y;
+		verticesData[14]=uvs[6];
+		verticesData[15]=uvs[7];
 
-	@Override
-	public void dispose() {
-
+		return verticesData;
 	}
 }

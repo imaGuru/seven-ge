@@ -22,7 +22,7 @@ public class AssetManager {
 
 	public AssetManager() {
 		loaders.put(Texture2D.class.getName(), new TextureLoader(this));
-		loaders.put(Sprite.class.getName(), new SpriteLoader(this));
+		loaders.put(Sprite.class.getName(), new SubTextureLoader(this));
 		loaders.put(TextureShaderProgram.class.getName(), new TextureShaderProgramLoader(this));
 		loaders.put(Shader.class.getName(), new ShaderLoader(this));
 		loaders.put(Audio.class.getName(), new AudioLoader(this));
@@ -35,7 +35,7 @@ public class AssetManager {
 			AssetLoader al = loaders.get(Texture2D.class.getName());
 			al.load(pkg.getJSONArray("textures").toString());
 			al = loaders.get(Sprite.class.getName());
-			al.load(pkg.getJSONArray("sprites").toString());
+			al.load(pkg.getJSONArray("subtextures").toString());
 			al = loaders.get(Shader.class.getName());
 			al.load(pkg.getJSONArray("shaders").toString());
 			al = loaders.get(TextureShaderProgram.class.getName());

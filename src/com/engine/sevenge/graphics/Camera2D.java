@@ -41,8 +41,6 @@ public class Camera2D {
 	}
 
 	public void zoom(float scale) {
-		// vWidth *= scale;
-		// vHeight *= scale;
 		vScale = scale;
 		isChangedProjection = true;
 		isChangedInvertedViewProjection = true;
@@ -50,8 +48,8 @@ public class Camera2D {
 
 	public float[] unProject(float x, float y) {
 		if (isChangedInvertedViewProjection) {
-			orthoM(projectionMatrix, 0, -vWidth * vScale / 2, vWidth * vScale
-					/ 2, -vHeight * vScale / 2, vHeight * vScale / 2, 0f, 1f);
+			orthoM(projectionMatrix, 0, -vWidth / vScale / 2, vWidth / vScale
+					/ 2, -vHeight / vScale / 2, vHeight / vScale / 2, 0f, 1f);
 			multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0,
 					viewMatrix, 0);
 			invertM(invertedViewProjectionMatrix, 0, viewProjectionMatrix, 0);
@@ -68,8 +66,8 @@ public class Camera2D {
 
 	public float[] getViewProjectionMatrix() {
 		if (isChangedProjection) {
-			orthoM(projectionMatrix, 0, -vWidth * vScale / 2, vWidth * vScale
-					/ 2, -vHeight * vScale / 2, vHeight * vScale / 2, 0f, 1f);
+			orthoM(projectionMatrix, 0, -vWidth / vScale / 2, vWidth / vScale
+					/ 2, -vHeight / vScale / 2, vHeight / vScale / 2, 0f, 1f);
 		}
 		if (isChangedView || isChangedProjection) {
 			multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0,

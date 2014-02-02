@@ -2,15 +2,17 @@ package com.engine.sevenge;
 
 import static android.opengl.GLES20.glViewport;
 
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
-import android.util.FloatMath;
+import android.view.MotionEvent;
 
 import com.engine.sevenge.audio.Music;
 import com.engine.sevenge.graphics.Camera2D;
@@ -20,9 +22,8 @@ import com.engine.sevenge.graphics.SpriteBatch;
 import com.engine.sevenge.graphics.SubTexture2D;
 import com.engine.sevenge.graphics.Texture2D;
 import com.engine.sevenge.graphics.TextureShaderProgram;
-import com.engine.sevenge.input.Input;
-import com.engine.sevenge.input.Input.TouchEvent;
-import com.engine.sevenge.io.IO;
+import com.engine.sevenge.input.SingleTouchDetector;
+import com.engine.sevenge.input.SingleTouchDetector.onGestureListener;
 import com.engine.sevenge.utils.Log;
 
 public class GameRenderer implements Renderer {
@@ -40,30 +41,13 @@ public class GameRenderer implements Renderer {
 
 	private SpriteBatch spriteBatch;
 	private Camera2D camera;
-	Input input;
-	IO io;
-
-	// game related
-	private float camX = 0, camY = 0;
-
-	enum Mode {
-		NONE, DRAG, ZOOM
-	}
-
-	private Mode mode = Mode.NONE;
-	private float dragStartX;
-	private float dragStartY;
-	private float newDistance;
-	private float oldDistance;
-	private int[] pointersX = new int[20];
-	private int[] pointersY = new int[20];
-	private int midPointX;
-	private int midPointY;
+	private InputProcessor inputProcessor;
 
 	GameRenderer(Context context) {
 		// init gamestates
-		input = SevenGE.input;
-		io = SevenGE.io;
+		inputProcessor = new InputProcessor();
+		SevenGE.input.addDetector(new SingleTouchDetector(context,
+				new SampleGestureListener(inputProcessor)));
 	}
 
 	@Override
@@ -82,13 +66,12 @@ public class GameRenderer implements Renderer {
 			// gamestate.update
 			framesSkipped++;
 		}
-		Log.v(TAG, "FramesSkipped: " + framesSkipped + " FPS: " + (double) 1
-				/ (System.currentTimeMillis() - startTime) * 1000);
+		// Log.v(TAG, "FramesSkipped: " + framesSkipped + " FPS: " + (double) 1
+		// / (System.currentTimeMillis() - startTime) * 1000);
 		startTime = System.currentTimeMillis();
 
 		// gamestate.update
-		update();
-
+		inputProcessor.process(camera);
 		// gamestate.draw
 		spriteBatch.setVPMatrix(camera.getViewProjectionMatrix());
 		renderer.addToRender(spriteBatch);
@@ -98,8 +81,6 @@ public class GameRenderer implements Renderer {
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		glViewport(0, 0, width, height);
-		camX = -width / 2;
-		camY = -height / 2;
 		camera.setProjectionOrtho(width, height);
 	}
 
@@ -111,8 +92,8 @@ public class GameRenderer implements Renderer {
 		music.play();
 		renderer = new GLRenderer();
 		camera = new Camera2D();
-		camera.lookAt(camX, camY);
-		camera.zoom(2.0f);
+		camera.lookAt(0, 0);
+		camera.zoom(0.2f);
 		TextureShaderProgram tsp = (TextureShaderProgram) SevenGE.assetManager
 				.getAsset("spriteShader");
 		Texture2D tex = (Texture2D) SevenGE.assetManager.getAsset("spaceSheet");
@@ -138,103 +119,122 @@ public class GameRenderer implements Renderer {
 								.getAsset("enemyRed1"));
 
 			sprite.rotate(rng.nextFloat() * 6.28f);
-			sprite.translate(rng.nextFloat() * 3000f - 1500f,
-					rng.nextFloat() * 3000f - 1500f);
+			sprite.translate(rng.nextFloat() * 3000f,
+					rng.nextFloat() * 3000f);
 			spriteBatch.add(sprite.getTransformedVertices());
 		}
 		spriteBatch.upload();
 	}
+}
 
-	public void update() {
+class SampleGestureListener implements onGestureListener {
+	private static final String TAG = "Gesture";
+	private final InputProcessor ip;
 
-		List<TouchEvent> touchEvents = input.getTouchEvents();
+	public SampleGestureListener(InputProcessor ip) {
+		this.ip = ip;
+	}
 
-		for (TouchEvent touchEvent : touchEvents) {
-			switch (touchEvent.type) {
-			case DOWN:
+	@Override
+	public boolean onDown(MotionEvent e) {
+		Log.i(TAG, "Down");
+		InputEvent ie = new InputEvent("Down");
+		ie.events.add(e);
+		ip.addEvent(ie);
+		return true;
+	}
 
-				if (touchEvent.pointerID == 0) {
+	@Override
+	public boolean onUp(MotionEvent e) {
+		Log.i(TAG, "Up");
+		InputEvent ie = new InputEvent("Up");
+		ie.events.add(e);
+		ip.addEvent(ie);
+		return true;
+	}
 
-					mode = Mode.DRAG;
-					dragStartX = touchEvent.x;
-					dragStartY = touchEvent.y;
-					float[] coords = camera.unProject(touchEvent.x,
-							touchEvent.y);
-					camera.lookAt(coords[0], coords[1]);
-					pointersX[touchEvent.pointerID] = touchEvent.x;
-					pointersY[touchEvent.pointerID] = touchEvent.y;
+	@Override
+	public boolean onLongPress(MotionEvent e) {
+		Log.i(TAG, "Long Press");
+		InputEvent ie = new InputEvent("LongPress");
+		ie.events.add(e);
+		ip.addEvent(ie);
+		return true;
+	}
 
-				}
+	@Override
+	public boolean onDrag(float x1, float y1, float x2, float y2) {
+		Log.i(TAG, "Drag");
+		InputEvent ie = new InputEvent("Drag");
+		ie.x2 = x2;
+		ie.y2 = y2;
+		ie.y1 = y1;
+		ie.x1 = x1;
+		ip.addEvent(ie);
+		return true;
+	}
 
-				// second finger
-				if (touchEvent.pointerID == 1) {
+	@Override
+	public boolean onTap(MotionEvent e) {
+		Log.i(TAG, "Tap");
+		InputEvent ie = new InputEvent("Tap");
+		ie.events.add(e);
+		ip.addEvent(ie);
+		return true;
+	}
 
-					oldDistance = getSpacing();
-					midPointX = getMidpointX();
-					midPointY = getMidpointY();
-					if (oldDistance > 10f) {
-						mode = Mode.ZOOM;
-					}
+	@Override
+	public boolean onDoubleTap(MotionEvent e) {
+		Log.i(TAG, "Double Tap");
+		InputEvent ie = new InputEvent("DoubleTap");
+		ie.events.add(e);
+		ip.addEvent(ie);
+		return true;
+	}
 
-				}
+}
 
-				break;
-			case UP:
+class InputEvent {
+	String type;
+	float x1,x2,y1,y2;
+	public InputEvent(String type) {
+		this.type = type;
+	}
 
-				if (mode == Mode.ZOOM && touchEvent.pointerID < 2) {
-					oldDistance = 0;
-					mode = Mode.NONE;
-				} else if (mode == Mode.DRAG) {
-					mode = Mode.NONE;
-				}
+	Queue<MotionEvent> events = new LinkedList<MotionEvent>();
+}
 
-				break;
-			case MOVE:
-				if (mode == Mode.DRAG && touchEvent.pointerID < 2) {
+class InputProcessor {
+	Queue<InputEvent> EventQueue;
+	float[] coords1 = new float[4];
+	float[] coords2 = new float[4];
+	public InputProcessor() {
+		EventQueue = new ConcurrentLinkedQueue<InputEvent>();
+	}
 
-					// camX = newX;
-					// camY = newY;
+	public void addEvent(InputEvent ie) {
+		EventQueue.add(ie);
+	}
 
-					// dragStartX = touchEvent.x;
-					// dragStartY = touchEvent.y;
-
-				} else if (mode == Mode.ZOOM && touchEvent.pointerID < 2) {
-					pointersX[touchEvent.pointerID] = touchEvent.x;
-					pointersY[touchEvent.pointerID] = touchEvent.y;
-
-					newDistance = getSpacing();
-
-					if (newDistance > 10f) {
-
-						float offset = oldDistance / newDistance;
-						Log.d("TEST", offset + "");
-
-						camera.zoom(offset);
-						newDistance = oldDistance;
-					}
-
-				}
-				break;
-			default:
-				break;
+	public void process(Camera2D cam) {
+		InputEvent ie = EventQueue.poll();
+		while (ie != null) {
+			if(ie.type.equals("Drag"))
+			{
+				coords1 = cam.unProject(ie.x1, ie.y1);
+				float x1 = coords1[0];
+				float y1 = coords1[1];
+				coords2 = cam.unProject(ie.x2, ie.y2);
+				float x2 = coords2[0];
+				float y2 = coords2[1];
+				float[] cameraxy = cam.getCameraXY();
+				cam.lookAt(cameraxy[0]-(x2-x1), cameraxy[1]-(y2-y1));
+				float deltay = ie.y2-ie.y1;
+				float deltax = ie.x2-ie.x1;
+				//Log.v("WTF", "x "+deltax+" y "+deltay);
+				//cam.lookAt(cameraxy[0]+deltax, cameraxy[1]-deltay);
 			}
+			ie = EventQueue.poll();
 		}
 	}
-
-	private float getSpacing() {
-		float x = pointersX[0] - pointersX[1];
-		float y = pointersY[0] - pointersY[1];
-		return FloatMath.sqrt(x * x + y * y);
-	}
-
-	private int getMidpointX() {
-		float x = pointersX[0] + pointersX[1];
-		return (int) (x / 2);
-	}
-
-	private int getMidpointY() {
-		float y = pointersY[0] + pointersY[1];
-		return (int) (y / 2);
-	}
-
 }

@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.engine.sevenge.assets.AssetManager;
 import com.engine.sevenge.audio.Audio;
-import com.engine.sevenge.input.Input;
+import com.engine.sevenge.input.InputListener;
 import com.engine.sevenge.io.IO;
 
 public class GameActivity extends Activity {
@@ -40,7 +40,7 @@ public class GameActivity extends Activity {
 						|| Build.MODEL.contains("Emulator") || Build.MODEL
 							.contains("Android SDK built for x86")));
 
-		SevenGE.input = new Input();
+		SevenGE.input = new InputListener();
 		SevenGE.io = new IO(this);
 		SevenGE.renderer = new GameRenderer(this);
 		SevenGE.audio = new Audio(this);

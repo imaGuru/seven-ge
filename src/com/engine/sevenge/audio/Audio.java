@@ -11,7 +11,8 @@ import android.media.SoundPool;
 public class Audio {
 	AssetManager assets;
 	SoundPool soundPool;
-
+	Activity activity;
+	
 	public final static int MAX_SIMULTANEOUS_SOUNDS = 10;
 
 	public Audio(Activity activity) {
@@ -19,12 +20,15 @@ public class Audio {
 		this.assets = activity.getAssets();
 		this.soundPool = new SoundPool(MAX_SIMULTANEOUS_SOUNDS,
 				AudioManager.STREAM_MUSIC, 0);
+		this.activity = activity;
 	}
 
 	public Music getMusic(String filename) {
 		try {
 			AssetFileDescriptor assetDescriptor = assets.openFd(filename);
-			return new Music(assetDescriptor);
+			Music newMusic = new Music(assetDescriptor);
+			activity.getApplication().registerActivityLifecycleCallbacks(newMusic);
+			return newMusic;
 		} catch (IOException e) {
 			throw new RuntimeException("Couldn't load music '" + filename + "'");
 		}

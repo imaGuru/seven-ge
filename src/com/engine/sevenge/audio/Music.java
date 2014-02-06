@@ -16,6 +16,7 @@ public class Music extends Asset implements OnCompletionListener,
 {
 	MediaPlayer mediaPlayer;
 	boolean isPrepared = false;
+	boolean wasPlaying = false;
 
 	public Music(AssetFileDescriptor assetDescriptor)
 	{
@@ -46,6 +47,7 @@ public class Music extends Asset implements OnCompletionListener,
 				if (!isPrepared)
 					mediaPlayer.prepare();
 				mediaPlayer.start();
+				wasPlaying = true;
 			}
 		} catch (IllegalStateException e)
 		{
@@ -56,12 +58,21 @@ public class Music extends Asset implements OnCompletionListener,
 		}
 	}
 
+	private void resume()
+	{
+		if (wasPlaying)
+		{
+			this.play();
+		}
+	}
+
 	public void stop()
 	{
 		mediaPlayer.stop();
 		synchronized (this)
 		{
 			isPrepared = false;
+			wasPlaying = false;
 		}
 	}
 
@@ -143,7 +154,7 @@ public class Music extends Asset implements OnCompletionListener,
 	public void onActivityResumed(Activity activity)
 	{
 
-		this.play();
+		this.resume();
 
 	}
 

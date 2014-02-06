@@ -12,7 +12,10 @@ public class StateManager
 
 	public void setCurrentState(GameState currentState)
 	{
+		if(this.currentState != null)
+			this.currentState.onFinish();
 		this.currentState = currentState;
+		this.currentState.onStart();
 	}
 
 	public void update()

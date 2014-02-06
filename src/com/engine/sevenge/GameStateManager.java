@@ -1,6 +1,6 @@
 package com.engine.sevenge;
 
-public class StateManager
+public class GameStateManager
 {
 
 	private GameState currentState = null;

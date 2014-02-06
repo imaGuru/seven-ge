@@ -45,6 +45,7 @@ public class GameActivity extends Activity {
 		SevenGE.renderer = new GameRenderer(this);
 		SevenGE.audio = new Audio(this);
 		SevenGE.assetManager = new AssetManager();
+		SevenGE.stateManager = new GameStateManager();
 
 		if (supportsEs2) {
 			glSurfaceView = new GLSurfaceView(this);

@@ -11,4 +11,5 @@ public class SevenGE {
 	public static GameRenderer renderer;
 	public static Audio audio;
 	public static AssetManager assetManager;
+	public static GameStateManager stateManager;
 }

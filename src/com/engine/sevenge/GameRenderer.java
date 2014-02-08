@@ -93,7 +93,7 @@ public class GameRenderer implements Renderer {
 		renderer = new GLRenderer();
 		camera = new Camera2D();
 		camera.lookAt(0, 0);
-		camera.zoom(0.2f);
+		camera.zoom(1.2f);
 		TextureShaderProgram tsp = (TextureShaderProgram) SevenGE.assetManager
 				.getAsset("spriteShader");
 		Texture2D tex = (Texture2D) SevenGE.assetManager.getAsset("spaceSheet");

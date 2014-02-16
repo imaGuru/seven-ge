@@ -72,7 +72,7 @@ public class Music extends Asset implements OnCompletionListener,
 		synchronized (this)
 		{
 			isPrepared = false;
-			wasPlaying = false;
+			//wasPlaying = false;
 		}
 	}
 

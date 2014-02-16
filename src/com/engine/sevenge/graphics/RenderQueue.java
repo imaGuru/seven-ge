@@ -13,12 +13,12 @@ import static android.opengl.GLES20.glEnable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GLRenderer {
-	private List<Drawable> RenderQueue;
+public class RenderQueue {
+	private List<Drawable> queue;
 	private int i;
 
-	public GLRenderer() {
-		RenderQueue = new ArrayList<Drawable>(50);
+	public RenderQueue() {
+		queue = new ArrayList<Drawable>(50);
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -27,16 +27,16 @@ public class GLRenderer {
 
 	public void render() {
 		glClear(GL_COLOR_BUFFER_BIT);
-		for (i = 0; i < RenderQueue.size(); i++)
-			RenderQueue.get(i).draw();
-		RenderQueue.clear();
+		for (i = 0; i < queue.size(); i++)
+			queue.get(i).draw();
+		queue.clear();
 	}
 
-	public void addToRender(Drawable d) {
-		RenderQueue.add(d);
+	public void add(Drawable d) {
+		queue.add(d);
 	}
 
-	public void addToRender(List<Drawable> ds) {
-		RenderQueue.addAll(ds);
+	public void add(List<Drawable> ds) {
+		queue.addAll(ds);
 	}
 }

@@ -51,6 +51,7 @@ public class GameActivity extends Activity {
 			glSurfaceView = new GLSurfaceView(this);
 			glSurfaceView.setEGLContextClientVersion(2);
 			glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+			glSurfaceView.setPreserveEGLContextOnPause(true);
 			glSurfaceView.setRenderer(SevenGE.renderer);
 			glSurfaceView.setOnTouchListener(SevenGE.input);
 			glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
@@ -75,6 +76,7 @@ public class GameActivity extends Activity {
 		super.onPause();
 		if (rendererSet) {
 			glSurfaceView.onPause();
+			
 		}
 	}
 

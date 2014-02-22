@@ -41,8 +41,8 @@ public class SingleTouchDetector extends Detector {
 
 		public boolean onLongPress(MotionEvent e);
 
-		public boolean onDrag(float mLastMotionX, float mLastMotionY, float deltax,
-				float deltay);
+		public boolean onDrag(float mLastMotionX, float mLastMotionY,
+				float deltax, float deltay);
 
 		public boolean onTap(MotionEvent e);
 
@@ -145,7 +145,8 @@ public class SingleTouchDetector extends Detector {
 				final int deltaY = (int) (y - mDownEvent.getY());
 				int distance = (deltaX * deltaX) + (deltaY * deltaY);
 				if (distance > mTouchSlopSquare) {
-					consumed = mListener.onDrag(mLastMotionX,mLastMotionY,x,y);
+					consumed = mListener.onDrag(mLastMotionX, mLastMotionY, x,
+							y);
 					mLastMotionX = x;
 					mLastMotionY = y;
 					mAlwaysInTapRegion = false;
@@ -155,7 +156,7 @@ public class SingleTouchDetector extends Detector {
 				if (distance > mBiggerTouchSlopSquare) {
 				}
 			} else if ((Math.abs(scrollX) >= 1) || (Math.abs(scrollY) >= 1)) {
-				consumed = mListener.onDrag(mLastMotionX,mLastMotionY,x,y);
+				consumed = mListener.onDrag(mLastMotionX, mLastMotionY, x, y);
 				mLastMotionX = x;
 				mLastMotionY = y;
 			}
@@ -167,7 +168,8 @@ public class SingleTouchDetector extends Detector {
 				mHandler.removeMessages(TAP);
 				mInLongPress = false;
 			} else if (mAlwaysInTapRegion) {
-				if (mDownEvent != null && ev.getEventTime() - mDownEvent.getEventTime()<=TAP_TIMEOUT)
+				if (mDownEvent != null
+						&& ev.getEventTime() - mDownEvent.getEventTime() <= TAP_TIMEOUT)
 					mHandler.sendEmptyMessageDelayed(TAP, DOUBLE_TAP_TIMEOUT);
 			}
 			consumed = mListener.onUp(ev);

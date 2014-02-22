@@ -12,7 +12,7 @@ public class Audio {
 	AssetManager assets;
 	SoundPool soundPool;
 	Activity activity;
-	
+
 	public final static int MAX_SIMULTANEOUS_SOUNDS = 10;
 
 	public Audio(Activity activity) {
@@ -27,7 +27,8 @@ public class Audio {
 		try {
 			AssetFileDescriptor assetDescriptor = assets.openFd(filename);
 			Music newMusic = new Music(assetDescriptor);
-			activity.getApplication().registerActivityLifecycleCallbacks(newMusic);
+			activity.getApplication().registerActivityLifecycleCallbacks(
+					newMusic);
 			return newMusic;
 		} catch (IOException e) {
 			throw new RuntimeException("Couldn't load music '" + filename + "'");

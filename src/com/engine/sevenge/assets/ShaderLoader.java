@@ -13,7 +13,6 @@ public class ShaderLoader extends AssetLoader {
 
 	public ShaderLoader(AssetManager as) {
 		super(as);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

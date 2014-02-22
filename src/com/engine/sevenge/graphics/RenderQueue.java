@@ -19,16 +19,16 @@ public class RenderQueue {
 
 	public RenderQueue() {
 		queue = new ArrayList<Drawable>(50);
-		glEnable(GL_CULL_FACE);
+		// glEnable(GL_CULL_FACE);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
 	}
 
 	public void render() {
 		glClear(GL_COLOR_BUFFER_BIT);
-		for (i = 0; i < queue.size(); i++)
-			queue.get(i).draw();
+		for (Drawable currentDrawable : queue)
+			currentDrawable.draw();
 		queue.clear();
 	}
 

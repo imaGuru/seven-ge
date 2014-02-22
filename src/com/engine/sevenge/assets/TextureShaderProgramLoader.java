@@ -11,7 +11,6 @@ public class TextureShaderProgramLoader extends AssetLoader {
 
 	protected TextureShaderProgramLoader(AssetManager as) {
 		super(as);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

@@ -1,31 +1,26 @@
 package com.engine.sevenge;
 
-public class GameStateManager
-{
+public class GameStateManager {
 
 	private GameState currentState = null;
 
-	public GameState getCurrentState()
-	{
+	public GameState getCurrentState() {
 		return currentState;
 	}
 
-	public void setCurrentState(GameState currentState)
-	{
-		if(this.currentState != null)
+	public void setCurrentState(GameState currentState) {
+		if (this.currentState != null)
 			this.currentState.onFinish();
 		this.currentState = currentState;
 		this.currentState.onStart();
 	}
 
-	public void update()
-	{
+	public void update() {
 		if (currentState != null)
 			this.currentState.update();
 	}
 
-	public void draw()
-	{
+	public void draw() {
 		if (currentState != null)
 			this.currentState.draw();
 	}

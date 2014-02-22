@@ -14,6 +14,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * 
+ * Activity with a menu and demo selection, although there is only one demo.
+ * Quite useless. This has to go as we will be moving to library project
+ * 
+ */
 public class MenuActivity extends Activity {
 	ImageButton imageButton;
 

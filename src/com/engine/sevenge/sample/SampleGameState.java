@@ -36,7 +36,7 @@ public class SampleGameState extends GameState {
 	@Override
 	public void onStart() {
 		mRenderQueue = SevenGE.renderer.getRenderQueue();
-		SevenGE.assetManager.clearAssets();
+		// SevenGE.assetManager.clearAssets();
 		SevenGE.assetManager.loadAssets(SevenGE.io.asset("sample.pkg"));
 		camera = new Camera2D();
 		TextureShaderProgram tsp = (TextureShaderProgram) SevenGE.assetManager

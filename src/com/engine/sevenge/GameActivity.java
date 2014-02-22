@@ -76,7 +76,7 @@ public class GameActivity extends Activity {
 		super.onPause();
 		if (rendererSet) {
 			glSurfaceView.onPause();
-			
+
 		}
 	}
 

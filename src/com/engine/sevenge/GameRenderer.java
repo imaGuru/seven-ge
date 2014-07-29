@@ -8,10 +8,11 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 
+import com.engine.sevenge.graphics.Drawable;
 import com.engine.sevenge.graphics.RenderQueue;
-import com.engine.sevenge.sample.SampleGameState;
 
-public class GameRenderer implements Renderer {
+public class GameRenderer implements Renderer
+{
 
 	private static final String TAG = "GameEngine";
 	/**
@@ -53,13 +54,14 @@ public class GameRenderer implements Renderer {
 	 */
 	private int mHeight;
 
-	private SampleGameState ss;
+	// private SampleGameState ss;
 
 	/**
 	 * GameState initialization should take place here
 	 */
-	GameRenderer(Context context) {
-		ss = new SampleGameState(context);
+	GameRenderer(Context context)
+	{
+		// ss = new SampleGameState(context);
 	}
 
 	/**
@@ -67,20 +69,26 @@ public class GameRenderer implements Renderer {
 	 * updated and drawn
 	 */
 	@Override
-	public void onDrawFrame(GL10 arg0) {
+	public void onDrawFrame(GL10 arg0)
+	{
 		mDeltaTime = (System.currentTimeMillis() - mStartTime);
 		mSleepTime = FRAME_TIME - mDeltaTime;
-		if (mSleepTime > 0) {
-			try {
+		if (mSleepTime > 0)
+		{
+			try
+			{
 				Thread.sleep(mSleepTime);
-			} catch (InterruptedException e) {
+			} catch (InterruptedException e)
+			{
 			}
 		}
 		mFramesSkipped = 0;
-		while (mSleepTime < 0 && mFramesSkipped < MAX_FRAME_SKIPS) {
+		while (mSleepTime < 0 && mFramesSkipped < MAX_FRAME_SKIPS)
+		{
 			mSleepTime += FRAME_TIME;
 			/* GameState update */
-			ss.update();
+			SevenGE.stateManager.update();
+			// ss.update();
 			mFramesSkipped++;
 		}
 		// Log.v(TAG, "FramesSkipped: " + framesSkipped + " FPS: " + (double) 1
@@ -88,8 +96,10 @@ public class GameRenderer implements Renderer {
 		mStartTime = System.currentTimeMillis();
 
 		/* GameState update and draw */
-		ss.update();
-		ss.draw();
+		SevenGE.stateManager.update();
+		SevenGE.stateManager.draw();
+		// ss.update();
+		// ss.draw();
 	}
 
 	/**
@@ -97,31 +107,47 @@ public class GameRenderer implements Renderer {
 	 * current GameState and set the OpenGL viewport to the new resolution
 	 */
 	@Override
-	public void onSurfaceChanged(GL10 gl, int width, int height) {
+	public void onSurfaceChanged(GL10 gl, int width, int height)
+	{
 		glViewport(0, 0, width, height);
 		mWidth = width;
 		mHeight = height;
-		ss.onSurfaceChange(width, height);
+		SevenGE.stateManager.onSurfaceChange(width, height);
+		// ss.onSurfaceChange(width, height);
 	}
 
 	/**
 	 * Invoked when the surface is created. We start the current GameState
 	 */
 	@Override
-	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+	public void onSurfaceCreated(GL10 gl, EGLConfig config)
+	{
 		mRenderQueue = new RenderQueue();
-		ss.onStart();
+		// ss.onStart();
 	}
 
-	public RenderQueue getRenderQueue() {
+	public RenderQueue getRenderQueue()
+	{
 		return mRenderQueue;
 	}
 
-	public int getSurfaceHeight() {
+	public void addToRenderQueue(Drawable d)
+	{
+		mRenderQueue.add(d);
+	}
+
+	public void render()
+	{
+		mRenderQueue.render();
+	}
+
+	public int getSurfaceHeight()
+	{
 		return mHeight;
 	}
 
-	public int getSurfaceWidth() {
+	public int getSurfaceWidth()
+	{
 		return mWidth;
 	}
 }

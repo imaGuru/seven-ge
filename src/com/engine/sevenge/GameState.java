@@ -7,16 +7,25 @@ package com.engine.sevenge;
  * code in the main loop
  * 
  */
-public abstract class GameState {
-	/**
-	 * Invoked on creation of a surface
-	 */
-	public abstract void onStart();
+public abstract class GameState
+{
 
-	/**
-	 * Invoked after user switches gamestates. You should release game state
-	 * resources here
-	 */
+	protected final GameActivity gameActivity;
+
+	public GameState(GameActivity gameActivity)
+	{
+		this.gameActivity = gameActivity;
+	}
+
+	// /**
+	// * Invoked on creation of a surface
+	// */
+	// public abstract void onStart();
+	//
+	// /**
+	// * Invoked after user switches gamestates. You should release game state
+	// * resources here
+	// */
 	public abstract void onFinish();
 
 	/**
@@ -29,4 +38,10 @@ public abstract class GameState {
 	 * timestep
 	 */
 	public abstract void update();
+
+	public abstract void onPause();
+
+	public abstract void onResume();
+
+	public abstract void onSurfaceChange(int width, int height);
 }

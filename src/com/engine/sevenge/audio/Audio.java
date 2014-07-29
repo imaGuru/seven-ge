@@ -8,14 +8,16 @@ import android.content.res.AssetManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
-public class Audio {
+public class Audio
+{
 	AssetManager assets;
 	SoundPool soundPool;
 	Activity activity;
 
 	public final static int MAX_SIMULTANEOUS_SOUNDS = 10;
 
-	public Audio(Activity activity) {
+	public Audio(Activity activity)
+	{
 		activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		this.assets = activity.getAssets();
 		this.soundPool = new SoundPool(MAX_SIMULTANEOUS_SOUNDS,
@@ -23,24 +25,28 @@ public class Audio {
 		this.activity = activity;
 	}
 
-	public Music getMusic(String filename) {
-		try {
+	public Music getMusic(String filename)
+	{
+		try
+		{
 			AssetFileDescriptor assetDescriptor = assets.openFd(filename);
 			Music newMusic = new Music(assetDescriptor);
-			activity.getApplication().registerActivityLifecycleCallbacks(
-					newMusic);
 			return newMusic;
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			throw new RuntimeException("Couldn't load music '" + filename + "'");
 		}
 	}
 
-	public Sound getSound(String filename) {
-		try {
+	public Sound getSound(String filename)
+	{
+		try
+		{
 			AssetFileDescriptor assetDescriptor = assets.openFd(filename);
 			int soundId = soundPool.load(assetDescriptor, 0);
 			return new Sound(soundPool, soundId);
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			throw new RuntimeException("Couldn't load sound '" + filename + "'");
 		}
 	}

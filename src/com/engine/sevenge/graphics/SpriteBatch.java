@@ -8,7 +8,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
-public class SpriteBatch implements Drawable {
+public class SpriteBatch implements Drawable
+{
 
 	private float[] VPMatrix;
 	private final Texture2D texture;
@@ -32,7 +33,8 @@ public class SpriteBatch implements Drawable {
 	private static final int VERTICES_PER_SPRITE = 4;
 
 	public SpriteBatch(Texture2D tex2D, TextureShaderProgram spriteShader,
-			int size) {
+			int size)
+	{
 		texture = tex2D;
 		program = spriteShader;
 		this.size = size;
@@ -40,7 +42,8 @@ public class SpriteBatch implements Drawable {
 				* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT)
 				* 4];
 		indices = new short[size * INDICES_PER_SPRITE];
-		for (i = 0; i < size; i++) {
+		for (i = 0; i < size; i++)
+		{
 			indexOffset = i * INDICES_PER_SPRITE;
 			vertexOffset = i * VERTICES_PER_SPRITE;
 			indices[indexOffset] = (short) vertexOffset;
@@ -56,16 +59,20 @@ public class SpriteBatch implements Drawable {
 		indexBuffer.position(0);
 	}
 
-	public void setProgram(TextureShaderProgram program) {
+	public void setProgram(TextureShaderProgram program)
+	{
 		this.program = program;
 	}
 
-	public void setVPMatrix(float[] m) {
+	public void setVPMatrix(float[] m)
+	{
 		VPMatrix = m;
 	}
 
-	public void add(float[] vertexData) {
-		if (spriteCount < size) {
+	public void add(float[] vertexData)
+	{
+		if (spriteCount < size)
+		{
 			for (i = 0; i < vertexData.length; i++)
 				spriteData[offset + i] = vertexData[i];
 			offset = ++spriteCount
@@ -74,21 +81,26 @@ public class SpriteBatch implements Drawable {
 		}
 	}
 
-	public void upload() {
-		if (!VAOinitialized) {
+	public void upload()
+	{
+		if (!VAOinitialized)
+		{
 			vertexArray = new VertexArray(spriteData);
 			VAOinitialized = true;
-		} else
+		}
+		else
 			vertexArray.reuploadData(spriteData);
 	}
 
-	public void clear() {
+	public void clear()
+	{
 		spriteCount = 0;
 		offset = 0;
 	}
 
 	@Override
-	public void draw() {
+	public void draw()
+	{
 		program.use();
 		program.setUniforms(VPMatrix, texture);
 		vertexArray.setVertexAttribPointer(0,

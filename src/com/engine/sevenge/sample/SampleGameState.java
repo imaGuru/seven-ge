@@ -4,6 +4,7 @@ import java.util.Random;
 
 import android.content.Context;
 
+import com.engine.sevenge.GameActivity;
 import com.engine.sevenge.GameState;
 import com.engine.sevenge.SevenGE;
 import com.engine.sevenge.audio.Music;
@@ -16,7 +17,8 @@ import com.engine.sevenge.graphics.Texture2D;
 import com.engine.sevenge.graphics.TextureShaderProgram;
 import com.engine.sevenge.input.SingleTouchDetector;
 
-public class SampleGameState extends GameState {
+public class SampleGameState extends GameState
+{
 
 	private SpriteBatch spriteBatch;
 	private Camera2D camera;
@@ -26,16 +28,18 @@ public class SampleGameState extends GameState {
 	private int mHeight;
 	private int mWidth;
 
-	public SampleGameState(Context context) {
+	private Music music;
+
+	// TODO context and activity as one entity
+	public SampleGameState(GameActivity context)
+	{
+		super(context);
 		mContext = context;
 		inputProcessor = new InputProcessor();
 		SevenGE.input.addDetector(new SingleTouchDetector(mContext,
 				new SampleGestureListener(inputProcessor)));
-	}
 
-	@Override
-	public void onStart() {
-		mRenderQueue = SevenGE.renderer.getRenderQueue();
+		// mRenderQueue = SevenGE.renderer.getRenderQueue();
 		// SevenGE.assetManager.clearAssets();
 		SevenGE.assetManager.loadAssets(SevenGE.io.asset("sample.pkg"));
 		camera = new Camera2D();
@@ -44,7 +48,8 @@ public class SampleGameState extends GameState {
 		Texture2D tex = (Texture2D) SevenGE.assetManager.getAsset("spaceSheet");
 		spriteBatch = new SpriteBatch(tex, tsp, 1000);
 		Random rng = new Random();
-		for (int i = 0; i < 350; i++) {
+		for (int i = 0; i < 350; i++)
+		{
 			Sprite sprite;
 			if (rng.nextInt(10) < 3)
 				sprite = new Sprite(
@@ -69,13 +74,17 @@ public class SampleGameState extends GameState {
 		}
 		spriteBatch.upload();
 
-		Music music = (Music) SevenGE.assetManager.getAsset("music1");
+		music = (Music) SevenGE.assetManager.getAsset("music1");
 		music.setLooping(true);
 		music.play();
+
 	}
 
-	public void onSurfaceChange(int width, int height) {
-		if (mWidth != width || mHeight != height) {
+	@Override
+	public void onSurfaceChange(int width, int height)
+	{
+		if (mWidth != width || mHeight != height)
+		{
 			camera.setProjectionOrtho(width, height);
 			camera.lookAt(500, 500);
 			camera.zoom(1.2f);
@@ -85,21 +94,43 @@ public class SampleGameState extends GameState {
 	}
 
 	@Override
-	public void onFinish() {
+	public void onFinish()
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void draw() {
+	public void draw()
+	{
 		spriteBatch.setVPMatrix(camera.getViewProjectionMatrix());
-		mRenderQueue.add(spriteBatch);
-		mRenderQueue.render();
+		SevenGE.renderer.addToRenderQueue(spriteBatch);
+		SevenGE.renderer.render();
+		// SevenGE.renderer.getRenderQueue().add(spriteBatch);
+		// SevenGE.renderer.getRenderQueue().render();
+		// mRenderQueue.add(spriteBatch);
+		// mRenderQueue.render();
+
 	}
 
 	@Override
-	public void update() {
+	public void update()
+	{
 		inputProcessor.process(camera);
+	}
+
+	@Override
+	public void onPause()
+	{
+		music.pause();
+
+	}
+
+	@Override
+	public void onResume()
+	{
+		music.play();
+
 	}
 
 }

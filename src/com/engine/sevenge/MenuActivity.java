@@ -1,5 +1,7 @@
 package com.engine.sevenge;
 
+import com.engine.sevenge.sample.SampleGame;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 public class MenuActivity extends Activity {
 	ImageButton imageButton;
 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,7 +66,7 @@ public class MenuActivity extends Activity {
 							.show();
 				} else {
 					Intent i = new Intent(getApplicationContext(),
-							GameActivity.class);
+							SampleGame.class);
 					i.putExtra("demo", position + 1);
 					startActivity(i);
 				}

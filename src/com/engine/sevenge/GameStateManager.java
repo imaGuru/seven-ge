@@ -1,27 +1,71 @@
 package com.engine.sevenge;
 
-public class GameStateManager {
+public class GameStateManager
+{
 
 	private GameState currentState = null;
 
-	public GameState getCurrentState() {
-		return currentState;
+	public void setCurrentState(GameState currentState)
+	{
+		if (currentState == null)
+		{
+			throw new NullPointerException("Cannot set a null State");
+		}
+
+		if (this.currentState != currentState)
+		{
+			if (this.currentState != null)
+			{
+				this.currentState.onPause();
+				this.currentState.onFinish();
+			}
+			currentState.onResume();
+			currentState.update();
+			this.currentState = currentState;
+		}
 	}
 
-	public void setCurrentState(GameState currentState) {
-		if (this.currentState != null)
-			this.currentState.onFinish();
-		this.currentState = currentState;
-		this.currentState.onStart();
-	}
+	// public void setScreen(Screen screen)
+	// {
+	// if (screen == null)
+	// throw new IllegalArgumentException("Screen must not be null");
+	// this.screen.pause();
+	// this.screen.dispose();
+	// screen.resume();
+	// screen.update(0);
+	// this.screen = screen;
+	// }
 
-	public void update() {
+	public void update()
+	{
 		if (currentState != null)
 			this.currentState.update();
 	}
 
-	public void draw() {
+	public void draw()
+	{
 		if (currentState != null)
 			this.currentState.draw();
+	}
+
+	public void pause()
+	{
+		if (currentState != null)
+			this.currentState.onPause();
+	}
+
+	public void resume()
+	{
+		if (currentState != null)
+			this.currentState.onResume();
+
+	}
+
+	public void onSurfaceChange(int width, int height)
+	{
+
+		if (currentState != null)
+			this.currentState.onSurfaceChange(width, height);
+
 	}
 }

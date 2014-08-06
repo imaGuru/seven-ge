@@ -5,7 +5,6 @@ import static android.opengl.GLES20.glViewport;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 
 import com.engine.sevenge.graphics.Drawable;
@@ -13,6 +12,14 @@ import com.engine.sevenge.graphics.RenderQueue;
 
 public class GameRenderer implements Renderer
 {
+
+	enum State
+	{
+		Initialized, Running, Paused, Finished, Idle
+	}
+
+	Object stateChanged = new Object();
+	State state;
 
 	private static final String TAG = "GameEngine";
 	/**
@@ -54,13 +61,14 @@ public class GameRenderer implements Renderer
 	 */
 	private int mHeight;
 
-	// private SampleGameState ss;
+	private GameActivity mGameActivity;
 
 	/**
 	 * GameState initialization should take place here
 	 */
-	GameRenderer(Context context)
+	GameRenderer(GameActivity context)
 	{
+		mGameActivity = context;
 		// ss = new SampleGameState(context);
 	}
 
@@ -71,35 +79,67 @@ public class GameRenderer implements Renderer
 	@Override
 	public void onDrawFrame(GL10 arg0)
 	{
-		mDeltaTime = (System.currentTimeMillis() - mStartTime);
-		mSleepTime = FRAME_TIME - mDeltaTime;
-		if (mSleepTime > 0)
+		State drawState;
+
+		synchronized (stateChanged)
 		{
-			try
+			drawState = this.state;
+		}
+
+		if (drawState == State.Running)
+		{
+			mDeltaTime = (System.currentTimeMillis() - mStartTime);
+			mSleepTime = FRAME_TIME - mDeltaTime;
+			if (mSleepTime > 0)
 			{
-				Thread.sleep(mSleepTime);
-			} catch (InterruptedException e)
+				try
+				{
+					Thread.sleep(mSleepTime);
+				} catch (InterruptedException e)
+				{
+				}
+			}
+			mFramesSkipped = 0;
+			while (mSleepTime < 0 && mFramesSkipped < MAX_FRAME_SKIPS)
 			{
+				mSleepTime += FRAME_TIME;
+				/* GameState update */
+				SevenGE.stateManager.update();
+				// ss.update();
+				mFramesSkipped++;
+			}
+			// Log.v(TAG, "FramesSkipped: " + framesSkipped + " FPS: " +
+			// (double) 1
+			// / (System.currentTimeMillis() - startTime) * 1000);
+			mStartTime = System.currentTimeMillis();
+
+			/* GameState update and draw */
+			SevenGE.stateManager.update();
+			SevenGE.stateManager.draw();
+			// ss.update();
+			// ss.draw();
+		}
+
+		if (drawState == State.Paused)
+		{
+			SevenGE.stateManager.pause();
+			synchronized (stateChanged)
+			{
+				this.state = State.Idle;
+				stateChanged.notifyAll();
 			}
 		}
-		mFramesSkipped = 0;
-		while (mSleepTime < 0 && mFramesSkipped < MAX_FRAME_SKIPS)
+		if (drawState == State.Finished)
 		{
-			mSleepTime += FRAME_TIME;
-			/* GameState update */
-			SevenGE.stateManager.update();
-			// ss.update();
-			mFramesSkipped++;
+			SevenGE.stateManager.pause();
+			// SevenGE.stateManager.dispose();
+			synchronized (stateChanged)
+			{
+				this.state = State.Idle;
+				stateChanged.notifyAll();
+			}
 		}
-		// Log.v(TAG, "FramesSkipped: " + framesSkipped + " FPS: " + (double) 1
-		// / (System.currentTimeMillis() - startTime) * 1000);
-		mStartTime = System.currentTimeMillis();
 
-		/* GameState update and draw */
-		SevenGE.stateManager.update();
-		SevenGE.stateManager.draw();
-		// ss.update();
-		// ss.draw();
 	}
 
 	/**
@@ -122,8 +162,23 @@ public class GameRenderer implements Renderer
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config)
 	{
+
 		mRenderQueue = new RenderQueue();
-		// ss.onStart();
+
+		synchronized (stateChanged)
+		{
+			if (state == State.Initialized)
+				SevenGE.stateManager.setCurrentState(mGameActivity
+						.getStartStage());
+
+			SevenGE.stateManager.resume();
+
+			// screen = mGameActivity.getStartStage();
+			state = State.Running;
+			// screen.resume();
+
+		}
+
 	}
 
 	public RenderQueue getRenderQueue()

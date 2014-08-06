@@ -11,7 +11,8 @@ import com.engine.sevenge.io.IO;
  * and should be changed.
  * 
  */
-public class SevenGE {
+public class SevenGE
+{
 
 	/**
 	 * Handle to touch input events listener
@@ -36,5 +37,5 @@ public class SevenGE {
 	/**
 	 * Handle to the GameState machine
 	 */
-	public static GameStateManager stateManager;
+	public static GameStateManager stateManager = new GameStateManager();
 }

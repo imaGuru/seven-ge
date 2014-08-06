@@ -15,7 +15,6 @@ import com.engine.sevenge.graphics.SpriteBatch;
 import com.engine.sevenge.graphics.SubTexture2D;
 import com.engine.sevenge.graphics.Texture2D;
 import com.engine.sevenge.graphics.TextureShaderProgram;
-import com.engine.sevenge.input.SingleTouchDetector;
 
 public class SampleGameState extends GameState
 {
@@ -35,9 +34,9 @@ public class SampleGameState extends GameState
 	{
 		super(context);
 		mContext = context;
-		inputProcessor = new InputProcessor();
-		SevenGE.input.addDetector(new SingleTouchDetector(mContext,
-				new SampleGestureListener(inputProcessor)));
+		// inputProcessor = new InputProcessor();
+		// SevenGE.input.addDetector(new SingleTouchDetector(mContext,
+		// new SampleGestureListener(inputProcessor)));
 
 		// mRenderQueue = SevenGE.renderer.getRenderQueue();
 		// SevenGE.assetManager.clearAssets();
@@ -104,8 +103,12 @@ public class SampleGameState extends GameState
 	public void draw()
 	{
 		spriteBatch.setVPMatrix(camera.getViewProjectionMatrix());
-		SevenGE.renderer.addToRenderQueue(spriteBatch);
-		SevenGE.renderer.render();
+
+		this.gameActivity.getRenderQueue().add(spriteBatch);
+		this.gameActivity.getRenderQueue().render();
+
+		// SevenGE.renderer.addToRenderQueue(spriteBatch);
+		// SevenGE.renderer.render();
 		// SevenGE.renderer.getRenderQueue().add(spriteBatch);
 		// SevenGE.renderer.getRenderQueue().render();
 		// mRenderQueue.add(spriteBatch);
@@ -116,7 +119,7 @@ public class SampleGameState extends GameState
 	@Override
 	public void update()
 	{
-		inputProcessor.process(camera);
+		// inputProcessor.process(camera);
 	}
 
 	@Override

@@ -25,17 +25,6 @@ public class GameStateManager
 		}
 	}
 
-	// public void setScreen(Screen screen)
-	// {
-	// if (screen == null)
-	// throw new IllegalArgumentException("Screen must not be null");
-	// this.screen.pause();
-	// this.screen.dispose();
-	// screen.resume();
-	// screen.update(0);
-	// this.screen = screen;
-	// }
-
 	public void update()
 	{
 		if (currentState != null)

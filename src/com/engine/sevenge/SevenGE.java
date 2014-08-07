@@ -23,10 +23,6 @@ public class SevenGE
 	 */
 	public static IO io;
 	/**
-	 * Handle to the main GLSurface Renderer
-	 */
-	public static GameRenderer renderer;
-	/**
 	 * Handle to audio... yeah this should be a manager
 	 */
 	public static Audio audio;
@@ -37,5 +33,6 @@ public class SevenGE
 	/**
 	 * Handle to the GameState machine
 	 */
-	public static GameStateManager stateManager = new GameStateManager();
+	public static GameStateManager stateManager;
+
 }

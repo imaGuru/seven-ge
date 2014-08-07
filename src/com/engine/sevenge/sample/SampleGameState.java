@@ -1,15 +1,21 @@
 package com.engine.sevenge.sample;
 
-import java.util.Random;
+import static android.opengl.GLES20.GL_BLEND;
+import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_ONE;
+import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
+import static android.opengl.GLES20.glBlendFunc;
+import static android.opengl.GLES20.glClear;
+import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.glEnable;
 
-import android.content.Context;
+import java.util.Random;
 
 import com.engine.sevenge.GameActivity;
 import com.engine.sevenge.GameState;
 import com.engine.sevenge.SevenGE;
 import com.engine.sevenge.audio.Music;
 import com.engine.sevenge.graphics.Camera2D;
-import com.engine.sevenge.graphics.RenderQueue;
 import com.engine.sevenge.graphics.Sprite;
 import com.engine.sevenge.graphics.SpriteBatch;
 import com.engine.sevenge.graphics.SubTexture2D;
@@ -21,19 +27,21 @@ public class SampleGameState extends GameState
 
 	private SpriteBatch spriteBatch;
 	private Camera2D camera;
-	private InputProcessor inputProcessor;
-	private Context mContext;
-	private RenderQueue mRenderQueue;
+	// private InputProcessor inputProcessor;
 	private int mHeight;
 	private int mWidth;
 
 	private Music music;
 
 	// TODO context and activity as one entity
-	public SampleGameState(GameActivity context)
+	public SampleGameState(GameActivity gameActivity)
 	{
-		super(context);
-		mContext = context;
+		super(gameActivity);
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
+
 		// inputProcessor = new InputProcessor();
 		// SevenGE.input.addDetector(new SingleTouchDetector(mContext,
 		// new SampleGestureListener(inputProcessor)));
@@ -93,26 +101,11 @@ public class SampleGameState extends GameState
 	}
 
 	@Override
-	public void onFinish()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void draw()
 	{
+		glClear(GL_COLOR_BUFFER_BIT);
 		spriteBatch.setVPMatrix(camera.getViewProjectionMatrix());
-
-		this.gameActivity.getRenderQueue().add(spriteBatch);
-		this.gameActivity.getRenderQueue().render();
-
-		// SevenGE.renderer.addToRenderQueue(spriteBatch);
-		// SevenGE.renderer.render();
-		// SevenGE.renderer.getRenderQueue().add(spriteBatch);
-		// SevenGE.renderer.getRenderQueue().render();
-		// mRenderQueue.add(spriteBatch);
-		// mRenderQueue.render();
+		spriteBatch.draw();
 
 	}
 
@@ -123,14 +116,21 @@ public class SampleGameState extends GameState
 	}
 
 	@Override
-	public void onPause()
+	public void dispose()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void pause()
 	{
 		music.pause();
 
 	}
 
 	@Override
-	public void onResume()
+	public void resume()
 	{
 		music.play();
 

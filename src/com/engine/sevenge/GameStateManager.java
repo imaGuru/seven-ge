@@ -16,10 +16,10 @@ public class GameStateManager
 		{
 			if (this.currentState != null)
 			{
-				this.currentState.onPause();
-				this.currentState.onFinish();
+				this.currentState.pause();
+				this.currentState.dispose();
 			}
-			currentState.onResume();
+			currentState.resume();
 			currentState.update();
 			this.currentState = currentState;
 		}
@@ -40,21 +40,27 @@ public class GameStateManager
 	public void pause()
 	{
 		if (currentState != null)
-			this.currentState.onPause();
+			this.currentState.pause();
 	}
 
 	public void resume()
 	{
 		if (currentState != null)
-			this.currentState.onResume();
+			this.currentState.resume();
 
+	}
+
+	public void dispose()
+	{
+
+		if (currentState != null)
+			this.currentState.dispose();
 	}
 
 	public void onSurfaceChange(int width, int height)
 	{
-
 		if (currentState != null)
 			this.currentState.onSurfaceChange(width, height);
-
 	}
+
 }

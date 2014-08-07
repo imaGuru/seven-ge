@@ -13,12 +13,10 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Menu;
 import android.widget.Toast;
 
 import com.engine.sevenge.assets.AssetManager;
 import com.engine.sevenge.audio.Audio;
-import com.engine.sevenge.graphics.RenderQueue;
 import com.engine.sevenge.input.InputListener;
 import com.engine.sevenge.io.IO;
 import com.engine.sevenge.utils.Log;
@@ -27,6 +25,7 @@ public abstract class GameActivity extends Activity implements Renderer
 {
 	private static final String TAG = "GameEngine";
 	private static final String sTAG = "GLGameState";
+
 	/**
 	 * Time recorded at the start of the frame
 	 */
@@ -53,11 +52,6 @@ public abstract class GameActivity extends Activity implements Renderer
 	 */
 	private static final int MAX_FRAME_SKIPS = 5;
 	/**
-	 * The render queue for handing out to game states to outsource drawing
-	 * commands
-	 */
-	private RenderQueue mRenderQueue;
-	/**
 	 * The width of the surface
 	 */
 	private int mWidth;
@@ -66,28 +60,22 @@ public abstract class GameActivity extends Activity implements Renderer
 	 */
 	private int mHeight;
 
+	private GLSurfaceView glSurfaceView;
+
 	enum GLGameState
 	{
 		Initialized, Running, Paused, Finished, Idle
 	}
 
-	private GLSurfaceView glSurfaceView;
-	private boolean rendererSet = false;
-	GLGameState state = GLGameState.Initialized;
-	Object stateChanged = new Object();
+	private GLGameState state = GLGameState.Initialized;
+	private Object stateChanged = new Object();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		Log.d(sTAG, "onCreate");
-
 		super.onCreate(savedInstanceState);
-		Bundle extras = getIntent().getExtras();
-		if (extras != null)
-		{
-			int demo = extras.getInt("demo");
-			Toast.makeText(this, "Demo " + demo, Toast.LENGTH_LONG).show();
-		}
+
+		Log.d(sTAG, "onCreate");
 
 		final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		final ConfigurationInfo configurationInfo = activityManager
@@ -102,10 +90,10 @@ public abstract class GameActivity extends Activity implements Renderer
 
 		SevenGE.input = new InputListener();
 		SevenGE.io = new IO(this);
-		SevenGE.renderer = new GameRenderer(this);
 		SevenGE.audio = new Audio(this);
 		SevenGE.assetManager = new AssetManager();
-		// SevenGE.stateManager = new GameStateManager();
+		SevenGE.stateManager = new GameStateManager();
+
 		if (state == GLGameState.Initialized)
 			Log.d(sTAG, "Initialized");
 
@@ -116,10 +104,8 @@ public abstract class GameActivity extends Activity implements Renderer
 			glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 			glSurfaceView.setPreserveEGLContextOnPause(true);
 			glSurfaceView.setRenderer(this);
-			glSurfaceView.setOnTouchListener(SevenGE.input);
+			// glSurfaceView.setOnTouchListener(SevenGE.input);
 			glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-			rendererSet = true;
-			// SevenGE.stateManager.setCurrentState(getStartStage());
 			setContentView(glSurfaceView);
 
 		}
@@ -130,14 +116,6 @@ public abstract class GameActivity extends Activity implements Renderer
 			return;
 		}
 
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
 	}
 
 	@Override
@@ -209,9 +187,7 @@ public abstract class GameActivity extends Activity implements Renderer
 			while (mSleepTime < 0 && mFramesSkipped < MAX_FRAME_SKIPS)
 			{
 				mSleepTime += FRAME_TIME;
-				/* GameState update */
 				SevenGE.stateManager.update();
-				// ss.update();
 				mFramesSkipped++;
 			}
 
@@ -234,7 +210,8 @@ public abstract class GameActivity extends Activity implements Renderer
 		if (state == GLGameState.Finished)
 		{
 			SevenGE.stateManager.pause();
-			// screen.dispose();
+			SevenGE.stateManager.dispose();
+
 			synchronized (stateChanged)
 			{
 				this.state = GLGameState.Idle;
@@ -250,8 +227,6 @@ public abstract class GameActivity extends Activity implements Renderer
 	{
 		Log.d(sTAG, "onSurfaceChanged");
 
-		mRenderQueue = new RenderQueue();
-
 		synchronized (stateChanged)
 		{
 			if (state == GLGameState.Initialized)
@@ -260,11 +235,10 @@ public abstract class GameActivity extends Activity implements Renderer
 			Log.d(sTAG, "Running");
 			SevenGE.stateManager.resume();
 		}
-
+		SevenGE.stateManager.onSurfaceChange(width, height);
 		glViewport(0, 0, width, height);
 		mWidth = width;
 		mHeight = height;
-		SevenGE.stateManager.onSurfaceChange(width, height);
 
 	}
 
@@ -273,31 +247,8 @@ public abstract class GameActivity extends Activity implements Renderer
 	{
 		Log.d(sTAG, "onSurfaceCreated");
 
-		// synchronized (stateChanged)
-		// {
-		// if (state == GLGameState.Initialized)
-		// SevenGE.stateManager.setCurrentState(getStartStage());
-		// state = GLGameState.Running;
-		// Log.d(sTAG, "Running");
-		// SevenGE.stateManager.resume();
-		// }
-
 	}
 
 	public abstract GameState getStartStage();
 
-	public RenderQueue getRenderQueue()
-	{
-		return mRenderQueue;
-	}
-
-	public int getSurfaceHeight()
-	{
-		return mHeight;
-	}
-
-	public int getSurfaceWidth()
-	{
-		return mWidth;
-	}
 }

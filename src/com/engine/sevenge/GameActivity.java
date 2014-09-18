@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
+import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Build;
@@ -247,6 +248,13 @@ public abstract class GameActivity extends Activity implements Renderer
 	{
 		Log.d(sTAG, "onSurfaceCreated");
 
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig)
+	{
+		// TODO Auto-generated method stub
+		super.onConfigurationChanged(newConfig);
 	}
 
 	public abstract GameState getStartStage();

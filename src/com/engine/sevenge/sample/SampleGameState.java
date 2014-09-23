@@ -9,6 +9,8 @@ import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glEnable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 
@@ -18,6 +20,10 @@ import com.engine.sevenge.GameActivity;
 import com.engine.sevenge.GameState;
 import com.engine.sevenge.SevenGE;
 import com.engine.sevenge.audio.Music;
+import com.engine.sevenge.ecs.CPosition;
+import com.engine.sevenge.ecs.CSprite;
+import com.engine.sevenge.ecs.Entity;
+import com.engine.sevenge.ecs.SRender;
 import com.engine.sevenge.graphics.Camera2D;
 import com.engine.sevenge.graphics.Sprite;
 import com.engine.sevenge.graphics.SpriteBatch;
@@ -34,6 +40,8 @@ public class SampleGameState extends GameState {
 	private int mWidth;
 
 	private Music music;
+	private SRender renderSystem;
+	private List<Entity> entities;
 
 	// TODO context and activity as one entity
 	public SampleGameState(GameActivity gameActivity) {
@@ -48,32 +56,30 @@ public class SampleGameState extends GameState {
 		TextureShaderProgram tsp = (TextureShaderProgram) SevenGE.assetManager
 				.getAsset("spriteShader");
 		Texture2D tex = (Texture2D) SevenGE.assetManager.getAsset("spaceSheet");
-		spriteBatch = new SpriteBatch(tex, tsp, 1000);
+		//spriteBatch = new SpriteBatch(tex, tsp, 1000);
+		renderSystem = new SRender(camera, tsp, tex);
 		Random rng = new Random();
+		entities = new ArrayList<Entity>();
 		for (int i = 0; i < 350; i++) {
-			Sprite sprite;
+			Entity e = new Entity();
+			CSprite cs = new CSprite();
 			if (rng.nextInt(10) < 3)
-				sprite = new Sprite(
-						(SubTexture2D) SevenGE.assetManager
-								.getAsset("meteorBrown_big1"));
+				cs.subTexture = "meteorBrown_big1";
 			else if (rng.nextInt(10) < 6)
-				sprite = new Sprite(
-						(SubTexture2D) SevenGE.assetManager
-								.getAsset("meteorBrown_small2"));
+				cs.subTexture = "meteorBrown_small2";
 			else if (rng.nextInt(10) < 9)
-				sprite = new Sprite(
-						(SubTexture2D) SevenGE.assetManager
-								.getAsset("meteorBrown_tiny2"));
+				cs.subTexture = "meteorBrown_tiny2";
 			else
-				sprite = new Sprite(
-						(SubTexture2D) SevenGE.assetManager
-								.getAsset("enemyRed1"));
-
-			sprite.rotate(rng.nextFloat() * 6.28f);
-			sprite.translate(rng.nextFloat() * 3000f, rng.nextFloat() * 3000f);
-			spriteBatch.add(sprite.getTransformedVertices());
+				cs.subTexture = "enemyRed1";
+			CPosition cp = new CPosition();
+			cp.rotation = rng.nextFloat() * 360.0f;
+			cp.x = rng.nextFloat() * 2000f;
+			cp.y = rng.nextFloat() * 2000f;
+			cs.scale = 3.2f;
+			e.add(cp,1);
+			e.add(cs,2);
+			entities.add(e);
 		}
-		spriteBatch.upload();
 
 		music = (Music) SevenGE.assetManager.getAsset("music1");
 		music.setLooping(true);
@@ -86,7 +92,7 @@ public class SampleGameState extends GameState {
 		if (mWidth != width || mHeight != height) {
 			camera.setProjectionOrtho(width, height);
 			camera.lookAt(500, 500);
-			camera.zoom(1.0f);
+			camera.zoom(0.2f);
 			mHeight = height;
 			mWidth = width;
 		}
@@ -95,8 +101,7 @@ public class SampleGameState extends GameState {
 	@Override
 	public void draw() {
 		glClear(GL_COLOR_BUFFER_BIT);
-		spriteBatch.setVPMatrix(camera.getViewProjectionMatrix());
-		spriteBatch.draw();
+		renderSystem.process(entities);
 	}
 
 	@Override

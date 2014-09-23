@@ -30,6 +30,7 @@ public class SRender extends System {
 				SubTexture2D sprite = (SubTexture2D) SevenGE.assetManager
 						.getAsset(cs.subTexture);
 				Matrix transform = new Matrix();
+				transform.setTranslate(sprite.getWidth()/2, -sprite.getHeight()/2);
 				transform.preScale(cs.scale, cs.scale);
 				transform.preRotate(cp.rotation);
 				transform.preTranslate(cp.x, cp.y);

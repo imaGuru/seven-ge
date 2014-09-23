@@ -73,9 +73,9 @@ public class SampleGameState extends GameState {
 				cs.subTexture = "enemyRed1";
 			CPosition cp = new CPosition();
 			cp.rotation = rng.nextFloat() * 360.0f;
-			cp.x = rng.nextFloat() * 2000f;
-			cp.y = rng.nextFloat() * 2000f;
-			cs.scale = 3.2f;
+			cp.x = rng.nextFloat() * 1000f;
+			cp.y = rng.nextFloat() * 1000f;
+			cs.scale = 1.0f;
 			e.add(cp,1);
 			e.add(cs,2);
 			entities.add(e);
@@ -92,7 +92,7 @@ public class SampleGameState extends GameState {
 		if (mWidth != width || mHeight != height) {
 			camera.setProjectionOrtho(width, height);
 			camera.lookAt(500, 500);
-			camera.zoom(0.2f);
+			camera.zoom(1.0f);
 			mHeight = height;
 			mWidth = width;
 		}

@@ -1,5 +1,14 @@
 package com.engine.sevenge.ecs;
 
+import static android.opengl.GLES20.GL_BLEND;
+import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_ONE;
+import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
+import static android.opengl.GLES20.glBlendFunc;
+import static android.opengl.GLES20.glClear;
+import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.glEnable;
+
 import java.util.List;
 
 import com.engine.sevenge.SevenGE;
@@ -17,6 +26,11 @@ public class SRender extends System {
 	private Camera2D camera;
 
 	public SRender(Camera2D cam, TextureShaderProgram tsp, Texture2D tex) {
+		
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		
 		camera = cam;
 		spriteBatch = new SpriteBatch(tex, tsp, 1000);
 	}
@@ -52,6 +66,7 @@ public class SRender extends System {
 		}
 		spriteBatch.upload();
 		spriteBatch.setVPMatrix(camera.getViewProjectionMatrix());
+		glClear(GL_COLOR_BUFFER_BIT);
 		spriteBatch.draw();
 	}
 }

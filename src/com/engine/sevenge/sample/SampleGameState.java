@@ -1,14 +1,5 @@
 package com.engine.sevenge.sample;
 
-import static android.opengl.GLES20.GL_BLEND;
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
-import static android.opengl.GLES20.GL_ONE;
-import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
-import static android.opengl.GLES20.glBlendFunc;
-import static android.opengl.GLES20.glClear;
-import static android.opengl.GLES20.glClearColor;
-import static android.opengl.GLES20.glEnable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -25,16 +16,11 @@ import com.engine.sevenge.ecs.CSprite;
 import com.engine.sevenge.ecs.Entity;
 import com.engine.sevenge.ecs.SRender;
 import com.engine.sevenge.graphics.Camera2D;
-import com.engine.sevenge.graphics.Sprite;
-import com.engine.sevenge.graphics.SpriteBatch;
-import com.engine.sevenge.graphics.SubTexture2D;
 import com.engine.sevenge.graphics.Texture2D;
 import com.engine.sevenge.graphics.TextureShaderProgram;
 import com.engine.sevenge.input.InputEvent;
 
 public class SampleGameState extends GameState {
-
-	private SpriteBatch spriteBatch;
 	private Camera2D camera;
 	private int mHeight;
 	private int mWidth;
@@ -47,22 +33,22 @@ public class SampleGameState extends GameState {
 	public SampleGameState(GameActivity gameActivity) {
 		super(gameActivity);
 
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
 		SevenGE.assetManager.loadAssets(SevenGE.io.asset("sample.pkg"));
 		camera = new Camera2D();
 		TextureShaderProgram tsp = (TextureShaderProgram) SevenGE.assetManager
 				.getAsset("spriteShader");
 		Texture2D tex = (Texture2D) SevenGE.assetManager.getAsset("spaceSheet");
-		//spriteBatch = new SpriteBatch(tex, tsp, 1000);
+
 		renderSystem = new SRender(camera, tsp, tex);
+		
 		Random rng = new Random();
 		entities = new ArrayList<Entity>();
 		for (int i = 0; i < 350; i++) {
+			
 			Entity e = new Entity();
 			CSprite cs = new CSprite();
+			CPosition cp = new CPosition();
+
 			if (rng.nextInt(10) < 3)
 				cs.subTexture = "meteorBrown_big1";
 			else if (rng.nextInt(10) < 6)
@@ -71,11 +57,12 @@ public class SampleGameState extends GameState {
 				cs.subTexture = "meteorBrown_tiny2";
 			else
 				cs.subTexture = "enemyRed1";
-			CPosition cp = new CPosition();
+			
 			cp.rotation = rng.nextFloat() * 360.0f;
 			cp.x = rng.nextFloat() * 1000f;
 			cp.y = rng.nextFloat() * 1000f;
 			cs.scale = 1.0f;
+			
 			e.add(cp,1);
 			e.add(cs,2);
 			entities.add(e);
@@ -100,7 +87,6 @@ public class SampleGameState extends GameState {
 
 	@Override
 	public void draw() {
-		glClear(GL_COLOR_BUFFER_BIT);
 		renderSystem.process(entities);
 	}
 

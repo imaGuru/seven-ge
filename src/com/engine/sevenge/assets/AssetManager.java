@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 import com.engine.sevenge.audio.Audio;
 import com.engine.sevenge.graphics.Shader;
-import com.engine.sevenge.graphics.Sprite;
+import com.engine.sevenge.graphics.SubTexture2D;
 import com.engine.sevenge.graphics.Texture2D;
 import com.engine.sevenge.graphics.TextureShaderProgram;
 import com.engine.sevenge.io.FileHandle;
@@ -23,7 +23,7 @@ public class AssetManager {
 
 	public AssetManager() {
 		loaders.put(Texture2D.class.getName(), new TextureLoader(this));
-		loaders.put(Sprite.class.getName(), new SubTextureLoader(this));
+		loaders.put(SubTexture2D.class.getName(), new SubTextureLoader(this));
 		loaders.put(TextureShaderProgram.class.getName(),
 				new TextureShaderProgramLoader(this));
 		loaders.put(Shader.class.getName(), new ShaderLoader(this));
@@ -36,7 +36,7 @@ public class AssetManager {
 			JSONObject pkg = new JSONObject(content);
 			AssetLoader al = loaders.get(Texture2D.class.getName());
 			al.load(pkg.getJSONArray("textures").toString());
-			al = loaders.get(Sprite.class.getName());
+			al = loaders.get(SubTexture2D.class.getName());
 			al.load(pkg.getJSONArray("subtextures").toString());
 			al = loaders.get(Shader.class.getName());
 			al.load(pkg.getJSONArray("shaders").toString());

@@ -26,10 +26,6 @@ public abstract class GameState
 
 	public abstract void resume();
 
-	public void onSurfaceChange(int width, int height)
-	{
-		// TODO Auto-generated method stub
-
-	}
+	public abstract void onSurfaceChange(int width, int height);
 
 }

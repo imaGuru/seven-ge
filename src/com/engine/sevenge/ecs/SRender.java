@@ -25,6 +25,8 @@ public class SRender extends System
 
 	private SpriteBatch spriteBatch;
 	private Camera2D camera;
+	private float[] uvs, v = new float[8], t = new float[16];
+	private Matrix transform = new Matrix();
 
 	public SRender(Camera2D cam, TextureShaderProgram tsp, Texture2D tex)
 	{
@@ -41,6 +43,7 @@ public class SRender extends System
 	public void process(List<Entity> entities)
 	{
 		spriteBatch.clear();
+
 		for (Entity entity : entities)
 		{
 			if ((3 & entity.mask) == 3)
@@ -49,25 +52,38 @@ public class SRender extends System
 				CSprite cs = (CSprite) entity.components.get(2);
 				SubTexture2D sprite = (SubTexture2D) SevenGE.assetManager
 						.getAsset(cs.subTexture);
-				Matrix transform = new Matrix();
+
 				transform.setTranslate(sprite.getWidth() / 2,
 						-sprite.getHeight() / 2);
 				transform.preScale(cs.scale, cs.scale);
 				transform.preRotate(cp.rotation);
 				transform.preTranslate(cp.x, cp.y);
-				float[] v = { cp.x + sprite.getWidth() / 2,
-						cp.y + sprite.getHeight() / 2,
-						cp.x - sprite.getWidth() / 2,
-						cp.y + sprite.getHeight() / 2,
-						cp.x - sprite.getWidth() / 2,
-						cp.y - sprite.getHeight() / 2,
-						cp.x + sprite.getWidth() / 2,
-						cp.y - sprite.getHeight() / 2 };
+				v[0] = cp.x + sprite.getWidth() / 2;
+				v[1] = cp.y + sprite.getHeight() / 2;
+				v[2] = cp.x - sprite.getWidth() / 2;
+				v[3] = cp.y + sprite.getHeight() / 2;
+				v[4] = cp.x - sprite.getWidth() / 2;
+				v[5] = cp.y - sprite.getHeight() / 2;
+				v[6] = cp.x + sprite.getWidth() / 2;
+				v[7] = cp.y - sprite.getHeight() / 2;
 				transform.mapPoints(v);
-				float[] uvs = sprite.getUVs();
-				float[] t = { v[0], v[1], uvs[0], uvs[1], v[2], v[3], uvs[2],
-						uvs[3], v[4], v[5], uvs[4], uvs[5], v[6], v[7], uvs[6],
-						uvs[7] };
+				uvs = sprite.getUVs();
+				t[0] = v[0];
+				t[1] = v[1];
+				t[2] = uvs[0];
+				t[3] = uvs[1];
+				t[4] = v[2];
+				t[5] = v[3];
+				t[6] = uvs[2];
+				t[7] = uvs[3];
+				t[8] = v[4];
+				t[9] = v[5];
+				t[10] = uvs[4];
+				t[11] = uvs[5];
+				t[12] = v[6];
+				t[13] = v[7];
+				t[14] = uvs[6];
+				t[15] = uvs[7];
 				spriteBatch.add(t);
 			}
 		}

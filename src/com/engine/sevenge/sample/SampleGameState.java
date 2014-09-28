@@ -49,7 +49,7 @@ public class SampleGameState extends GameState
 
 		Random rng = new Random();
 		entities = new ArrayList<Entity>();
-		for (int i = 0; i < 350; i++)
+		for (int i = 0; i < 10000; i++)
 		{
 
 			Entity e = new Entity();
@@ -62,20 +62,18 @@ public class SampleGameState extends GameState
 				cs.subTexture = "meteorBrown_small2";
 			else if (rng.nextInt(10) < 9)
 				cs.subTexture = "meteorBrown_tiny2";
-			else
-			{
-				cs.subTexture = "enemyRed1";
-				CAnimation ca = new CAnimation();
-				ca.frameList = new String[] { "enemyBlack1", "enemyBlack2",
-						"enemyBlack3", "enemyBlack4", "enemyBlack5" };
-				ca.durations = new int[] { 500, 1000, 2000, 234, 666 };
-				ca.isPlaying = true;
-				e.add(ca, 4);
-			}
+
+			cs.subTexture = "enemyRed1";
+			CAnimation ca = new CAnimation();
+			ca.frameList = new String[] { "enemyBlack1", "enemyBlack2",
+					"enemyBlack3", "enemyBlack4", "enemyBlack5" };
+			ca.durations = new int[] { 500, 1000, 2000, 234, 666 };
+			ca.isPlaying = true;
+			e.add(ca, 4);
 
 			cp.rotation = rng.nextFloat() * 360.0f;
-			cp.x = rng.nextFloat() * 1000f;
-			cp.y = rng.nextFloat() * 1000f;
+			cp.x = rng.nextFloat() * 3000f;
+			cp.y = rng.nextFloat() * 3000f;
 			cs.scale = 1.0f;
 
 			e.add(cp, 1);
@@ -96,7 +94,7 @@ public class SampleGameState extends GameState
 		{
 			camera.setProjectionOrtho(width, height);
 			camera.lookAt(500, 500);
-			camera.zoom(1.0f);
+			camera.zoom(0.3f);
 			mHeight = height;
 			mWidth = width;
 		}

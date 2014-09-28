@@ -11,26 +11,31 @@ import com.engine.sevenge.GameActivity;
 import com.engine.sevenge.GameState;
 import com.engine.sevenge.SevenGE;
 import com.engine.sevenge.audio.Music;
+import com.engine.sevenge.ecs.CAnimation;
 import com.engine.sevenge.ecs.CPosition;
 import com.engine.sevenge.ecs.CSprite;
 import com.engine.sevenge.ecs.Entity;
+import com.engine.sevenge.ecs.SAnimation;
 import com.engine.sevenge.ecs.SRender;
 import com.engine.sevenge.graphics.Camera2D;
 import com.engine.sevenge.graphics.Texture2D;
 import com.engine.sevenge.graphics.TextureShaderProgram;
 import com.engine.sevenge.input.InputEvent;
 
-public class SampleGameState extends GameState {
+public class SampleGameState extends GameState
+{
 	private Camera2D camera;
 	private int mHeight;
 	private int mWidth;
 
 	private Music music;
 	private SRender renderSystem;
+	private SAnimation animationSystem;
 	private List<Entity> entities;
 
 	// TODO context and activity as one entity
-	public SampleGameState(GameActivity gameActivity) {
+	public SampleGameState(GameActivity gameActivity)
+	{
 		super(gameActivity);
 
 		SevenGE.assetManager.loadAssets(SevenGE.io.asset("sample.pkg"));
@@ -40,11 +45,13 @@ public class SampleGameState extends GameState {
 		Texture2D tex = (Texture2D) SevenGE.assetManager.getAsset("spaceSheet");
 
 		renderSystem = new SRender(camera, tsp, tex);
-		
+		animationSystem = new SAnimation();
+
 		Random rng = new Random();
 		entities = new ArrayList<Entity>();
-		for (int i = 0; i < 350; i++) {
-			
+		for (int i = 0; i < 350; i++)
+		{
+
 			Entity e = new Entity();
 			CSprite cs = new CSprite();
 			CPosition cp = new CPosition();
@@ -56,15 +63,23 @@ public class SampleGameState extends GameState {
 			else if (rng.nextInt(10) < 9)
 				cs.subTexture = "meteorBrown_tiny2";
 			else
+			{
 				cs.subTexture = "enemyRed1";
-			
+				CAnimation ca = new CAnimation();
+				ca.frameList = new String[] { "enemyBlack1", "enemyBlack2",
+						"enemyBlack3", "enemyBlack4", "enemyBlack5" };
+				ca.durations = new int[] { 500, 1000, 2000, 234, 666 };
+				ca.isPlaying = true;
+				e.add(ca, 4);
+			}
+
 			cp.rotation = rng.nextFloat() * 360.0f;
 			cp.x = rng.nextFloat() * 1000f;
 			cp.y = rng.nextFloat() * 1000f;
 			cs.scale = 1.0f;
-			
-			e.add(cp,1);
-			e.add(cs,2);
+
+			e.add(cp, 1);
+			e.add(cs, 2);
 			entities.add(e);
 		}
 
@@ -75,8 +90,10 @@ public class SampleGameState extends GameState {
 	}
 
 	@Override
-	public void onSurfaceChange(int width, int height) {
-		if (mWidth != width || mHeight != height) {
+	public void onSurfaceChange(int width, int height)
+	{
+		if (mWidth != width || mHeight != height)
+		{
 			camera.setProjectionOrtho(width, height);
 			camera.lookAt(500, 500);
 			camera.zoom(1.0f);
@@ -86,19 +103,25 @@ public class SampleGameState extends GameState {
 	}
 
 	@Override
-	public void draw() {
+	public void draw()
+	{
 		renderSystem.process(entities);
 	}
 
 	@Override
-	public void update() {
+	public void update()
+	{
+		animationSystem.process(entities);
 		Queue<InputEvent> q = SevenGE.input.getQueue();
 		InputEvent curIE;
 		float[] coords1 = new float[4];
 		float[] coords2 = new float[4];
-		while ((curIE = q.poll())!=null) {
-			if (curIE.type == InputEvent.Type.SCROLL) {
-				coords1 = camera.unProject(curIE.me2.getX()+curIE.distx, curIE.me2.getY()+curIE.disty);
+		while ((curIE = q.poll()) != null)
+		{
+			if (curIE.type == InputEvent.Type.SCROLL)
+			{
+				coords1 = camera.unProject(curIE.me2.getX() + curIE.distx,
+						curIE.me2.getY() + curIE.disty);
 				float x1 = coords1[0];
 				float y1 = coords1[1];
 				coords2 = camera.unProject(curIE.me2.getX(), curIE.me2.getY());
@@ -111,19 +134,22 @@ public class SampleGameState extends GameState {
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose()
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void pause() {
+	public void pause()
+	{
 		music.pause();
 
 	}
 
 	@Override
-	public void resume() {
+	public void resume()
+	{
 		music.play();
 
 	}

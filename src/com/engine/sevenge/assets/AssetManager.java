@@ -28,6 +28,7 @@ public class AssetManager {
 				new TextureShaderProgramLoader(this));
 		loaders.put(Shader.class.getName(), new ShaderLoader(this));
 		loaders.put(Audio.class.getName(), new AudioLoader(this));
+		loaders.put(Animation.class.getName(), new AnimationLoader(this));
 	}
 
 	public void loadAssets(FileHandle packageFile) {

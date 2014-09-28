@@ -16,8 +16,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
 import com.engine.sevenge.assets.AssetManager;
@@ -26,7 +24,8 @@ import com.engine.sevenge.input.InputListener;
 import com.engine.sevenge.io.IO;
 import com.engine.sevenge.utils.Log;
 
-public abstract class GameActivity extends Activity implements Renderer {
+public abstract class GameActivity extends Activity implements Renderer
+{
 	private static final String TAG = "GameEngine";
 	private static final String sTAG = "GLGameState";
 
@@ -49,7 +48,7 @@ public abstract class GameActivity extends Activity implements Renderer {
 	/**
 	 * The maximum frame time in milliseconds
 	 */
-	private static final long FRAME_TIME = 32;
+	public static final long FRAME_TIME = 32;
 	/**
 	 * The maximum number of frames until the simulation falls behind. Prevents
 	 * spiral of death
@@ -66,7 +65,8 @@ public abstract class GameActivity extends Activity implements Renderer {
 
 	private GLSurfaceView glSurfaceView;
 
-	enum GLGameState {
+	enum GLGameState
+	{
 		Initialized, Running, Paused, Finished, Idle
 	}
 
@@ -76,7 +76,8 @@ public abstract class GameActivity extends Activity implements Renderer {
 	private GestureDetectorCompat mDetector;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 
 		Log.d(sTAG, "onCreate");
@@ -101,7 +102,8 @@ public abstract class GameActivity extends Activity implements Renderer {
 		if (state == GLGameState.Initialized)
 			Log.d(sTAG, "Initialized");
 
-		if (supportsEs2) {
+		if (supportsEs2)
+		{
 			glSurfaceView = new GLSurfaceView(this);
 			glSurfaceView.setEGLContextClientVersion(2);
 			glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -112,7 +114,9 @@ public abstract class GameActivity extends Activity implements Renderer {
 			mDetector.setOnDoubleTapListener(SevenGE.input);
 			setContentView(glSurfaceView);
 
-		} else {
+		}
+		else
+		{
 			Toast.makeText(this, "This device does not support OpenGL ES 2.0",
 					Toast.LENGTH_LONG).show();
 			return;
@@ -121,28 +125,37 @@ public abstract class GameActivity extends Activity implements Renderer {
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
+	public boolean onTouchEvent(MotionEvent event)
+	{
 		mDetector.onTouchEvent(event);
 		return false;
 	}
 
 	@Override
-	protected void onPause() {
+	protected void onPause()
+	{
 		Log.d(sTAG, "onPause");
 
-		synchronized (stateChanged) {
-			if (isFinishing()) {
+		synchronized (stateChanged)
+		{
+			if (isFinishing())
+			{
 				state = GLGameState.Finished;
 				Log.d(sTAG, "Finished");
-			} else {
+			}
+			else
+			{
 				state = GLGameState.Paused;
 				Log.d(sTAG, "Paused");
 			}
-			while (true) {
-				try {
+			while (true)
+			{
+				try
+				{
 					stateChanged.wait();
 					break;
-				} catch (InterruptedException e) {
+				} catch (InterruptedException e)
+				{
 				}
 			}
 		}
@@ -152,7 +165,8 @@ public abstract class GameActivity extends Activity implements Renderer {
 	}
 
 	@Override
-	protected void onResume() {
+	protected void onResume()
+	{
 		Log.d(sTAG, "onResume");
 
 		super.onResume();
@@ -161,23 +175,30 @@ public abstract class GameActivity extends Activity implements Renderer {
 	}
 
 	@Override
-	public void onDrawFrame(GL10 gl) {
+	public void onDrawFrame(GL10 gl)
+	{
 		GLGameState state = null;
-		synchronized (stateChanged) {
+		synchronized (stateChanged)
+		{
 			state = this.state;
 		}
-		if (state == GLGameState.Running) {
+		if (state == GLGameState.Running)
+		{
 
 			mDeltaTime = (System.currentTimeMillis() - mStartTime);
 			mSleepTime = FRAME_TIME - mDeltaTime;
-			if (mSleepTime > 0) {
-				try {
+			if (mSleepTime > 0)
+			{
+				try
+				{
 					Thread.sleep(mSleepTime);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException e)
+				{
 				}
 			}
 			mFramesSkipped = 0;
-			while (mSleepTime < 0 && mFramesSkipped < MAX_FRAME_SKIPS) {
+			while (mSleepTime < 0 && mFramesSkipped < MAX_FRAME_SKIPS)
+			{
 				mSleepTime += FRAME_TIME;
 				SevenGE.stateManager.update();
 				mFramesSkipped++;
@@ -189,19 +210,23 @@ public abstract class GameActivity extends Activity implements Renderer {
 			SevenGE.stateManager.draw();
 
 		}
-		if (state == GLGameState.Paused) {
+		if (state == GLGameState.Paused)
+		{
 			SevenGE.stateManager.pause();
-			synchronized (stateChanged) {
+			synchronized (stateChanged)
+			{
 				this.state = GLGameState.Idle;
 				Log.d(sTAG, "Idle");
 				stateChanged.notifyAll();
 			}
 		}
-		if (state == GLGameState.Finished) {
+		if (state == GLGameState.Finished)
+		{
 			SevenGE.stateManager.pause();
 			SevenGE.stateManager.dispose();
 
-			synchronized (stateChanged) {
+			synchronized (stateChanged)
+			{
 				this.state = GLGameState.Idle;
 				Log.d(sTAG, "Idle");
 				stateChanged.notifyAll();
@@ -211,10 +236,12 @@ public abstract class GameActivity extends Activity implements Renderer {
 	}
 
 	@Override
-	public void onSurfaceChanged(GL10 gl, int width, int height) {
+	public void onSurfaceChanged(GL10 gl, int width, int height)
+	{
 		Log.d(sTAG, "onSurfaceChanged");
 
-		synchronized (stateChanged) {
+		synchronized (stateChanged)
+		{
 			if (state == GLGameState.Initialized)
 				SevenGE.stateManager.setCurrentState(getStartStage());
 			state = GLGameState.Running;
@@ -229,7 +256,8 @@ public abstract class GameActivity extends Activity implements Renderer {
 	}
 
 	@Override
-	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+	public void onSurfaceCreated(GL10 gl, EGLConfig config)
+	{
 		Log.d(sTAG, "onSurfaceCreated");
 
 	}

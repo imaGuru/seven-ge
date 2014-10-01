@@ -1,27 +1,28 @@
+
 package com.engine.sevenge.io;
 
 import android.content.Context;
 
 public class IO {
-	private Context ctx;
+	private Context context;
 
-	public IO(Context ctx) {
-		this.ctx = ctx;
+	public IO (Context context) {
+		this.context = context;
 	}
 
-	public FileHandle internal(String file) {
-		return new FileHandle(ctx.getFilesDir() + "/" + file);
+	public FileHandle internal (String file) {
+		return new FileHandle(context.getFilesDir() + "/" + file);
 	}
 
-	public FileHandle external(String file) {
-		return new FileHandle(ctx.getExternalFilesDir(null) + "/" + file);
+	public FileHandle external (String file) {
+		return new FileHandle(context.getExternalFilesDir(null) + "/" + file);
 	}
 
-	public FileHandle cache(String file) {
-		return new FileHandle(ctx.getCacheDir() + "/" + file);
+	public FileHandle cache (String file) {
+		return new FileHandle(context.getCacheDir() + "/" + file);
 	}
 
-	public FileHandle asset(String file) {
-		return new FileHandle(ctx.getAssets(), file);
+	public FileHandle asset (String file) {
+		return new FileHandle(context.getAssets(), file);
 	}
 }

@@ -1,3 +1,4 @@
+
 package com.engine.sevenge.io;
 
 import java.io.BufferedReader;
@@ -17,16 +18,16 @@ public class FileHandle {
 	private AssetManager assets = null;
 	private final String TAG = "IO";
 
-	public FileHandle(String file) {
+	public FileHandle (String file) {
 		this.file = file;
 	}
 
-	public FileHandle(AssetManager assets, String file) {
+	public FileHandle (AssetManager assets, String file) {
 		this.assets = assets;
 		this.file = file;
 	}
 
-	public InputStream getInputStream() {
+	public InputStream getInputStream () {
 		InputStream inputStream;
 		try {
 			if (assets != null)
@@ -42,7 +43,7 @@ public class FileHandle {
 		return inputStream;
 	}
 
-	public OutputStream getOutputStream() {
+	public OutputStream getOutputStream () {
 		OutputStream outputStream = null;
 		if (assets != null) {
 			Log.e(TAG, "You are trying to write an asset! That's illegal");
@@ -56,7 +57,7 @@ public class FileHandle {
 		return outputStream;
 	}
 
-	public String readString() {
+	public String readString () {
 		InputStream inputStream;
 		try {
 			if (assets != null)

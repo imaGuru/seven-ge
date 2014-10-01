@@ -1,3 +1,4 @@
+
 package com.engine.sevenge.utils;
 
 import java.util.ArrayList;
@@ -8,17 +9,17 @@ public class Pool<T> {
 	private final PoolObjectFactory<T> factory;
 	private final int maxSize;
 
-	public Pool(PoolObjectFactory<T> factory, int maxSize) {
+	public Pool (PoolObjectFactory<T> factory, int maxSize) {
 		this.factory = factory;
 		this.maxSize = maxSize;
 		this.freeObjects = new ArrayList<T>(maxSize);
 	}
 
 	public interface PoolObjectFactory<T> {
-		public T createObject();
+		public T createObject ();
 	}
 
-	public T newObject() {
+	public T newObject () {
 		T object = null;
 		if (freeObjects.isEmpty())
 			object = factory.createObject();
@@ -27,9 +28,8 @@ public class Pool<T> {
 		return object;
 	}
 
-	public void free(T object) {
-		if (freeObjects.size() < maxSize)
-			freeObjects.add(object);
+	public void free (T object) {
+		if (freeObjects.size() < maxSize) freeObjects.add(object);
 	}
 
 }

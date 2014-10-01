@@ -1,3 +1,4 @@
+
 package com.engine.sevenge.graphics;
 
 import static android.opengl.GLES20.GL_LINEAR;
@@ -25,7 +26,7 @@ public class Texture2D extends Asset {
 	private final int width;
 	private final int height;
 
-	public Texture2D(FileHandle fh) {
+	public Texture2D (FileHandle fh) {
 		textureID = new int[1];
 		glGenTextures(1, textureID, 0);
 		if (textureID[0] == 0) {
@@ -36,15 +37,13 @@ public class Texture2D extends Asset {
 		}
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inScaled = false;
-		final Bitmap bitmap = BitmapFactory.decodeStream(fh.getInputStream(),
-				null, options);
+		final Bitmap bitmap = BitmapFactory.decodeStream(fh.getInputStream(), null, options);
 		if (bitmap == null) {
 			Log.w(TAG, "Texture could not be decoded.");
 			glDeleteTextures(1, textureID, 0);
 		}
 		glBindTexture(GL_TEXTURE_2D, textureID[0]);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-				GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
 		width = bitmap.getWidth();
@@ -54,25 +53,25 @@ public class Texture2D extends Asset {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	public void bindTexture(int textureUnit) {
+	public void bindTexture (int textureUnit) {
 		glActiveTexture(textureUnit);
 		glBindTexture(GL_TEXTURE_2D, textureID[0]);
 	}
 
-	public int getGLID() {
+	public int getGLID () {
 		return textureID[0];
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		glDeleteTextures(1, textureID, 0);
 	}
 
-	public int getHeight() {
+	public int getHeight () {
 		return height;
 	}
 
-	public int getWidth() {
+	public int getWidth () {
 		return width;
 	}
 }

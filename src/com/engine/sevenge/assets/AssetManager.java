@@ -1,3 +1,4 @@
+
 package com.engine.sevenge.assets;
 
 import java.util.Collection;
@@ -21,17 +22,16 @@ public class AssetManager {
 
 	private final String TAG = "AssetManager";
 
-	public AssetManager() {
+	public AssetManager () {
 		loaders.put(Texture2D.class.getName(), new TextureLoader(this));
 		loaders.put(SubTexture2D.class.getName(), new SubTextureLoader(this));
-		loaders.put(TextureShaderProgram.class.getName(),
-				new TextureShaderProgramLoader(this));
+		loaders.put(TextureShaderProgram.class.getName(), new TextureShaderProgramLoader(this));
 		loaders.put(Shader.class.getName(), new ShaderLoader(this));
 		loaders.put(Audio.class.getName(), new AudioLoader(this));
 		loaders.put(Animation.class.getName(), new AnimationLoader(this));
 	}
 
-	public void loadAssets(FileHandle packageFile) {
+	public void loadAssets (FileHandle packageFile) {
 		String content = packageFile.readString();
 		try {
 			JSONObject pkg = new JSONObject(content);
@@ -51,11 +51,11 @@ public class AssetManager {
 		}
 	}
 
-	public void registerAsset(String key, Asset res) {
+	public void registerAsset (String key, Asset res) {
 		assets.put(key, res);
 	}
 
-	public void clearAssets() {
+	public void clearAssets () {
 		Collection<Asset> cl = assets.values();
 		Iterator<Asset> it = cl.iterator();
 		while (it.hasNext())
@@ -63,7 +63,7 @@ public class AssetManager {
 		assets.clear();
 	}
 
-	public Asset getAsset(String id) {
+	public Asset getAsset (String id) {
 		return assets.get(id);
 	}
 }

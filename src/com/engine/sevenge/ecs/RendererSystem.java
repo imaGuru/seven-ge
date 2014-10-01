@@ -1,3 +1,4 @@
+
 package com.engine.sevenge.ecs;
 
 import static android.opengl.GLES20.GL_BLEND;
@@ -20,16 +21,14 @@ import com.engine.sevenge.graphics.SubTexture2D;
 import com.engine.sevenge.graphics.Texture2D;
 import com.engine.sevenge.graphics.TextureShaderProgram;
 
-public class SRender extends System
-{
+public class RendererSystem extends System {
 
 	private SpriteBatch spriteBatch;
 	private Camera2D camera;
 	private float[] uvs, v = new float[8], t = new float[16];
 	private Matrix transform = new Matrix();
 
-	public SRender(Camera2D cam, TextureShaderProgram tsp, Texture2D tex)
-	{
+	public RendererSystem (Camera2D cam, TextureShaderProgram tsp, Texture2D tex) {
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -40,21 +39,16 @@ public class SRender extends System
 	}
 
 	@Override
-	public void process(List<Entity> entities)
-	{
+	public void process (List<Entity> entities) {
 		spriteBatch.clear();
 
-		for (Entity entity : entities)
-		{
-			if ((3 & entity.mask) == 3)
-			{
-				CPosition cp = (CPosition) entity.components.get(1);
-				CSprite cs = (CSprite) entity.components.get(2);
-				SubTexture2D sprite = (SubTexture2D) SevenGE.assetManager
-						.getAsset(cs.subTexture);
+		for (Entity entity : entities) {
+			if ((3 & entity.mask) == 3) {
+				PositionComponent cp = (PositionComponent)entity.components.get(1);
+				SpriteComponent cs = (SpriteComponent)entity.components.get(2);
+				SubTexture2D sprite = (SubTexture2D)SevenGE.assetManager.getAsset(cs.subTexture);
 
-				transform.setTranslate(sprite.getWidth() / 2,
-						-sprite.getHeight() / 2);
+				transform.setTranslate(sprite.getWidth() / 2, -sprite.getHeight() / 2);
 				transform.preScale(cs.scale, cs.scale);
 				transform.preRotate(cp.rotation);
 				transform.preTranslate(cp.x, cp.y);

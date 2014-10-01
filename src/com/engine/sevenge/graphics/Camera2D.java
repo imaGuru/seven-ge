@@ -1,3 +1,4 @@
+
 package com.engine.sevenge.graphics;
 
 import static android.opengl.Matrix.invertM;
@@ -9,25 +10,19 @@ import android.graphics.PointF;
 
 public class Camera2D {
 
-	private final float[] mProjectionMatrix = new float[16];
+	private final float[] projectionMatrix = new float[16];
 
-	private final float[] mViewMatrix = new float[16];
+	private final float[] viewMatrix = new float[16];
 
-	private final float[] mViewProjectionMatrix = new float[16];
-	/**
-	 * Used for unprojecting the coordinates into world coordinates
-	 */
-	private final float[] mInvertedViewProjectionMatrix = new float[16];
-	/**
-	 * Container for unprojected coordinates
-	 */
-	private final float[] mUnprojectedCoords = new float[4];
+	private final float[] viewProjectionMatrix = new float[16];
+	/** Used for unprojecting the coordinates into world coordinates */
+	private final float[] invertedViewProjectionMatrix = new float[16];
+	/** Container for unprojected coordinates */
+	private final float[] unprojectedCoords = new float[4];
 
-	private final float[] mDeviceCoords = new float[4];
-	/**
-	 * Position of the camera in world coordinates
-	 */
-	private PointF mCameraPosition = new PointF();
+	private final float[] deviceCoords = new float[4];
+	/** Position of the camera in world coordinates */
+	private PointF cameraPosition = new PointF();
 
 	private boolean isChangedView = true;
 
@@ -35,71 +30,65 @@ public class Camera2D {
 
 	private boolean isChangedInvertedViewProjection = true;
 
-	private float mHeight;
+	private float height;
 
-	private float mWidth;
+	private float width;
 
-	private float mScale = 1f;
+	private float scale = 1f;
 
-	public Camera2D() {
+	public Camera2D () {
 
 	}
 
-	public void setProjectionOrtho(float width, float height) {
-		mHeight = height;
-		mWidth = width;
-		orthoM(mProjectionMatrix, 0, -width / 2, width / 2, -height / 2,
-				height / 2, 0f, 1f);
+	public void setProjectionOrtho (float width, float height) {
+		this.height = height;
+		this.width = width;
+		orthoM(projectionMatrix, 0, -width / 2, width / 2, -height / 2, height / 2, 0f, 1f);
 		isChangedProjection = true;
 		isChangedInvertedViewProjection = true;
 	}
 
-	public void lookAt(float x, float y) {
-		setLookAtM(mViewMatrix, 0, x, y, 1f, x, y, 0f, 0f, 1.0f, 0.0f);
-		mCameraPosition.set(x, y);
+	public void lookAt (float x, float y) {
+		setLookAtM(viewMatrix, 0, x, y, 1f, x, y, 0f, 0f, 1.0f, 0.0f);
+		cameraPosition.set(x, y);
 		isChangedView = true;
 		isChangedInvertedViewProjection = true;
 	}
 
-	public void zoom(float scale) {
-		mScale = scale;
+	public void zoom (float scale) {
+		this.scale = scale;
 		isChangedProjection = true;
 		isChangedInvertedViewProjection = true;
 	}
 
-	public float[] unProject(float x, float y) {
+	public float[] unProject (float x, float y) {
 		if (isChangedInvertedViewProjection) {
-			orthoM(mProjectionMatrix, 0, -mWidth / mScale / 2, mWidth / mScale
-					/ 2, -mHeight / mScale / 2, mHeight / mScale / 2, 0f, 1f);
-			multiplyMM(mViewProjectionMatrix, 0, mProjectionMatrix, 0,
-					mViewMatrix, 0);
-			invertM(mInvertedViewProjectionMatrix, 0, mViewProjectionMatrix, 0);
+			orthoM(projectionMatrix, 0, -width / scale / 2, width / scale / 2, -height / scale / 2, height / scale / 2, 0f, 1f);
+			multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+			invertM(invertedViewProjectionMatrix, 0, viewProjectionMatrix, 0);
 			isChangedInvertedViewProjection = false;
 		}
-		mDeviceCoords[0] = x / mWidth * 2 - 1;
-		mDeviceCoords[1] = -y / mHeight * 2 + 1;
-		mDeviceCoords[2] = 1;
-		mDeviceCoords[3] = 1;
-		multiplyMV(mUnprojectedCoords, 0, mInvertedViewProjectionMatrix, 0,
-				mDeviceCoords, 0);
-		return mUnprojectedCoords;
+		deviceCoords[0] = x / width * 2 - 1;
+		deviceCoords[1] = -y / height * 2 + 1;
+		deviceCoords[2] = 1;
+		deviceCoords[3] = 1;
+		multiplyMV(unprojectedCoords, 0, invertedViewProjectionMatrix, 0, deviceCoords, 0);
+		return unprojectedCoords;
 	}
 
-	public float[] getViewProjectionMatrix() {
+	public float[] getViewProjectionMatrix () {
 		if (isChangedProjection) {
-			orthoM(mProjectionMatrix, 0, -mWidth / mScale / 2, mWidth / mScale
-					/ 2, -mHeight / mScale / 2, mHeight / mScale / 2, 0f, 1f);
+			orthoM(projectionMatrix, 0, -width / scale / 2, width / scale / 2, -height / scale / 2, height / scale / 2, 0f, 1f);
 		}
 		if (isChangedView || isChangedProjection) {
-			multiplyMM(mViewProjectionMatrix, 0, mProjectionMatrix, 0,
-					mViewMatrix, 0);
+			multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 			isChangedView = false;
 			isChangedProjection = false;
 		}
-		return mViewProjectionMatrix;
+		return viewProjectionMatrix;
 	}
 
-	public PointF getCameraPosition() {
-		return mCameraPosition;
+	public PointF getCameraPosition () {
+		return cameraPosition;
 	}
 }

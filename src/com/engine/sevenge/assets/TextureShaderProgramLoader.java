@@ -1,3 +1,4 @@
+
 package com.engine.sevenge.assets;
 
 import org.json.JSONArray;
@@ -9,22 +10,20 @@ import com.engine.sevenge.graphics.TextureShaderProgram;
 
 public class TextureShaderProgramLoader extends AssetLoader {
 
-	protected TextureShaderProgramLoader(AssetManager as) {
+	protected TextureShaderProgramLoader (AssetManager as) {
 		super(as);
 	}
 
 	@Override
-	public void load(String content) {
+	public void load (String content) {
 		try {
 			JSONArray jarr = new JSONArray(content);
 			for (int i = 0; i < jarr.length(); i++) {
 				JSONObject jProgram = jarr.getJSONObject(i);
 				assetManager.registerAsset(
-						jProgram.getString("id"),
-						new TextureShaderProgram((Shader) assetManager
-								.getAsset(jProgram.getString("vertexShader")),
-								(Shader) assetManager.getAsset(jProgram
-										.getString("fragmentShader"))));
+					jProgram.getString("id"),
+					new TextureShaderProgram((Shader)assetManager.getAsset(jProgram.getString("vertexShader")), (Shader)assetManager
+						.getAsset(jProgram.getString("fragmentShader"))));
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

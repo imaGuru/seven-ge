@@ -1,3 +1,4 @@
+
 package com.engine.sevenge.graphics;
 
 import static android.opengl.GLES20.GL_LINK_STATUS;
@@ -26,7 +27,7 @@ class ShaderProgram extends Asset {
 
 	protected final int programID;
 
-	public ShaderProgram(Shader vs, Shader fs) {
+	public ShaderProgram (Shader vs, Shader fs) {
 		programID = glCreateProgram();
 		if (programID == 0) {
 			Log.w(TAG, "Could not create new program");
@@ -36,8 +37,7 @@ class ShaderProgram extends Asset {
 		glLinkProgram(programID);
 		final int[] linkStatus = new int[1];
 		glGetProgramiv(programID, GL_LINK_STATUS, linkStatus, 0);
-		Log.v(TAG, "Results of linking program:\n"
-				+ glGetProgramInfoLog(programID));
+		Log.v(TAG, "Results of linking program:\n" + glGetProgramInfoLog(programID));
 		if (linkStatus[0] == 0) {
 			// If it failed, delete the program object.
 			glDeleteProgram(programID);
@@ -45,25 +45,24 @@ class ShaderProgram extends Asset {
 		}
 	}
 
-	public void use() {
+	public void use () {
 		glUseProgram(programID);
 	}
 
-	public int getGLID() {
+	public int getGLID () {
 		return programID;
 	}
 
-	public boolean validateProgram() {
+	public boolean validateProgram () {
 		glValidateProgram(programID);
 		final int[] validateStatus = new int[1];
 		glGetProgramiv(programID, GL_VALIDATE_STATUS, validateStatus, 0);
-		Log.v(TAG, "Results of validating program: " + validateStatus[0]
-				+ "\nLog:" + glGetProgramInfoLog(programID));
+		Log.v(TAG, "Results of validating program: " + validateStatus[0] + "\nLog:" + glGetProgramInfoLog(programID));
 		return validateStatus[0] != 0;
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		// TODO Auto-generated method stub
 
 	}

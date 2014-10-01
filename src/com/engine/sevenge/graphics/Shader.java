@@ -1,3 +1,4 @@
+
 package com.engine.sevenge.graphics;
 
 import static android.opengl.GLES20.GL_COMPILE_STATUS;
@@ -15,7 +16,7 @@ public class Shader extends Asset {
 	private static final String TAG = "Shader";
 	private final int shaderObjectId;
 
-	public Shader(String shaderCode, int type) {
+	public Shader (String shaderCode, int type) {
 		shaderObjectId = glCreateShader(type);
 		if (shaderObjectId == 0) {
 			Log.w(TAG, "Could not create new shader.");
@@ -26,8 +27,7 @@ public class Shader extends Asset {
 
 		final int[] compileStatus = new int[1];
 		glGetShaderiv(shaderObjectId, GL_COMPILE_STATUS, compileStatus, 0);
-		Log.v(TAG, "Results of compiling source:" + "\n" + shaderCode + "\n:"
-				+ glGetShaderInfoLog(shaderObjectId));
+		Log.v(TAG, "Results of compiling source:" + "\n" + shaderCode + "\n:" + glGetShaderInfoLog(shaderObjectId));
 		if (compileStatus[0] == 0) {
 			// If it failed, delete the shader object.
 			glDeleteShader(shaderObjectId);
@@ -36,12 +36,12 @@ public class Shader extends Asset {
 		}
 	}
 
-	public int getGLID() {
+	public int getGLID () {
 		return shaderObjectId;
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		// TODO Auto-generated method stub
 
 	}

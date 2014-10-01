@@ -1,3 +1,4 @@
+
 package com.engine.sevenge.graphics;
 
 import static android.opengl.GLES20.glGetAttribLocation;
@@ -6,30 +7,30 @@ import static android.opengl.GLES20.glUniformMatrix4fv;
 
 public class ColorShaderProgram extends ShaderProgram {
 	// Uniform locations
-	private final int uMatrixLocation;
+	private final int uniformMatrixLocation;
 	// Attribute locations
-	private final int aPositionLocation;
-	private final int aColorLocation;
+	private final int attributePositionLocation;
+	private final int atributeColorLocation;
 
-	public ColorShaderProgram(Shader vs, Shader fs) {
+	public ColorShaderProgram (Shader vs, Shader fs) {
 		super(vs, fs);
 		// Retrieve uniform locations for the shader program.
-		uMatrixLocation = glGetUniformLocation(programID, U_MATRIX);
+		uniformMatrixLocation = glGetUniformLocation(programID, U_MATRIX);
 		// Retrieve attribute locations for the shader program.
-		aPositionLocation = glGetAttribLocation(programID, A_POSITION);
-		aColorLocation = glGetAttribLocation(programID, A_COLOR);
+		attributePositionLocation = glGetAttribLocation(programID, A_POSITION);
+		atributeColorLocation = glGetAttribLocation(programID, A_COLOR);
 	}
 
-	public void setUniforms(float[] matrix) {
+	public void setUniforms (float[] matrix) {
 		// Pass the matrix into the shader program.
-		glUniformMatrix4fv(uMatrixLocation, 1, false, matrix, 0);
+		glUniformMatrix4fv(uniformMatrixLocation, 1, false, matrix, 0);
 	}
 
-	public int getPositionAttributeLocation() {
-		return aPositionLocation;
+	public int getPositionAttributeLocation () {
+		return attributePositionLocation;
 	}
 
-	public int getColorAttributeLocation() {
-		return aColorLocation;
+	public int getColorAttributeLocation () {
+		return atributeColorLocation;
 	}
 }

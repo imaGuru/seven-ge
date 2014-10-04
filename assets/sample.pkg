@@ -4,5 +4,5 @@
 	"shaders": [{"id":"shader1","type":"vertex","path":"Shaders/texture_vertex_shader.glsl"},
 				{"id":"shader2","type":"fragment","path":"Shaders/texture_fragment_shader.glsl"}],
 	"textures": [{ "id":"apple", "path":"Textures/apple.png"},{"id":"spaceSheet","path":"Textures/SpaceSheet.png"}],
-	"spritesheet":[{ "id":"subtexture.pkg", "path":"subtexture.pkg"}]
+	"spritesheet" : [{ "id":"subtexture.pkg", "path":"subtexture.pkg"}]
 }

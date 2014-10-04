@@ -47,7 +47,7 @@ public class SampleGameState extends GameState {
 
 		Random rng = new Random();
 		entities = new ArrayList<Entity>();
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 10; i++) {
 
 			Entity e = new Entity();
 			SpriteComponent cs = new SpriteComponent();

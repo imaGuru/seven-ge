@@ -1,7 +1,6 @@
 
 package com.engine.sevenge.graphics;
 
-import static android.opengl.Matrix.invertM;
 import static android.opengl.Matrix.multiplyMM;
 import static android.opengl.Matrix.multiplyMV;
 import static android.opengl.Matrix.orthoM;
@@ -17,11 +16,7 @@ public class Camera2D {
 	private final float[] viewProjectionMatrix = new float[16];
 	/** Used for unprojecting the coordinates into world coordinates */
 	private final float[] invertedViewProjectionMatrix = new float[16];
-	/** Container for unprojected coordinates */
-	private final float[] unprojectedCoords = new float[4];
 
-	private final float[] deviceCoords = new float[4];
-	/** Position of the camera in world coordinates */
 	private PointF cameraPosition = new PointF();
 
 	private boolean isChangedView = true;
@@ -35,6 +30,8 @@ public class Camera2D {
 	private float width;
 
 	private float scale = 1f;
+
+	private static float[] devCoords = new float[4];
 
 	public Camera2D () {
 
@@ -61,19 +58,17 @@ public class Camera2D {
 		isChangedInvertedViewProjection = true;
 	}
 
-	public float[] unProject (float x, float y) {
-		if (isChangedInvertedViewProjection) {
-			orthoM(projectionMatrix, 0, -width / scale / 2, width / scale / 2, -height / scale / 2, height / scale / 2, 0f, 1f);
-			multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-			invertM(invertedViewProjectionMatrix, 0, viewProjectionMatrix, 0);
-			isChangedInvertedViewProjection = false;
-		}
-		deviceCoords[0] = x / width * 2 - 1;
-		deviceCoords[1] = -y / height * 2 + 1;
-		deviceCoords[2] = 1;
-		deviceCoords[3] = 1;
-		multiplyMV(unprojectedCoords, 0, invertedViewProjectionMatrix, 0, deviceCoords, 0);
-		return unprojectedCoords;
+	public static void unProject (float x, float y, int w, int h, float[] invertedVPM, float[] unpCoords) {
+		/*
+		 * orthoM(projectionMatrix, 0, -width / scale / 2, width / scale / 2, -height / scale / 2, height / scale / 2, 0f, 1f);
+		 * multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0); invertM(invertedViewProjectionMatrix, 0,
+		 * viewProjectionMatrix, 0);
+		 */
+		devCoords[0] = x / w * 2 - 1;
+		devCoords[1] = -y / h * 2 + 1;
+		devCoords[2] = 1;
+		devCoords[3] = 1;
+		multiplyMV(unpCoords, 0, invertedVPM, 0, devCoords, 0);
 	}
 
 	public float[] getViewProjectionMatrix () {

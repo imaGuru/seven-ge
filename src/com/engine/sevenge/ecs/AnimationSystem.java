@@ -6,11 +6,12 @@ import java.util.List;
 import com.engine.sevenge.GameActivity;
 
 public class AnimationSystem extends System {
+	private static int SYSTEM_MASK = SpriteComponent.MASK | AnimationComponent.MASK;
 
 	@Override
 	public void process (List<Entity> entities) {
 		for (Entity entity : entities) {
-			if ((6 & entity.mask) == 6) {
+			if ((SYSTEM_MASK & entity.mask) == SYSTEM_MASK) {
 				AnimationComponent ca = (AnimationComponent)entity.components.get(4);
 
 				if (ca.isPlaying) {
@@ -26,6 +27,12 @@ public class AnimationSystem extends System {
 				}
 			}
 		}
+
+	}
+
+	@Override
+	public void handleMessage (Message m, Entity e) {
+		// TODO Auto-generated method stub
 
 	}
 }

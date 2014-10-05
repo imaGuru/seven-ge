@@ -1,12 +1,13 @@
 
 package com.engine.sevenge.sample;
 
+import static android.opengl.Matrix.multiplyMM;
+import static android.opengl.Matrix.orthoM;
+import static android.opengl.Matrix.setLookAtM;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Random;
-
-import android.graphics.PointF;
 
 import com.engine.sevenge.GameActivity;
 import com.engine.sevenge.GameState;
@@ -14,22 +15,19 @@ import com.engine.sevenge.SevenGE;
 import com.engine.sevenge.audio.Music;
 import com.engine.sevenge.ecs.AnimationComponent;
 import com.engine.sevenge.ecs.AnimationSystem;
+import com.engine.sevenge.ecs.CameraComponent;
+import com.engine.sevenge.ecs.CameraSystem;
 import com.engine.sevenge.ecs.Entity;
 import com.engine.sevenge.ecs.PositionComponent;
 import com.engine.sevenge.ecs.RendererSystem;
 import com.engine.sevenge.ecs.SpriteComponent;
-import com.engine.sevenge.graphics.Camera2D;
-import com.engine.sevenge.graphics.Texture2D;
-import com.engine.sevenge.graphics.TextureShaderProgram;
-import com.engine.sevenge.input.InputEvent;
+import com.engine.sevenge.graphics.SubTexture2D;
 
 public class SampleGameState extends GameState {
-	private Camera2D camera;
-	private int height;
-	private int width;
 
 	private Music music;
 	private RendererSystem rendererSystem;
+	private CameraSystem cameraSystem;
 	private AnimationSystem animationSystem;
 	private List<Entity> entities;
 
@@ -38,37 +36,42 @@ public class SampleGameState extends GameState {
 		super(gameActivity);
 
 		SevenGE.assetManager.loadAssets(SevenGE.io.asset("sample.pkg"));
-		camera = new Camera2D();
-		TextureShaderProgram tsp = (TextureShaderProgram)SevenGE.assetManager.getAsset("spriteShader");
-		Texture2D tex = (Texture2D)SevenGE.assetManager.getAsset("spaceSheet");
 
-		rendererSystem = new RendererSystem(camera, tsp, tex);
+		rendererSystem = new RendererSystem();
+		cameraSystem = new CameraSystem();
 		animationSystem = new AnimationSystem();
 
 		Random rng = new Random();
 		entities = new ArrayList<Entity>();
-		for (int i = 0; i < 10000; i++) {
-
+		Entity cam = new Entity();
+		entities.add(cam);
+		for (int i = 0; i < 350; i++) {
 			Entity e = new Entity();
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
-
-			if (rng.nextInt(10) < 3)
-				cs.subTexture = "meteorBrown_big1";
-			else if (rng.nextInt(10) < 6)
-				cs.subTexture = "meteorBrown_small2";
-			else if (rng.nextInt(10) < 9) cs.subTexture = "meteorBrown_tiny2";
-
-			cs.subTexture = "enemyRed1";
-			AnimationComponent ca = new AnimationComponent();
-			ca.frameList = new String[] {"enemyBlack1", "enemyBlack2", "enemyBlack3", "enemyBlack4", "enemyBlack5"};
-			ca.durations = new int[] {500, 1000, 2000, 234, 666};
-			ca.isPlaying = true;
-			e.add(ca, 4);
+			float rnd = rng.nextFloat();
+			if (rnd < 0.5f)
+				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("meteorBrown_big1");
+			else if (rnd < 0.7f)
+				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("meteorBrown_small2");
+			else if (rnd < 0.95f)
+				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("meteorBrown_tiny2");
+			else {
+				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("enemyRed1");
+				AnimationComponent ca = new AnimationComponent();
+				ca.frameList = new SubTexture2D[] {(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack1"),
+					(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack2"),
+					(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack3"),
+					(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack4"),
+					(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack5")};
+				ca.durations = new int[] {500, 1000, 2000, 234, 666};
+				ca.isPlaying = true;
+				e.add(ca, 4);
+			}
 
 			cp.rotation = rng.nextFloat() * 360.0f;
-			cp.x = rng.nextFloat() * 3000f;
-			cp.y = rng.nextFloat() * 3000f;
+			cp.x = rng.nextFloat() * 1000f;
+			cp.y = rng.nextFloat() * 1000f;
 			cs.scale = 1.0f;
 
 			e.add(cp, 1);
@@ -84,39 +87,31 @@ public class SampleGameState extends GameState {
 
 	@Override
 	public void onSurfaceChange (int width, int height) {
-		if (this.width != width || this.height != height) {
-			camera.setProjectionOrtho(width, height);
-			camera.lookAt(500, 500);
-			camera.zoom(0.3f);
-			this.height = height;
-			this.width = width;
-		}
-	}
-
-	@Override
-	public void draw () {
-		rendererSystem.process(entities);
+		Entity e = entities.get(0);
+		CameraComponent cc = new CameraComponent();
+		cc.height = height;
+		cc.width = width;
+		cc.scale = 0.7f;
+		PositionComponent cp = new PositionComponent();
+		cp.x = 500;
+		cp.y = 500;
+		setLookAtM(cc.viewMatrix, 0, cp.x, cp.y, 1f, cp.x, cp.y, 0f, 0f, 1.0f, 0.0f);
+		orthoM(cc.projectionMatrix, 0, -width / cc.scale / 2, width / cc.scale / 2, -height / cc.scale / 2, height / cc.scale / 2,
+			0f, 1f);
+		multiplyMM(cc.viewProjectionMatrix, 0, cc.projectionMatrix, 0, cc.viewMatrix, 0);
+		e.add(cp, 1);
+		e.add(cc, 8);
 	}
 
 	@Override
 	public void update () {
 		animationSystem.process(entities);
-		Queue<InputEvent> q = SevenGE.input.getQueue();
-		InputEvent curIE;
-		float[] coords1 = new float[4];
-		float[] coords2 = new float[4];
-		while ((curIE = q.poll()) != null) {
-			if (curIE.type == InputEvent.Type.SCROLL) {
-				coords1 = camera.unProject(curIE.motionEvent2.getX() + curIE.distX, curIE.motionEvent2.getY() + curIE.distY);
-				float x1 = coords1[0];
-				float y1 = coords1[1];
-				coords2 = camera.unProject(curIE.motionEvent2.getX(), curIE.motionEvent2.getY());
-				float x2 = coords2[0];
-				float y2 = coords2[1];
-				PointF cameraxy = camera.getCameraPosition();
-				camera.lookAt(cameraxy.x - (x2 - x1), cameraxy.y - (y2 - y1));
-			}
-		}
+		cameraSystem.process(entities);
+	}
+
+	@Override
+	public void draw () {
+		rendererSystem.process(entities);
 	}
 
 	@Override

@@ -15,7 +15,6 @@ import java.util.List;
 import android.graphics.Matrix;
 
 import com.engine.sevenge.SevenGE;
-import com.engine.sevenge.graphics.Camera2D;
 import com.engine.sevenge.graphics.SpriteBatch;
 import com.engine.sevenge.graphics.SubTexture2D;
 import com.engine.sevenge.graphics.Texture2D;
@@ -23,43 +22,49 @@ import com.engine.sevenge.graphics.TextureShaderProgram;
 
 public class RendererSystem extends System {
 
+	private static int SYSTEM_MASK = SpriteComponent.MASK | PositionComponent.MASK;
+
 	private SpriteBatch spriteBatch;
-	private Camera2D camera;
 	private float[] uvs, v = new float[8], t = new float[16];
 	private Matrix transform = new Matrix();
+	private int hw, hh;
 
-	public RendererSystem (Camera2D cam, TextureShaderProgram tsp, Texture2D tex) {
+	public RendererSystem () {
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-		camera = cam;
+		TextureShaderProgram tsp = (TextureShaderProgram)SevenGE.assetManager.getAsset("spriteShader");
+		Texture2D tex = (Texture2D)SevenGE.assetManager.getAsset("spaceSheet");
 		spriteBatch = new SpriteBatch(tex, tsp, 1000);
 	}
 
 	@Override
 	public void process (List<Entity> entities) {
 		spriteBatch.clear();
-
+		glClear(GL_COLOR_BUFFER_BIT);
+		float[] vpm = null;
 		for (Entity entity : entities) {
-			if ((3 & entity.mask) == 3) {
+			if ((SYSTEM_MASK & entity.mask) == SYSTEM_MASK) {
 				PositionComponent cp = (PositionComponent)entity.components.get(1);
 				SpriteComponent cs = (SpriteComponent)entity.components.get(2);
-				SubTexture2D sprite = (SubTexture2D)SevenGE.assetManager.getAsset(cs.subTexture);
+				SubTexture2D sprite = cs.subTexture;
 
-				transform.setTranslate(sprite.getWidth() / 2, -sprite.getHeight() / 2);
+				hw = sprite.getWidth() / 2;
+				hh = sprite.getHeight() / 2;
+				transform.setTranslate(hw, hh);
 				transform.preScale(cs.scale, cs.scale);
 				transform.preRotate(cp.rotation);
 				transform.preTranslate(cp.x, cp.y);
-				v[0] = cp.x + sprite.getWidth() / 2;
-				v[1] = cp.y + sprite.getHeight() / 2;
-				v[2] = cp.x - sprite.getWidth() / 2;
-				v[3] = cp.y + sprite.getHeight() / 2;
-				v[4] = cp.x - sprite.getWidth() / 2;
-				v[5] = cp.y - sprite.getHeight() / 2;
-				v[6] = cp.x + sprite.getWidth() / 2;
-				v[7] = cp.y - sprite.getHeight() / 2;
+				v[0] = cp.x + hw;
+				v[1] = cp.y + hh;
+				v[2] = cp.x - hw;
+				v[3] = cp.y + hh;
+				v[4] = cp.x - hw;
+				v[5] = cp.y - hh;
+				v[6] = cp.x + hw;
+				v[7] = cp.y - hh;
 				transform.mapPoints(v);
 				uvs = sprite.getUVs();
 				t[0] = v[0];
@@ -79,11 +84,21 @@ public class RendererSystem extends System {
 				t[14] = uvs[6];
 				t[15] = uvs[7];
 				spriteBatch.add(t);
+			} else if ((entity.mask & CameraComponent.MASK) == CameraComponent.MASK) {
+				CameraComponent cc = (CameraComponent)entity.components.get(8);
+				vpm = cc.viewProjectionMatrix;
 			}
 		}
 		spriteBatch.upload();
-		spriteBatch.setVPMatrix(camera.getViewProjectionMatrix());
-		glClear(GL_COLOR_BUFFER_BIT);
-		spriteBatch.draw();
+		if (vpm != null) {
+			spriteBatch.setVPMatrix(vpm);
+			spriteBatch.draw();
+		}
+	}
+
+	@Override
+	public void handleMessage (Message m, Entity e) {
+		// TODO Auto-generated method stub
+
 	}
 }

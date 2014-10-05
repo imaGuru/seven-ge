@@ -16,7 +16,7 @@ public class GameStateManager {
 				this.currentState.dispose();
 			}
 			currentState.resume();
-			currentState.update();
+			// currentState.update();
 			this.currentState = currentState;
 		}
 	}

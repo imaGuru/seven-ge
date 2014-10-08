@@ -11,13 +11,12 @@ import java.nio.ShortBuffer;
 
 public class SpriteBatch implements Drawable {
 
-	private float[] vpMatrix;
-	private final Texture2D texture;
+	private Texture2D texture;
 	private VertexArray vertexArray;
 	private ShortBuffer indexBuffer;
 	private TextureShaderProgram program;
-	private final float[] spriteData;
-	private final short[] indices;
+	private float[] spriteData;
+	private short[] indices;
 	private boolean VAOinitialized = false;
 
 	private int spriteCount = 0, i = 0, size = 0, offset = 0;
@@ -30,6 +29,10 @@ public class SpriteBatch implements Drawable {
 	private static final int STRIDE = (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT) * BYTES_PER_FLOAT;
 	private static final short INDICES_PER_SPRITE = 6;
 	private static final int VERTICES_PER_SPRITE = 4;
+
+	public SpriteBatch (int size) {
+		this(null, null, size);
+	}
 
 	public SpriteBatch (Texture2D tex2D, TextureShaderProgram spriteShader, int size) {
 		texture = tex2D;
@@ -56,16 +59,17 @@ public class SpriteBatch implements Drawable {
 		this.program = program;
 	}
 
-	public void setVPMatrix (float[] m) {
-		vpMatrix = m;
+	public void setTexture (Texture2D tex) {
+		this.texture = tex;
 	}
 
 	public void add (float[] vertexData) {
-		if (spriteCount < size) {
-			for (i = 0; i < vertexData.length; i++)
-				spriteData[offset + i] = vertexData[i];
-			offset = ++spriteCount * 4 * (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT);
+		if (spriteCount > size) {
+			// TODO
 		}
+		for (i = 0; i < vertexData.length; i++)
+			spriteData[offset + i] = vertexData[i];
+		offset = ++spriteCount * 4 * (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT);
 	}
 
 	public void upload () {
@@ -82,7 +86,7 @@ public class SpriteBatch implements Drawable {
 	}
 
 	@Override
-	public void draw () {
+	public void draw (float[] vpMatrix) {
 		program.use();
 		program.setUniforms(vpMatrix, texture);
 		vertexArray.setVertexAttribPointer(0, program.getPositionAttributeLocation(), POSITION_COMPONENT_COUNT, STRIDE);

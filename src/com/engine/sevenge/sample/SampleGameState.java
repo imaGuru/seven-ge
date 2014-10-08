@@ -49,10 +49,12 @@ public class SampleGameState extends GameState {
 			Entity e = new Entity();
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
+			cs.scale = 1.0f;
 			float rnd = rng.nextFloat();
-			if (rnd < 0.5f)
-				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("meteorBrown_big1");
-			else if (rnd < 0.7f)
+			if (rnd < 0.5f) {
+				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("applesp");
+				cs.scale = 0.2f;
+			} else if (rnd < 0.7f)
 				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("meteorBrown_small2");
 			else if (rnd < 0.95f)
 				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("meteorBrown_tiny2");
@@ -72,7 +74,6 @@ public class SampleGameState extends GameState {
 			cp.rotation = rng.nextFloat() * 360.0f;
 			cp.x = rng.nextFloat() * 1000f;
 			cp.y = rng.nextFloat() * 1000f;
-			cs.scale = 1.0f;
 
 			e.add(cp, 1);
 			e.add(cs, 2);

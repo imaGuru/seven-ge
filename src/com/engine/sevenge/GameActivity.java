@@ -3,6 +3,8 @@ package com.engine.sevenge;
 
 import static android.opengl.GLES20.glViewport;
 
+import java.io.IOException;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -24,6 +26,8 @@ import com.engine.sevenge.audio.Audio;
 import com.engine.sevenge.input.InputListener;
 import com.engine.sevenge.io.IO;
 import com.engine.sevenge.utils.Log;
+
+import fi.iki.elonen.HelloServer;
 
 public abstract class GameActivity extends Activity implements Renderer {
 	private static final String TAG = "GameEngine";
@@ -52,11 +56,21 @@ public abstract class GameActivity extends Activity implements Renderer {
 
 	private GestureDetectorCompat gestureDetector;
 
+	private HelloServer hs;
+
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		Log.d(TAG, "onCreate");
+
+		hs = new HelloServer();
+		try {
+			hs.start();
+		} catch (IOException ioe) {
+			Log.w("Httpd", "The server could not start.");
+		}
+		Log.w("Httpd", "Web server initialized.");
 
 		final ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
 		final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
@@ -129,6 +143,11 @@ public abstract class GameActivity extends Activity implements Renderer {
 		super.onResume();
 		glSurfaceView.onResume();
 
+	}
+
+	@Override
+	protected void onDestroy () {
+		hs.stop();
 	}
 
 	@Override

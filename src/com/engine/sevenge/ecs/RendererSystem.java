@@ -14,17 +14,14 @@ import java.util.List;
 
 import android.graphics.Matrix;
 
-import com.engine.sevenge.SevenGE;
-import com.engine.sevenge.graphics.SpriteBatch;
+import com.engine.sevenge.graphics.SpriteBatcher;
 import com.engine.sevenge.graphics.SubTexture2D;
-import com.engine.sevenge.graphics.Texture2D;
-import com.engine.sevenge.graphics.TextureShaderProgram;
 
 public class RendererSystem extends System {
 
 	private static int SYSTEM_MASK = SpriteComponent.MASK | PositionComponent.MASK;
 
-	private SpriteBatch spriteBatch;
+	private SpriteBatcher spriteBatcher;
 	private float[] uvs, v = new float[8], t = new float[16];
 	private Matrix transform = new Matrix();
 	private int hw, hh;
@@ -35,14 +32,13 @@ public class RendererSystem extends System {
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-		TextureShaderProgram tsp = (TextureShaderProgram)SevenGE.assetManager.getAsset("spriteShader");
-		Texture2D tex = (Texture2D)SevenGE.assetManager.getAsset("spaceSheet");
-		spriteBatch = new SpriteBatch(tex, tsp, 1000);
+		spriteBatcher = new SpriteBatcher(2, 200);
+		// Texture2D tex = (Texture2D)SevenGE.assetManager.getAsset("spaceSheet");
+		// spriteBatch = new SpriteBatch(tex, tsp, 1000);
 	}
 
 	@Override
 	public void process (List<Entity> entities) {
-		spriteBatch.clear();
 		glClear(GL_COLOR_BUFFER_BIT);
 		float[] vpm = null;
 		for (Entity entity : entities) {
@@ -54,9 +50,9 @@ public class RendererSystem extends System {
 				hw = sprite.getWidth() / 2;
 				hh = sprite.getHeight() / 2;
 				transform.setTranslate(hw, hh);
-				transform.preScale(cs.scale, cs.scale);
 				transform.preRotate(cp.rotation);
 				transform.preTranslate(cp.x, cp.y);
+				transform.preScale(cs.scale, cs.scale);
 				v[0] = cp.x + hw;
 				v[1] = cp.y + hh;
 				v[2] = cp.x - hw;
@@ -83,16 +79,14 @@ public class RendererSystem extends System {
 				t[13] = v[7];
 				t[14] = uvs[6];
 				t[15] = uvs[7];
-				spriteBatch.add(t);
+				spriteBatcher.batchSprite(t, sprite.getTexture());
 			} else if ((entity.mask & CameraComponent.MASK) == CameraComponent.MASK) {
 				CameraComponent cc = (CameraComponent)entity.components.get(8);
 				vpm = cc.viewProjectionMatrix;
 			}
 		}
-		spriteBatch.upload();
 		if (vpm != null) {
-			spriteBatch.setVPMatrix(vpm);
-			spriteBatch.draw();
+			spriteBatcher.draw(vpm);
 		}
 	}
 

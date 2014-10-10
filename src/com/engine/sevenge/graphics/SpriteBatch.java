@@ -66,6 +66,7 @@ public class SpriteBatch implements Drawable {
 	public void add (float[] vertexData) {
 		if (spriteCount > size) {
 			// TODO
+			return;
 		}
 		for (i = 0; i < vertexData.length; i++)
 			spriteData[offset + i] = vertexData[i];

@@ -20,6 +20,7 @@ import com.engine.sevenge.ecs.CameraSystem;
 import com.engine.sevenge.ecs.Entity;
 import com.engine.sevenge.ecs.PositionComponent;
 import com.engine.sevenge.ecs.RendererSystem;
+import com.engine.sevenge.ecs.ScriptingSystem;
 import com.engine.sevenge.ecs.SpriteComponent;
 import com.engine.sevenge.graphics.SubTexture2D;
 
@@ -30,6 +31,8 @@ public class SampleGameState extends GameState {
 	private CameraSystem cameraSystem;
 	private AnimationSystem animationSystem;
 	private List<Entity> entities;
+	private int changeme = 0;
+	private ScriptingSystem scriptingSystem;
 
 	// TODO context and activity as one entity
 	public SampleGameState (GameActivity gameActivity) {
@@ -40,6 +43,7 @@ public class SampleGameState extends GameState {
 		rendererSystem = new RendererSystem();
 		cameraSystem = new CameraSystem();
 		animationSystem = new AnimationSystem();
+		scriptingSystem = new ScriptingSystem();
 
 		Random rng = new Random();
 		entities = new ArrayList<Entity>();
@@ -108,6 +112,11 @@ public class SampleGameState extends GameState {
 	public void update () {
 		animationSystem.process(entities);
 		cameraSystem.process(entities);
+		if (changeme >= 30) {
+			changeme = 0;
+			scriptingSystem.process(entities);
+		}
+		changeme++;
 	}
 
 	@Override

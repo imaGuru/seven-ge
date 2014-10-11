@@ -13,6 +13,9 @@ public class InputEvent {
 	public float distX, distY;
 	public float velX, velY;
 
+	public InputEvent () {
+	}
+
 	public InputEvent (Type type, MotionEvent motionEvent) {
 		this.motionEvent1 = motionEvent;
 		this.type = type;

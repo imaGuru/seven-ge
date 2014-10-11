@@ -1,23 +1,46 @@
 
 package com.engine.sevenge.input;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.util.Log;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 
+import com.engine.sevenge.utils.Pool;
+import com.engine.sevenge.utils.Pool.PoolObjectFactory;
+
 public class InputListener implements OnGestureListener, OnDoubleTapListener {
 	private static final String TAG = "Input";
-	private Queue<InputEvent> eventQueue = new LinkedList<InputEvent>();
+	private static final int POOL_SIZE = 100;
+	private Pool<InputEvent> inputEventPool;
+	private List<InputEvent> inputEvents;
+	private List<InputEvent> inputEventsBuffer;
+
+	public InputListener () {
+		PoolObjectFactory<InputEvent> factory = new PoolObjectFactory<InputEvent>() {
+			@Override
+			public InputEvent createObject () {
+				return new InputEvent();
+			}
+		};
+
+		inputEventPool = new Pool<InputEvent>(factory, POOL_SIZE);
+		inputEvents = new ArrayList<InputEvent>();
+		inputEventsBuffer = new ArrayList<InputEvent>();
+	}
 
 	@Override
 	public boolean onDoubleTap (MotionEvent m1) {
-		// TODO Auto-generated method stub
+
 		Log.d(TAG, "DoubleTap!");
-		eventQueue.add(new InputEvent(InputEvent.Type.DOUBLETAP, m1));
+		InputEvent e = inputEventPool.newObject();
+		e.type = InputEvent.Type.DOUBLETAP;
+		e.motionEvent1 = m1;
+		inputEventsBuffer.add(e);
+
 		return true;
 	}
 
@@ -32,7 +55,12 @@ public class InputListener implements OnGestureListener, OnDoubleTapListener {
 	public boolean onSingleTapConfirmed (MotionEvent m1) {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "Tap!");
-		eventQueue.add(new InputEvent(InputEvent.Type.TAP, m1));
+
+		InputEvent e = inputEventPool.newObject();
+		e.type = InputEvent.Type.TAP;
+		e.motionEvent1 = m1;
+		inputEventsBuffer.add(e);
+
 		return true;
 	}
 
@@ -40,17 +68,26 @@ public class InputListener implements OnGestureListener, OnDoubleTapListener {
 	public boolean onDown (MotionEvent m1) {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "Down!");
-		eventQueue.add(new InputEvent(InputEvent.Type.DOWN, m1));
+
+		InputEvent e = inputEventPool.newObject();
+		e.type = InputEvent.Type.DOWN;
+		e.motionEvent1 = m1;
+		inputEventsBuffer.add(e);
+
 		return true;
 	}
 
 	@Override
 	public boolean onFling (MotionEvent m1, MotionEvent m2, float vx, float vy) {
 		Log.d(TAG, "Fling!");
-		InputEvent ie = new InputEvent(InputEvent.Type.FLING, m1, m2);
-		ie.setVelocity(vx, vy);
-		eventQueue.add(ie);
-		// TODO Auto-generated method stub
+
+		InputEvent e = inputEventPool.newObject();
+		e.type = InputEvent.Type.FLING;
+		e.motionEvent1 = m1;
+		e.motionEvent1 = m2;
+		e.setVelocity(vx, vy);
+		inputEventsBuffer.add(e);
+
 		return true;
 	}
 
@@ -58,16 +95,26 @@ public class InputListener implements OnGestureListener, OnDoubleTapListener {
 	public void onLongPress (MotionEvent m1) {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "LongPress!");
-		eventQueue.add(new InputEvent(InputEvent.Type.LONGPRESS, m1));
+
+		InputEvent e = inputEventPool.newObject();
+		e.type = InputEvent.Type.LONGPRESS;
+		e.motionEvent1 = m1;
+		inputEventsBuffer.add(e);
+
 	}
 
 	@Override
 	public boolean onScroll (MotionEvent m1, MotionEvent m2, float dx, float dy) {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "Scroll!");
-		InputEvent ie = new InputEvent(InputEvent.Type.SCROLL, m1, m2);
-		ie.setDistance(dx, dy);
-		eventQueue.add(ie);
+
+		InputEvent e = inputEventPool.newObject();
+		e.type = InputEvent.Type.SCROLL;
+		e.motionEvent1 = m1;
+		e.motionEvent2 = m2;
+		e.setDistance(dx, dy);
+		inputEventsBuffer.add(e);
+
 		return true;
 	}
 
@@ -84,8 +131,16 @@ public class InputListener implements OnGestureListener, OnDoubleTapListener {
 		return true;
 	}
 
-	public Queue<InputEvent> getQueue () {
-		// TODO Auto-generated method stub
-		return eventQueue;
+	public List<InputEvent> getInputEvents () {
+		synchronized (this) {
+			for (int i = 0; i < inputEvents.size(); i++) {
+				inputEventPool.free(inputEvents.get(i));
+			}
+			inputEvents.clear();
+			inputEvents.addAll(inputEventsBuffer);
+			inputEventsBuffer.clear();
+			return inputEvents;
+		}
 	}
+
 }

@@ -6,7 +6,6 @@ import static android.opengl.Matrix.multiplyMM;
 import static android.opengl.Matrix.setLookAtM;
 
 import java.util.List;
-import java.util.Queue;
 
 import com.engine.sevenge.SevenGE;
 import com.engine.sevenge.graphics.Camera2D;
@@ -20,9 +19,8 @@ public class CameraSystem extends System {
 	public void process (List<Entity> entities) {
 		for (Entity entity : entities) {
 			if ((SYSTEM_MASK & entity.mask) == SYSTEM_MASK) {
-				Queue<InputEvent> q = SevenGE.input.getQueue();
-				InputEvent curIE;
-				while ((curIE = q.poll()) != null) {
+				List<InputEvent> inputEvents = SevenGE.input.getInputEvents();
+				for (InputEvent curIE : inputEvents) {
 					if (curIE.type == InputEvent.Type.SCROLL) {
 						CameraComponent cc = (CameraComponent)entity.components.get(8);
 						Camera2D.unProject(curIE.motionEvent2.getX() + curIE.distX, curIE.motionEvent2.getY() + curIE.distY, cc.width,

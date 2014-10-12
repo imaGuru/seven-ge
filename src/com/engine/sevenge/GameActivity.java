@@ -15,13 +15,12 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.GestureDetectorCompat;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.engine.sevenge.assets.AssetManager;
 import com.engine.sevenge.audio.Audio;
-import com.engine.sevenge.input.InputListener;
+import com.engine.sevenge.input.Input;
 import com.engine.sevenge.io.IO;
 import com.engine.sevenge.utils.Log;
 
@@ -50,8 +49,6 @@ public abstract class GameActivity extends Activity implements Renderer {
 	private GLGameState state = GLGameState.Initialized;
 	private Object stateChanged = new Object();
 
-	private GestureDetectorCompat gestureDetector;
-
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,7 +62,7 @@ public abstract class GameActivity extends Activity implements Renderer {
 				|| Build.FINGERPRINT.startsWith("unknown") || Build.MODEL.contains("google_sdk") || Build.MODEL.contains("Emulator") || Build.MODEL
 					.contains("Android SDK built for x86")));
 
-		SevenGE.input = new InputListener();
+		SevenGE.input = new Input(this);
 		SevenGE.io = new IO(this);
 		SevenGE.audio = new Audio(this);
 		SevenGE.assetManager = new AssetManager();
@@ -80,8 +77,8 @@ public abstract class GameActivity extends Activity implements Renderer {
 			glSurfaceView.setPreserveEGLContextOnPause(true);
 			glSurfaceView.setRenderer(this);
 			glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-			gestureDetector = new GestureDetectorCompat(this, SevenGE.input);
-			gestureDetector.setOnDoubleTapListener(SevenGE.input);
+			glSurfaceView.setOnTouchListener(SevenGE.input);
+
 			setContentView(glSurfaceView);
 
 		} else {
@@ -93,7 +90,7 @@ public abstract class GameActivity extends Activity implements Renderer {
 
 	@Override
 	public boolean onTouchEvent (MotionEvent event) {
-		gestureDetector.onTouchEvent(event);
+
 		return false;
 	}
 

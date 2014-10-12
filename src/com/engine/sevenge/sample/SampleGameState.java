@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import android.view.MotionEvent;
+
 import com.engine.sevenge.GameActivity;
 import com.engine.sevenge.GameState;
 import com.engine.sevenge.SevenGE;
@@ -22,8 +24,13 @@ import com.engine.sevenge.ecs.PositionComponent;
 import com.engine.sevenge.ecs.RendererSystem;
 import com.engine.sevenge.ecs.SpriteComponent;
 import com.engine.sevenge.graphics.SubTexture2D;
+import com.engine.sevenge.input.GestureProcessor;
+import com.engine.sevenge.input.InputProcessor;
+import com.engine.sevenge.utils.Log;
 
-public class SampleGameState extends GameState {
+public class SampleGameState extends GameState implements InputProcessor, GestureProcessor {
+
+	private final String TAG = "InputTest";
 
 	private Music music;
 	private RendererSystem rendererSystem;
@@ -34,6 +41,9 @@ public class SampleGameState extends GameState {
 	// TODO context and activity as one entity
 	public SampleGameState (GameActivity gameActivity) {
 		super(gameActivity);
+
+		SevenGE.input.setInputProcessor(this);
+// SevenGE.input.setGestureProcessor(this);
 
 		SevenGE.assetManager.loadAssets(SevenGE.io.asset("sample.pkg"));
 
@@ -105,6 +115,7 @@ public class SampleGameState extends GameState {
 
 	@Override
 	public void update () {
+		SevenGE.input.process();
 		animationSystem.process(entities);
 		cameraSystem.process(entities);
 	}
@@ -130,6 +141,54 @@ public class SampleGameState extends GameState {
 	public void resume () {
 		music.play();
 
+	}
+
+	@Override
+	public boolean onDoubleTap (MotionEvent me) {
+		Log.d(TAG, "onDoubleTap");
+		return false;
+	}
+
+	@Override
+	public boolean onSingleTapConfirmed (MotionEvent arg0) {
+		Log.d(TAG, "onSingleTapConfirmed");
+		return false;
+	}
+
+	@Override
+	public boolean onFling (MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
+		Log.d(TAG, "onFling");
+		return false;
+	}
+
+	@Override
+	public void onLongPress (MotionEvent arg0) {
+		Log.d(TAG, "onLongPress");
+
+	}
+
+	@Override
+	public boolean onScroll (MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
+		Log.d(TAG, "onScroll");
+		return false;
+	}
+
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int button) {
+		Log.d(TAG, "touchDown" + " x : " + x + " , y : " + y + " , pointerid : " + pointer);
+		return false;
+	}
+
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
+		Log.d(TAG, "touchUp" + " x : " + x + " , y : " + y + " , pointerid : " + pointer);
+		return false;
+	}
+
+	@Override
+	public boolean touchMove (int x, int y, int pointer) {
+		Log.d(TAG, "touchMove" + " x : " + x + " , y : " + y + " , pointerid : " + pointer);
+		return false;
 	}
 
 }

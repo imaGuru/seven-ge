@@ -24,7 +24,7 @@ public class CameraSystem extends System implements GestureProcessor {
 	float distY;
 
 	public CameraSystem () {
-		SevenGE.input.setGestureProcessor(this);
+		SevenGE.input.addGestureProcessor(this);
 	}
 
 	@Override

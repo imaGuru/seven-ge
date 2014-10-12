@@ -22,10 +22,8 @@ public class Input implements OnTouchListener {
 	private ArrayList<InputProcessor> inputProcessors = new ArrayList<InputProcessor>();
 	private ArrayList<GestureProcessor> gestureProcessors = new ArrayList<GestureProcessor>();
 
-	private InputProcessor inputProcessor;
-	private GestureProcessor gestureProcessor;
 	private long currentEventTimeStamp = System.nanoTime();
-	TouchHandler touchHandler = new TouchHandler();
+	TouchHandler touchDetector = new TouchHandler();
 	GestureHandler gestureHandler = new GestureHandler(this);
 	GestureDetectorCompat gestureDetector;
 
@@ -93,23 +91,12 @@ public class Input implements OnTouchListener {
 		float distX, distY;
 		float velX, velY;
 
-// public Gesture (Type type, MotionEvent motionEvent) {
-// this.motionEvent1 = motionEvent;
-// this.type = type;
-// }
-//
-// public Gesture (Type type, MotionEvent motionEvent1, MotionEvent motionEvent2) {
-// this.motionEvent1 = motionEvent1;
-// this.motionEvent2 = motionEvent2;
-// this.type = type;
-// }
-
 	}
 
 	@Override
 	public boolean onTouch (View v, MotionEvent event) {
 		// synchronized in handler.postTouchEvent()
-		touchHandler.onTouchEvent(event, this);
+		touchDetector.onTouchEvent(event, this);
 		gestureDetector.onTouchEvent(event);
 
 		try {
@@ -150,18 +137,6 @@ public class Input implements OnTouchListener {
 		}
 	}
 
-	public void setInputProcessor (InputProcessor processor) {
-		synchronized (this) {
-			this.inputProcessor = processor;
-		}
-	}
-
-	public void setGestureProcessor (GestureProcessor processor) {
-		synchronized (this) {
-			this.gestureProcessor = processor;
-		}
-	}
-
 	public void process () {
 
 		processTouchEvents();
@@ -171,8 +146,7 @@ public class Input implements OnTouchListener {
 
 	private void processTouchEvents () {
 
-		if (inputProcessor != null) {
-			final InputProcessor processor = this.inputProcessor;
+		if (!inputProcessors.isEmpty()) {
 
 			int len = touchEvents.size();
 			for (int i = 0; i < len; i++) {
@@ -180,13 +154,16 @@ public class Input implements OnTouchListener {
 				currentEventTimeStamp = e.timeStamp;
 				switch (e.type) {
 				case TouchEvent.TOUCH_DOWN:
-					processor.touchDown(e.x, e.y, e.pointer, e.button);
+					for (InputProcessor ip : inputProcessors)
+						ip.touchDown(e.x, e.y, e.pointer, e.button);
 					break;
 				case TouchEvent.TOUCH_UP:
-					processor.touchUp(e.x, e.y, e.pointer, e.button);
+					for (InputProcessor ip : inputProcessors)
+						ip.touchUp(e.x, e.y, e.pointer, e.button);
 					break;
 				case TouchEvent.TOUCH_MOVED:
-					processor.touchMove(e.x, e.y, e.pointer);
+					for (InputProcessor ip : inputProcessors)
+						ip.touchMove(e.x, e.y, e.pointer);
 					break;
 				}
 				touchEventPool.free(e);
@@ -212,8 +189,7 @@ public class Input implements OnTouchListener {
 
 	private void processGestures () {
 
-		if (gestureProcessor != null) {
-			final GestureProcessor processor = this.gestureProcessor;
+		if (!gestureProcessors.isEmpty()) {
 
 			int len = gestures.size();
 			for (int i = 0; i < len; i++) {
@@ -222,19 +198,24 @@ public class Input implements OnTouchListener {
 				switch (g.type) {
 
 				case Gesture.DOUBLETAP:
-					processor.onDoubleTap(g.motionEvent1);
+					for (GestureProcessor gp : gestureProcessors)
+						gp.onDoubleTap(g.motionEvent1);
 					break;
 				case Gesture.FLING:
-					processor.onFling(g.motionEvent1, g.motionEvent2, g.velX, g.velY);
+					for (GestureProcessor gp : gestureProcessors)
+						gp.onFling(g.motionEvent1, g.motionEvent2, g.velX, g.velY);
 					break;
 				case Gesture.LONGPRESS:
-					processor.onLongPress(g.motionEvent1);
+					for (GestureProcessor gp : gestureProcessors)
+						gp.onLongPress(g.motionEvent1);
 					break;
 				case Gesture.SCROLL:
-					processor.onScroll(g.motionEvent1, g.motionEvent2, g.distX, g.distY);
+					for (GestureProcessor gp : gestureProcessors)
+						gp.onScroll(g.motionEvent1, g.motionEvent2, g.distX, g.distY);
 					break;
 				case Gesture.TAP:
-					processor.onSingleTapConfirmed(g.motionEvent1);
+					for (GestureProcessor gp : gestureProcessors)
+						gp.onSingleTapConfirmed(g.motionEvent1);
 					break;
 				}
 				gesturePool.free(g);
@@ -258,12 +239,10 @@ public class Input implements OnTouchListener {
 
 	}
 
-	// todo - support multiple listeners/processors
 	public void addGestureProcessor (GestureProcessor gestureProcessor) {
 		this.gestureProcessors.add(gestureProcessor);
 	}
 
-	// todo - support multiple listeners/processors
 	public void addInputProcessor (InputProcessor inputProcessor) {
 		this.inputProcessors.add(inputProcessor);
 

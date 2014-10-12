@@ -38,12 +38,11 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private AnimationSystem animationSystem;
 	private List<Entity> entities;
 
-	// TODO context and activity as one entity
 	public SampleGameState (GameActivity gameActivity) {
 		super(gameActivity);
 
-		SevenGE.input.setInputProcessor(this);
-// SevenGE.input.setGestureProcessor(this);
+		SevenGE.input.addInputProcessor(this);
+		SevenGE.input.addGestureProcessor(this);
 
 		SevenGE.assetManager.loadAssets(SevenGE.io.asset("sample.pkg"));
 
@@ -116,6 +115,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	@Override
 	public void update () {
 		SevenGE.input.process();
+
 		animationSystem.process(entities);
 		cameraSystem.process(entities);
 	}

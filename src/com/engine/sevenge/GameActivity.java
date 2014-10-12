@@ -1,7 +1,8 @@
-
 package com.engine.sevenge;
 
 import static android.opengl.GLES20.glViewport;
+
+import java.io.IOException;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -24,7 +25,10 @@ import com.engine.sevenge.input.Input;
 import com.engine.sevenge.io.IO;
 import com.engine.sevenge.utils.Log;
 
-public abstract class GameActivity extends Activity implements Renderer {
+import fi.iki.elonen.HelloServer;
+
+public abstract class GameActivity extends Activity implements Renderer
+{
 	private static final String TAG = "GameEngine";
 
 	/** Time recorded at the start of the frame */
@@ -37,30 +41,51 @@ public abstract class GameActivity extends Activity implements Renderer {
 	private int framesSkipped = 0;
 	/** The maximum frame time in milliseconds */
 	public static final long FRAME_TIME = 32;
-	/** The maximum number of frames until the simulation falls behind. Prevents spiral of death */
+	/**
+	 * The maximum number of frames until the simulation falls behind. Prevents
+	 * spiral of death
+	 */
 	private static final int MAX_FRAME_SKIPS = 5;
 
 	private GLSurfaceView glSurfaceView;
 
-	enum GLGameState {
+	enum GLGameState
+	{
 		Initialized, Running, Paused, Finished, Idle
 	}
 
 	private GLGameState state = GLGameState.Initialized;
 	private Object stateChanged = new Object();
 
+	private HelloServer hs;
+
 	@Override
-	protected void onCreate (Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 
 		Log.d(TAG, "onCreate");
 
-		final ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
-		final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+		hs = new HelloServer();
+		try
+		{
+			hs.start();
+		} catch (IOException ioe)
+		{
+			Log.w("Httpd", "The server could not start.");
+		}
+		Log.w("Httpd", "Web server initialized.");
+
+		final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		final ConfigurationInfo configurationInfo = activityManager
+				.getDeviceConfigurationInfo();
 		final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000
-			|| (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1 && (Build.FINGERPRINT.startsWith("generic")
-				|| Build.FINGERPRINT.startsWith("unknown") || Build.MODEL.contains("google_sdk") || Build.MODEL.contains("Emulator") || Build.MODEL
-					.contains("Android SDK built for x86")));
+				|| (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1 && (Build.FINGERPRINT
+						.startsWith("generic")
+						|| Build.FINGERPRINT.startsWith("unknown")
+						|| Build.MODEL.contains("google_sdk")
+						|| Build.MODEL.contains("Emulator") || Build.MODEL
+							.contains("Android SDK built for x86")));
 
 		SevenGE.input = new Input(this);
 		SevenGE.io = new IO(this);
@@ -68,9 +93,11 @@ public abstract class GameActivity extends Activity implements Renderer {
 		SevenGE.assetManager = new AssetManager();
 		SevenGE.stateManager = new GameStateManager();
 
-		if (state == GLGameState.Initialized) Log.d(TAG, "Initialized");
+		if (state == GLGameState.Initialized)
+			Log.d(TAG, "Initialized");
 
-		if (supportsEs2) {
+		if (supportsEs2)
+		{
 			glSurfaceView = new GLSurfaceView(this);
 			glSurfaceView.setEGLContextClientVersion(2);
 			glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -81,36 +108,48 @@ public abstract class GameActivity extends Activity implements Renderer {
 
 			setContentView(glSurfaceView);
 
-		} else {
-			Toast.makeText(this, "This device does not support OpenGL ES 2.0", Toast.LENGTH_LONG).show();
+		}
+		else
+		{
+			Toast.makeText(this, "This device does not support OpenGL ES 2.0",
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 
 	}
 
 	@Override
-	public boolean onTouchEvent (MotionEvent event) {
+	public boolean onTouchEvent(MotionEvent event)
+	{
 
 		return false;
 	}
 
 	@Override
-	protected void onPause () {
+	protected void onPause()
+	{
 		Log.d(TAG, "onPause");
 
-		synchronized (stateChanged) {
-			if (isFinishing()) {
+		synchronized (stateChanged)
+		{
+			if (isFinishing())
+			{
 				state = GLGameState.Finished;
 				Log.d(TAG, "Finished");
-			} else {
+			}
+			else
+			{
 				state = GLGameState.Paused;
 				Log.d(TAG, "Paused");
 			}
-			while (true) {
-				try {
+			while (true)
+			{
+				try
+				{
 					stateChanged.wait();
 					break;
-				} catch (InterruptedException e) {
+				} catch (InterruptedException e)
+				{
 				}
 			}
 		}
@@ -120,7 +159,8 @@ public abstract class GameActivity extends Activity implements Renderer {
 	}
 
 	@Override
-	protected void onResume () {
+	protected void onResume()
+	{
 		Log.d(TAG, "onResume");
 
 		super.onResume();
@@ -129,23 +169,36 @@ public abstract class GameActivity extends Activity implements Renderer {
 	}
 
 	@Override
-	public void onDrawFrame (GL10 gl) {
+	protected void onDestroy()
+	{
+		hs.stop();
+	}
+
+	@Override
+	public void onDrawFrame(GL10 gl)
+	{
 		GLGameState state = null;
-		synchronized (stateChanged) {
+		synchronized (stateChanged)
+		{
 			state = this.state;
 		}
-		if (state == GLGameState.Running) {
+		if (state == GLGameState.Running)
+		{
 
 			deltaTime = (System.currentTimeMillis() - startTime);
 			sleepTime = FRAME_TIME - deltaTime;
-			if (sleepTime > 0) {
-				try {
+			if (sleepTime > 0)
+			{
+				try
+				{
 					Thread.sleep(sleepTime);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException e)
+				{
 				}
 			}
 			framesSkipped = 0;
-			while (sleepTime < 0 && framesSkipped < MAX_FRAME_SKIPS) {
+			while (sleepTime < 0 && framesSkipped < MAX_FRAME_SKIPS)
+			{
 				sleepTime += FRAME_TIME;
 				SevenGE.stateManager.update();
 				framesSkipped++;
@@ -157,19 +210,23 @@ public abstract class GameActivity extends Activity implements Renderer {
 			SevenGE.stateManager.draw();
 
 		}
-		if (state == GLGameState.Paused) {
+		if (state == GLGameState.Paused)
+		{
 			SevenGE.stateManager.pause();
-			synchronized (stateChanged) {
+			synchronized (stateChanged)
+			{
 				this.state = GLGameState.Idle;
 				Log.d(TAG, "Idle");
 				stateChanged.notifyAll();
 			}
 		}
-		if (state == GLGameState.Finished) {
+		if (state == GLGameState.Finished)
+		{
 			SevenGE.stateManager.pause();
 			SevenGE.stateManager.dispose();
 
-			synchronized (stateChanged) {
+			synchronized (stateChanged)
+			{
 				this.state = GLGameState.Idle;
 				Log.d(TAG, "Idle");
 				stateChanged.notifyAll();
@@ -179,11 +236,14 @@ public abstract class GameActivity extends Activity implements Renderer {
 	}
 
 	@Override
-	public void onSurfaceChanged (GL10 gl, int width, int height) {
+	public void onSurfaceChanged(GL10 gl, int width, int height)
+	{
 		Log.d(TAG, "onSurfaceChanged");
 
-		synchronized (stateChanged) {
-			if (state == GLGameState.Initialized) SevenGE.stateManager.setCurrentState(getStartStage());
+		synchronized (stateChanged)
+		{
+			if (state == GLGameState.Initialized)
+				SevenGE.stateManager.setCurrentState(getStartStage());
 			state = GLGameState.Running;
 			Log.d(TAG, "Running");
 			SevenGE.stateManager.resume();
@@ -194,17 +254,19 @@ public abstract class GameActivity extends Activity implements Renderer {
 	}
 
 	@Override
-	public void onSurfaceCreated (GL10 gl, EGLConfig config) {
+	public void onSurfaceCreated(GL10 gl, EGLConfig config)
+	{
 		Log.d(TAG, "onSurfaceCreated");
 
 	}
 
 	@Override
-	public void onConfigurationChanged (Configuration newConfig) {
+	public void onConfigurationChanged(Configuration newConfig)
+	{
 		// TODO Auto-generated method stub
 		super.onConfigurationChanged(newConfig);
 	}
 
-	public abstract GameState getStartStage ();
+	public abstract GameState getStartStage();
 
 }

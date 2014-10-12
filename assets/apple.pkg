@@ -1,0 +1,10 @@
+{
+"textureID":"apple",
+"subtextures": 
+	[{"id":"applesp",
+		"x":"0",
+		"y":"0",
+		"width":"256",
+		"height":"256"
+	}]
+}

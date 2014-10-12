@@ -22,6 +22,7 @@ import com.engine.sevenge.ecs.CameraSystem;
 import com.engine.sevenge.ecs.Entity;
 import com.engine.sevenge.ecs.PositionComponent;
 import com.engine.sevenge.ecs.RendererSystem;
+import com.engine.sevenge.ecs.ScriptingSystem;
 import com.engine.sevenge.ecs.SpriteComponent;
 import com.engine.sevenge.graphics.SubTexture2D;
 import com.engine.sevenge.input.GestureProcessor;
@@ -37,6 +38,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private CameraSystem cameraSystem;
 	private AnimationSystem animationSystem;
 	private List<Entity> entities;
+	private int changeme = 0;
+	private ScriptingSystem scriptingSystem;
 
 	public SampleGameState (GameActivity gameActivity) {
 		super(gameActivity);
@@ -49,6 +52,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		rendererSystem = new RendererSystem();
 		cameraSystem = new CameraSystem();
 		animationSystem = new AnimationSystem();
+		scriptingSystem = new ScriptingSystem();
 
 		Random rng = new Random();
 		entities = new ArrayList<Entity>();
@@ -58,10 +62,12 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			Entity e = new Entity();
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
+			cs.scale = 1.0f;
 			float rnd = rng.nextFloat();
-			if (rnd < 0.5f)
-				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("meteorBrown_big1");
-			else if (rnd < 0.7f)
+			if (rnd < 0.5f) {
+				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("applesp");
+				cs.scale = 0.2f;
+			} else if (rnd < 0.7f)
 				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("meteorBrown_small2");
 			else if (rnd < 0.95f)
 				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("meteorBrown_tiny2");
@@ -81,7 +87,6 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			cp.rotation = rng.nextFloat() * 360.0f;
 			cp.x = rng.nextFloat() * 1000f;
 			cp.y = rng.nextFloat() * 1000f;
-			cs.scale = 1.0f;
 
 			e.add(cp, 1);
 			e.add(cs, 2);
@@ -118,6 +123,11 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		animationSystem.process(entities);
 		cameraSystem.process(entities);
+		if (changeme >= 30) {
+			changeme = 0;
+			scriptingSystem.process(entities);
+		}
+		changeme++;
 	}
 
 	@Override

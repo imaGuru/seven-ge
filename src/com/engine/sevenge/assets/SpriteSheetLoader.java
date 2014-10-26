@@ -6,8 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.engine.sevenge.SevenGE;
-import com.engine.sevenge.graphics.SubTexture2D;
-import com.engine.sevenge.graphics.Texture2D;
+import com.engine.sevenge.graphics.TextureRegion;
+import com.engine.sevenge.graphics.Texture;
 import com.engine.sevenge.io.FileHandle;
 
 public class SpriteSheetLoader extends AssetLoader {
@@ -33,8 +33,8 @@ public class SpriteSheetLoader extends AssetLoader {
 					JSONObject jSub = jSubtextureArr.getJSONObject(j);
 					assetManager.registerAsset(
 						jSub.getString("id"),
-						new SubTexture2D(jSub.getString("id"), jSub.getInt("width"), jSub.getInt("height"), jSub.getInt("x"), jSub
-							.getInt("y"), (Texture2D)assetManager.getAsset(textureId)));
+						new TextureRegion(jSub.getString("id"), jSub.getInt("width"), jSub.getInt("height"), jSub.getInt("x"), jSub
+							.getInt("y"), (Texture)assetManager.getAsset(textureId)));
 				}
 			}
 

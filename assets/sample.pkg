@@ -1,8 +1,43 @@
 {
-	"audio": [{"id":"music1","type":"music","path":"Music/intro.mp3"}],
-	"programs": [{"id":"spriteShader","vertexShader":"shader1","fragmentShader":"shader2"}],
-	"shaders": [{"id":"shader1","type":"vertex","path":"Shaders/texture_vertex_shader.glsl"},
-				{"id":"shader2","type":"fragment","path":"Shaders/texture_fragment_shader.glsl"}],
-	"textures": [{ "id":"apple", "path":"Textures/apple.png"},{"id":"spaceSheet","path":"Textures/SpaceSheet.png"}],
-	"spritesheet" : [{ "id":"subtexture.pkg", "path":"subtexture.pkg"},{"id":"appleSheet", "path":"apple.pkg"}]
+	"audio": [
+		{
+			"id":"music1",
+			"type":"music",
+			"path":"Music/intro.mp3"
+		}],
+	"programs": [
+		{
+			"id":"spriteShader",
+			"vertexShader":"shader1",
+			"fragmentShader":"shader2"
+		}],
+	"shaders": [
+		{
+			"id":"shader1",
+			"type":"vertex",
+			"path":"Shaders/texture_vertex_shader.glsl"
+		},
+		{
+			"id":"shader2",
+			"type":"fragment",
+			"path":"Shaders/texture_fragment_shader.glsl"
+		}],
+	"textures": [
+		{ 
+			"id":"apple",
+			"path":"Textures/apple.png"
+		},
+		{
+			"id":"spaceSheet",
+			"path":"Textures/SpaceSheet.png"
+		}],
+	"spritesheet" : [
+		{
+			"id":"subtexture.pkg",
+			"path":"Textures/subtexture.pkg"
+		},
+		{
+			"id":"appleSheet",
+			"path":"Textures/apple.pkg"
+		}]
 }

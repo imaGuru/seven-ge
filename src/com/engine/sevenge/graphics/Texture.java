@@ -20,13 +20,13 @@ import com.engine.sevenge.assets.Asset;
 import com.engine.sevenge.io.FileHandle;
 import com.engine.sevenge.utils.Log;
 
-public class Texture2D extends Asset {
+public class Texture extends Asset {
 	private static final String TAG = "Texture2D";
 	private final int[] textureID;
 	private final int width;
 	private final int height;
 
-	public Texture2D (FileHandle fh) {
+	public Texture (FileHandle fh) {
 		textureID = new int[1];
 		glGenTextures(1, textureID, 0);
 		if (textureID[0] == 0) {

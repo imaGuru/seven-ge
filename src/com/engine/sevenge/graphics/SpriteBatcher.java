@@ -24,7 +24,7 @@ public class SpriteBatcher {
 		}
 	}
 
-	public void batchSprite (float[] vdata, Texture2D tex) {
+	public void addSprite (float[] vdata, Texture tex) {
 		int glid;
 		int i;
 		glid = tex.getGLID();
@@ -46,10 +46,5 @@ public class SpriteBatcher {
 			batches[i].draw(vpm);
 			batches[i].clear();
 		}
-	}
-
-	public int getBatchIndexByTextureGLID (int glid) {
-		if (batchIndex.containsKey(glid)) return batchIndex.get(glid);
-		return -1;
 	}
 }

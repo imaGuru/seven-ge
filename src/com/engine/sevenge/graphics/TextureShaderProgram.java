@@ -24,7 +24,7 @@ public class TextureShaderProgram extends ShaderProgram {
 		attributeTextureCoordinatesLocation = glGetAttribLocation(programID, A_TEXTURE_COORDINATES);
 	}
 
-	public void setUniforms (float[] matrix, Texture2D texture) {
+	public void setUniforms (float[] matrix, Texture texture) {
 		// Pass the matrix into the shader program.
 		glUniformMatrix4fv(matrixLocation, 1, false, matrix, 0);
 		texture.bindTexture(GL_TEXTURE0);

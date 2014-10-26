@@ -1,6 +1,8 @@
 
 package com.engine.sevenge.io;
 
+import java.io.File;
+
 import android.content.Context;
 
 public class IO {
@@ -10,19 +12,19 @@ public class IO {
 		this.context = context;
 	}
 
-	public FileHandle internal (String file) {
-		return new FileHandle(context.getFilesDir() + "/" + file);
+	public File internal (String file) {
+		return new File(context.getFilesDir(), file);
 	}
 
-	public FileHandle external (String file) {
-		return new FileHandle(context.getExternalFilesDir(null) + "/" + file);
+	public File external (String file) {
+		return new File(context.getExternalFilesDir(null), file);
 	}
 
-	public FileHandle cache (String file) {
-		return new FileHandle(context.getCacheDir() + "/" + file);
+	public File cache (String file) {
+		return new File(context.getCacheDir(), file);
 	}
 
-	public FileHandle asset (String file) {
-		return new FileHandle(context.getAssets(), file);
+	public File asset (String file) {
+		return context.getAssets().open(file);
 	}
 }

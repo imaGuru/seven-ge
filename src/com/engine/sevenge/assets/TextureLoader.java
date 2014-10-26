@@ -6,7 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.engine.sevenge.SevenGE;
-import com.engine.sevenge.graphics.Texture2D;
+import com.engine.sevenge.graphics.Texture;
 
 public class TextureLoader extends AssetLoader {
 
@@ -21,7 +21,7 @@ public class TextureLoader extends AssetLoader {
 			jarr = new JSONArray(content);
 			for (int i = 0; i < jarr.length(); i++) {
 				JSONObject jTexture = jarr.getJSONObject(i);
-				assetManager.registerAsset(jTexture.getString("id"), new Texture2D(SevenGE.io.asset(jTexture.getString("path"))));
+				assetManager.registerAsset(jTexture.getString("id"), new Texture(SevenGE.io.asset(jTexture.getString("path"))));
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

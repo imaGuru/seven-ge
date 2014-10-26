@@ -14,6 +14,7 @@ import com.engine.sevenge.input.InputEvent;
 public class CameraSystem extends System {
 	private static int SYSTEM_MASK = CameraComponent.MASK | PositionComponent.MASK;
 	private float[] coords = new float[4];
+	private float[] devCoords = new float[4];
 
 	@Override
 	public void process (List<Entity> entities) {
@@ -23,12 +24,12 @@ public class CameraSystem extends System {
 				for (InputEvent curIE : inputEvents) {
 					if (curIE.type == InputEvent.Type.SCROLL) {
 						CameraComponent cc = (CameraComponent)entity.components.get(8);
-						Camera2D.unProject(curIE.motionEvent2.getX() + curIE.distX, curIE.motionEvent2.getY() + curIE.distY, cc.width,
-							cc.height, cc.invertedVPMatrix, coords);
+						Camera2D.unProject((int)(curIE.motionEvent2.getX() + curIE.distX),
+							(int)(curIE.motionEvent2.getY() + curIE.distY), cc.width, cc.height, devCoords, cc.invertedVPMatrix, coords);
 						float x1 = coords[0];
 						float y1 = coords[1];
-						Camera2D.unProject(curIE.motionEvent2.getX(), curIE.motionEvent2.getY(), cc.width, cc.height,
-							cc.invertedVPMatrix, coords);
+						Camera2D.unProject((int)curIE.motionEvent2.getX(), (int)curIE.motionEvent2.getY(), cc.width, cc.height,
+							devCoords, cc.invertedVPMatrix, coords);
 						float x2 = coords[0];
 						float y2 = coords[1];
 						PositionComponent cp = (PositionComponent)entity.components.get(1);

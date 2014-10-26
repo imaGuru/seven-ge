@@ -11,7 +11,7 @@ import java.nio.ShortBuffer;
 
 public class SpriteBatch implements Drawable {
 
-	private Texture2D texture;
+	private Texture texture;
 	private VertexArray vertexArray;
 	private ShortBuffer indexBuffer;
 	private TextureShaderProgram program;
@@ -34,7 +34,7 @@ public class SpriteBatch implements Drawable {
 		this(null, null, size);
 	}
 
-	public SpriteBatch (Texture2D tex2D, TextureShaderProgram spriteShader, int size) {
+	public SpriteBatch (Texture tex2D, TextureShaderProgram spriteShader, int size) {
 		texture = tex2D;
 		program = spriteShader;
 		this.size = size;
@@ -59,7 +59,7 @@ public class SpriteBatch implements Drawable {
 		this.program = program;
 	}
 
-	public void setTexture (Texture2D tex) {
+	public void setTexture (Texture tex) {
 		this.texture = tex;
 	}
 

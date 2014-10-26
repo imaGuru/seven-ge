@@ -22,7 +22,7 @@ import com.engine.sevenge.ecs.PositionComponent;
 import com.engine.sevenge.ecs.RendererSystem;
 import com.engine.sevenge.ecs.ScriptingSystem;
 import com.engine.sevenge.ecs.SpriteComponent;
-import com.engine.sevenge.graphics.SubTexture2D;
+import com.engine.sevenge.graphics.TextureRegion;
 
 public class SampleGameState extends GameState {
 
@@ -56,20 +56,20 @@ public class SampleGameState extends GameState {
 			cs.scale = 1.0f;
 			float rnd = rng.nextFloat();
 			if (rnd < 0.5f) {
-				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("applesp");
+				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("applesp");
 				cs.scale = 0.2f;
 			} else if (rnd < 0.7f)
-				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("meteorBrown_small2");
+				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_small2");
 			else if (rnd < 0.95f)
-				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("meteorBrown_tiny2");
+				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_tiny2");
 			else {
-				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("enemyRed1");
+				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("enemyRed1");
 				AnimationComponent ca = new AnimationComponent();
-				ca.frameList = new SubTexture2D[] {(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack1"),
-					(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack2"),
-					(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack3"),
-					(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack4"),
-					(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack5")};
+				ca.frameList = new TextureRegion[] {(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack1"),
+					(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack2"),
+					(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack3"),
+					(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack4"),
+					(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack5")};
 				ca.durations = new int[] {500, 1000, 2000, 234, 666};
 				ca.isPlaying = true;
 				e.add(ca, 4);

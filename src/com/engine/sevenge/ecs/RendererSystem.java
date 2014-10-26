@@ -15,7 +15,7 @@ import java.util.List;
 import android.graphics.Matrix;
 
 import com.engine.sevenge.graphics.SpriteBatcher;
-import com.engine.sevenge.graphics.SubTexture2D;
+import com.engine.sevenge.graphics.TextureRegion;
 
 public class RendererSystem extends System {
 
@@ -45,7 +45,7 @@ public class RendererSystem extends System {
 			if ((SYSTEM_MASK & entity.mask) == SYSTEM_MASK) {
 				PositionComponent cp = (PositionComponent)entity.components.get(1);
 				SpriteComponent cs = (SpriteComponent)entity.components.get(2);
-				SubTexture2D sprite = cs.subTexture;
+				TextureRegion sprite = cs.subTexture;
 
 				hw = sprite.getWidth() / 2;
 				hh = sprite.getHeight() / 2;
@@ -79,7 +79,7 @@ public class RendererSystem extends System {
 				t[13] = v[7];
 				t[14] = uvs[6];
 				t[15] = uvs[7];
-				spriteBatcher.batchSprite(t, sprite.getTexture());
+				spriteBatcher.addSprite(t, sprite.getTexture());
 			} else if ((entity.mask & CameraComponent.MASK) == CameraComponent.MASK) {
 				CameraComponent cc = (CameraComponent)entity.components.get(8);
 				vpm = cc.viewProjectionMatrix;

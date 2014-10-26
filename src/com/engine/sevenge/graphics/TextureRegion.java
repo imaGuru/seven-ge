@@ -3,15 +3,13 @@ package com.engine.sevenge.graphics;
 
 import com.engine.sevenge.assets.Asset;
 
-public class SubTexture2D extends Asset {
+public class TextureRegion extends Asset {
 	private final float[] uvs;
-	private final String name;
-	private final Texture2D texture;
+	private final Texture texture;
 	private final int height, width;
 
-	public SubTexture2D (String name, int width, int height, int x, int y, Texture2D texture) {
+	public TextureRegion (int width, int height, int x, int y, Texture texture) {
 		uvs = new float[8];
-		this.name = name;
 		this.texture = texture;
 		this.width = width;
 		this.height = height;
@@ -31,11 +29,7 @@ public class SubTexture2D extends Asset {
 		uvs[7] = yMin;
 	}
 
-	public String getName () {
-		return name;
-	}
-
-	public Texture2D getTexture () {
+	public Texture getTexture () {
 		return texture;
 	}
 

@@ -5,13 +5,7 @@
 			"type":"music",
 			"path":"Music/intro.mp3"
 		}],
-	"programs": [
-		{
-			"id":"spriteShader",
-			"vertexShader":"shader1",
-			"fragmentShader":"shader2"
-		}],
-	"shaders": [
+	"shader": [
 		{
 			"id":"shader1",
 			"type":"vertex",
@@ -22,7 +16,13 @@
 			"type":"fragment",
 			"path":"Shaders/texture_fragment_shader.glsl"
 		}],
-	"textures": [
+	"program": [
+		{
+			"id":"spriteShader",
+			"vertexShader":"shader1",
+			"fragmentShader":"shader2"
+		}],
+	"texture": [
 		{ 
 			"id":"apple",
 			"path":"Textures/apple.png"
@@ -31,7 +31,7 @@
 			"id":"spaceSheet",
 			"path":"Textures/SpaceSheet.png"
 		}],
-	"spritesheet" : [
+	"spriteSheet" : [
 		{
 			"id":"subtexture.pkg",
 			"path":"Textures/subtexture.pkg"

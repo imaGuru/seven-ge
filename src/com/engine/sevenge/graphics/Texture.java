@@ -12,12 +12,14 @@ import static android.opengl.GLES20.glDeleteTextures;
 import static android.opengl.GLES20.glGenTextures;
 import static android.opengl.GLES20.glGenerateMipmap;
 import static android.opengl.GLES20.glTexParameteri;
+
+import java.io.InputStream;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
 
 import com.engine.sevenge.assets.Asset;
-import com.engine.sevenge.io.FileHandle;
 import com.engine.sevenge.utils.Log;
 
 public class Texture extends Asset {
@@ -26,7 +28,7 @@ public class Texture extends Asset {
 	private final int width;
 	private final int height;
 
-	public Texture (FileHandle fh) {
+	public Texture (InputStream in) {
 		textureID = new int[1];
 		glGenTextures(1, textureID, 0);
 		if (textureID[0] == 0) {
@@ -37,7 +39,7 @@ public class Texture extends Asset {
 		}
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inScaled = false;
-		final Bitmap bitmap = BitmapFactory.decodeStream(fh.getInputStream(), null, options);
+		final Bitmap bitmap = BitmapFactory.decodeStream(in, null, options);
 		if (bitmap == null) {
 			Log.w(TAG, "Texture could not be decoded.");
 			glDeleteTextures(1, textureID, 0);

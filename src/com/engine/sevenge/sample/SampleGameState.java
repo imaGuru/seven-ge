@@ -38,7 +38,7 @@ public class SampleGameState extends GameState {
 	public SampleGameState (GameActivity gameActivity) {
 		super(gameActivity);
 
-		SevenGE.assetManager.loadAssets(SevenGE.io.asset("sample.pkg"));
+		SevenGE.assetManager.loadAssets("sample.pkg");
 
 		rendererSystem = new RendererSystem();
 		cameraSystem = new CameraSystem();
@@ -126,7 +126,6 @@ public class SampleGameState extends GameState {
 
 	@Override
 	public void dispose () {
-		// TODO Auto-generated method stub
 
 	}
 

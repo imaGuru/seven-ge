@@ -1,14 +1,16 @@
 
 package com.engine.sevenge.assets;
 
+import java.io.IOException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.opengl.GLES20;
 
-import com.engine.sevenge.SevenGE;
 import com.engine.sevenge.graphics.Shader;
+import com.engine.sevenge.io.IO;
 
 public class ShaderLoader extends AssetLoader {
 
@@ -23,12 +25,13 @@ public class ShaderLoader extends AssetLoader {
 			for (int i = 0; i < jarr.length(); i++) {
 				JSONObject jShader = jarr.getJSONObject(i);
 				int type = jShader.getString("type").equals("vertex") ? GLES20.GL_VERTEX_SHADER : GLES20.GL_FRAGMENT_SHADER;
-				assetManager.registerAsset(jShader.getString("id"), new Shader(SevenGE.io.asset(jShader.getString("path"))
-					.readString(), type));
+				assetManager.registerAsset(jShader.getString("id"),
+					new Shader(IO.readToString(IO.openAsset(jShader.getString("path"))), type));
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
-
 }

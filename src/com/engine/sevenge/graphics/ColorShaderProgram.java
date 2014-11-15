@@ -5,7 +5,7 @@ import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 
-public class ColorShaderProgram extends ShaderProgram {
+public final class ColorShaderProgram extends ShaderProgram {
 	// Uniform locations
 	private final int uniformMatrixLocation;
 	// Attribute locations

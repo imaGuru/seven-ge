@@ -4,15 +4,17 @@ package com.engine.sevenge.graphics;
 import com.engine.sevenge.assets.Asset;
 
 public class TextureRegion extends Asset {
-	private final float[] uvs;
-	private final Texture texture;
-	private final int height, width;
+	public final float[] uvs, v;
+	public final int height, width;
+	public final Texture texture;
 
 	public TextureRegion (int width, int height, int x, int y, Texture texture) {
 		uvs = new float[8];
-		this.texture = texture;
+		v = new float[8];
 		this.width = width;
 		this.height = height;
+		this.texture = texture;
+		int hw = width / 2, hh = height / 2;
 
 		int texWidth = texture.getWidth();
 		int texHeight = texture.getHeight();
@@ -27,22 +29,15 @@ public class TextureRegion extends Asset {
 		uvs[5] = yMax;
 		uvs[6] = xMax;
 		uvs[7] = yMin;
-	}
 
-	public Texture getTexture () {
-		return texture;
-	}
-
-	public float[] getUVs () {
-		return uvs;
-	}
-
-	public int getHeight () {
-		return height;
-	}
-
-	public int getWidth () {
-		return width;
+		v[0] = hw;
+		v[1] = hh;
+		v[2] = -hw;
+		v[3] = hh;
+		v[4] = -hw;
+		v[5] = -hh;
+		v[6] = hw;
+		v[7] = -hh;
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniform1i;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 
-public class TextureShaderProgram extends ShaderProgram {
+public final class TextureShaderProgram extends ShaderProgram {
 	private final int matrixLocation;
 	private final int textureUnitLocation;
 	// Attribute locations

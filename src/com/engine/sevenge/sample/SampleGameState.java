@@ -1,6 +1,7 @@
 
 package com.engine.sevenge.sample;
 
+import static android.opengl.Matrix.invertM;
 import static android.opengl.Matrix.multiplyMM;
 import static android.opengl.Matrix.orthoM;
 import static android.opengl.Matrix.setLookAtM;
@@ -49,7 +50,7 @@ public class SampleGameState extends GameState {
 		entities = new ArrayList<Entity>();
 		Entity cam = new Entity();
 		entities.add(cam);
-		for (int i = 0; i < 350; i++) {
+		for (int i = 0; i < 100; i++) {
 			Entity e = new Entity();
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
@@ -57,7 +58,7 @@ public class SampleGameState extends GameState {
 			float rnd = rng.nextFloat();
 			if (rnd < 0.5f) {
 				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("applesp");
-				cs.scale = 0.2f;
+				cs.scale = 0.6f;
 			} else if (rnd < 0.7f)
 				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_small2");
 			else if (rnd < 0.95f)
@@ -76,8 +77,8 @@ public class SampleGameState extends GameState {
 			}
 
 			cp.rotation = rng.nextFloat() * 360.0f;
-			cp.x = rng.nextFloat() * 1000f;
-			cp.y = rng.nextFloat() * 1000f;
+			cp.x = rng.nextFloat() * 2000f;
+			cp.y = rng.nextFloat() * 2000f;
 
 			e.add(cp, 1);
 			e.add(cs, 2);
@@ -98,12 +99,13 @@ public class SampleGameState extends GameState {
 		cc.width = width;
 		cc.scale = 0.7f;
 		PositionComponent cp = new PositionComponent();
-		cp.x = 500;
-		cp.y = 500;
+		cp.x = 0;
+		cp.y = 0;
 		setLookAtM(cc.viewMatrix, 0, cp.x, cp.y, 1f, cp.x, cp.y, 0f, 0f, 1.0f, 0.0f);
 		orthoM(cc.projectionMatrix, 0, -width / cc.scale / 2, width / cc.scale / 2, -height / cc.scale / 2, height / cc.scale / 2,
 			0f, 1f);
 		multiplyMM(cc.viewProjectionMatrix, 0, cc.projectionMatrix, 0, cc.viewMatrix, 0);
+		invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
 		e.add(cp, 1);
 		e.add(cc, 8);
 	}

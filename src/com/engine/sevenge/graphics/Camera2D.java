@@ -32,9 +32,9 @@ public class Camera2D {
 	 * @param invertedVPM inverted viewProjection matrix
 	 * @param unpCoords output in world coordinates. Array has to be of length 4 */
 	public static void unProject (int x, int y, int w, int h, float[] devCoords, float[] invertedVPM, float[] unpCoords) {
-		devCoords[0] = x / w * 2 - 1;
-		devCoords[1] = -y / h * 2 + 1;
-		devCoords[2] = 1;
+		devCoords[0] = 1.0f * x / w * 2 - 1;
+		devCoords[1] = -1.0f * y / h * 2 + 1;
+		devCoords[2] = 0;
 		devCoords[3] = 1;
 		multiplyMV(unpCoords, 0, invertedVPM, 0, devCoords, 0);
 	}

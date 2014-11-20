@@ -10,8 +10,6 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 import com.engine.sevenge.io.IO;
 
 public class AssetManager {
@@ -24,33 +22,42 @@ public class AssetManager {
 
 	public AssetManager () {
 		loaders.put("texture", new TextureLoader(this));
-		loaders.put("textureRegion", new SpriteSheetLoader(this));
-		loaders.put("shaderProgram", new TextureShaderProgramLoader(this));
+		loaders.put("program", new TextureShaderProgramLoader(this));
 		loaders.put("shader", new ShaderLoader(this));
 		loaders.put("audio", new AudioLoader(this));
-		loaders.put("animation", new AnimationLoader(this));
+		// loaders.put("animation", new AnimationLoader(this));
 		loaders.put("spriteSheet", new SpriteSheetLoader(this));
 	}
 
 	/** Reads the package file specified by the path and loads the specified assets
 	 * @param path leading to asset package file */
 	public void loadAssets (String path) {
+		/*
+		 * String content; try { content = IO.readToString(IO.openAsset(path)); JSONObject pkg = new JSONObject(content);
+		 * Iterator<?> keys = pkg.keys(); while (keys.hasNext()) { String key = (String)keys.next(); Log.d("ASSETMANAGER",
+		 * "Loading " + key); loaders.get(key).load(pkg.getJSONArray(key).toString()); // TODO handle missing loaders } System.gc();
+		 * } catch (JSONException e) { e.printStackTrace(); } catch (IOException e1) { // TODO Auto-generated catch block
+		 * e1.printStackTrace(); }
+		 */
 		String content;
 		try {
 			content = IO.readToString(IO.openAsset(path));
 			JSONObject pkg = new JSONObject(content);
-			Iterator<?> keys = pkg.keys();
-			while (keys.hasNext()) {
-				String key = (String)keys.next();
-				Log.d("ASSETMANAGER", "Loading " + key);
-				loaders.get(key).load(pkg.getJSONArray(key).toString()); // TODO handle missing loaders
-			}
+			AssetLoader al = loaders.get("texture");
+			al.load(pkg.getJSONArray("texture").toString());
+			al = loaders.get("spriteSheet");
+			al.load(pkg.getJSONArray("spriteSheet").toString());
+			al = loaders.get("shader");
+			al.load(pkg.getJSONArray("shader").toString());
+			al = loaders.get("program");
+			al.load(pkg.getJSONArray("program").toString());
+			al = loaders.get("audio");
+			al.load(pkg.getJSONArray("audio").toString());
 			System.gc();
 		} catch (JSONException e) {
 			e.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -158,6 +158,7 @@ public abstract class GameActivity extends Activity implements Renderer {
 	/** Handles final destruction of the application */
 	@Override
 	protected void onDestroy () {
+		super.onDestroy();
 		hs.stop();
 	}
 

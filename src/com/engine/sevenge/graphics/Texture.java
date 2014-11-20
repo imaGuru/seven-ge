@@ -22,12 +22,15 @@ import android.opengl.GLUtils;
 import com.engine.sevenge.assets.Asset;
 import com.engine.sevenge.utils.Log;
 
+/** Responsible for loading and using textures in opengl */
 public class Texture extends Asset {
 	private static final String TAG = "Texture2D";
 	private final int[] textureID;
 	private final int width;
 	private final int height;
 
+	/** Loads the texture from specified inputstream
+	 * @param in InputStream with texture data */
 	public Texture (InputStream in) {
 		textureID = new int[1];
 		glGenTextures(1, textureID, 0);
@@ -55,11 +58,15 @@ public class Texture extends Asset {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
+	/** Bind this texture to use it for drawing
+	 * @param textureUnit texture unit to use */
 	public void bindTexture (int textureUnit) {
 		glActiveTexture(textureUnit);
 		glBindTexture(GL_TEXTURE_2D, textureID[0]);
 	}
 
+	/** Retrieve OpenGL ID of this texture
+	 * @return OpenGL ID */
 	public int getGLID () {
 		return textureID[0];
 	}
@@ -69,10 +76,14 @@ public class Texture extends Asset {
 		glDeleteTextures(1, textureID, 0);
 	}
 
+	/** Retrieve the height of the texture
+	 * @return height */
 	public int getHeight () {
 		return height;
 	}
 
+	/** Retrieve the width of the texture
+	 * @return width */
 	public int getWidth () {
 		return width;
 	}

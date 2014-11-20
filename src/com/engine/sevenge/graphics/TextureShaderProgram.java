@@ -14,6 +14,9 @@ public final class TextureShaderProgram extends ShaderProgram {
 	private final int attributePositionLocation;
 	private final int attributeTextureCoordinatesLocation;
 
+	/** Texture shader program for drawing textured objects in OpenGL
+	 * @param vs vertex shader
+	 * @param fs fragment shader */
 	public TextureShaderProgram (Shader vs, Shader fs) {
 		super(vs, fs);
 
@@ -24,6 +27,9 @@ public final class TextureShaderProgram extends ShaderProgram {
 		attributeTextureCoordinatesLocation = glGetAttribLocation(programID, A_TEXTURE_COORDINATES);
 	}
 
+	/** Set texture and matrix to be used with the shader program
+	 * @param matrix
+	 * @param texture */
 	public void setUniforms (float[] matrix, Texture texture) {
 		// Pass the matrix into the shader program.
 		glUniformMatrix4fv(matrixLocation, 1, false, matrix, 0);
@@ -31,10 +37,14 @@ public final class TextureShaderProgram extends ShaderProgram {
 		glUniform1i(textureUnitLocation, 0);
 	}
 
+	/** Return position attribute location
+	 * @return position attribute location */
 	public int getPositionAttributeLocation () {
 		return attributePositionLocation;
 	}
 
+	/** Return texturecoordinates attribute location
+	 * @return texturecoordinates attribute location */
 	public int getTextureCoordinatesAttributeLocation () {
 		return attributeTextureCoordinatesLocation;
 	}

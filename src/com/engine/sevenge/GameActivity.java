@@ -29,6 +29,8 @@ import com.engine.sevenge.utils.Log;
 
 import fi.iki.elonen.HelloServer;
 
+/** Class responsible for setting up and running the game engine It contains framelimited game loop and necessary handles for
+ * android lifecycle support */
 public abstract class GameActivity extends Activity implements Renderer {
 	private static final String TAG = "GameEngine";
 
@@ -47,17 +49,22 @@ public abstract class GameActivity extends Activity implements Renderer {
 
 	private GLSurfaceView glSurfaceView;
 
+	/** Keep track of the state we are in. Changes according to android lifecycle */
 	enum GLGameState {
 		Initialized, Running, Paused, Finished, Idle
 	}
 
+	/** Current state the game engine is in */
 	private GLGameState state = GLGameState.Initialized;
 	private Object stateChanged = new Object();
 
+	/** Google gesture detector for input recogniction */
 	private GestureDetectorCompat gestureDetector;
 
+	/** Tiny webserver for serving a web console (not yet implemented) */
 	private HelloServer hs;
 
+	/** Function required by android lifecycle, responsible for initialization of the game engine and setting up the OpenGL surface */
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -105,12 +112,14 @@ public abstract class GameActivity extends Activity implements Renderer {
 
 	}
 
+	/** Gather input events and recognize simple touch events */
 	@Override
 	public boolean onTouchEvent (MotionEvent event) {
 		gestureDetector.onTouchEvent(event);
 		return false;
 	}
 
+	/** Handles pausing the game engine */
 	@Override
 	protected void onPause () {
 		Log.d(TAG, "onPause");
@@ -136,6 +145,7 @@ public abstract class GameActivity extends Activity implements Renderer {
 		super.onPause();
 	}
 
+	/** Handles unpausing the game engine */
 	@Override
 	protected void onResume () {
 		Log.d(TAG, "onResume");
@@ -145,11 +155,14 @@ public abstract class GameActivity extends Activity implements Renderer {
 
 	}
 
+	/** Handles final destruction of the application */
 	@Override
 	protected void onDestroy () {
 		hs.stop();
 	}
 
+	/** Called continuously by the glsurface. Implements the frame limited game loop Allows for extension by user by creating a
+	 * custom state which is updated and drawn every frame */
 	@Override
 	public void onDrawFrame (GL10 gl) {
 		GLGameState state = null;
@@ -200,6 +213,7 @@ public abstract class GameActivity extends Activity implements Renderer {
 
 	}
 
+	/** Handles setup and changes to the size of the glsurface */
 	@Override
 	public void onSurfaceChanged (GL10 gl, int width, int height) {
 		Log.d(TAG, "onSurfaceChanged");
@@ -215,15 +229,16 @@ public abstract class GameActivity extends Activity implements Renderer {
 
 	}
 
+	/** Function required by glsurface. Not used */
 	@Override
 	public void onSurfaceCreated (GL10 gl, EGLConfig config) {
 		Log.d(TAG, "onSurfaceCreated");
 
 	}
 
+	/** ??? */
 	@Override
 	public void onConfigurationChanged (Configuration newConfig) {
-		// TODO Auto-generated method stub
 		super.onConfigurationChanged(newConfig);
 	}
 

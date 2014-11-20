@@ -3,11 +3,18 @@ package com.engine.sevenge.graphics;
 
 import com.engine.sevenge.assets.Asset;
 
+/** Responsible for creating vertex and uv data for some region of the specified texture */
 public class TextureRegion extends Asset {
 	public final float[] uvs, v;
 	public final int height, width;
 	public final Texture texture;
 
+	/** Creates a texture region vertex data
+	 * @param width of the region
+	 * @param height of the region
+	 * @param x position of the region in the texture
+	 * @param y position of the region in the texture
+	 * @param texture we want the region from */
 	public TextureRegion (int width, int height, int x, int y, Texture texture) {
 		uvs = new float[8];
 		v = new float[8];
@@ -42,7 +49,6 @@ public class TextureRegion extends Asset {
 
 	@Override
 	public void dispose () {
-		// TODO Auto-generated method stub
 
 	}
 }

@@ -6,9 +6,7 @@ import com.engine.sevenge.audio.Audio;
 import com.engine.sevenge.input.InputListener;
 import com.engine.sevenge.io.IO;
 
-/*
- *  Class exposing game engine subsystems to the world.
- */
+/** Class exposing game engine subsystems anywhere in the code. */
 public class SevenGE {
 
 	public static InputListener input;

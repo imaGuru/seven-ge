@@ -12,10 +12,14 @@ import static android.opengl.GLES20.glShaderSource;
 import com.engine.sevenge.assets.Asset;
 import com.engine.sevenge.utils.Log;
 
+/** Class creating opengl shader and holding reference to opengl object */
 public class Shader extends Asset {
 	private static final String TAG = "Shader";
 	private final int shaderObjectId;
 
+	/** Creates shader of specified type (vertex, fragment)
+	 * @param shaderCode string with shader code to compile
+	 * @param type of the shader (vertex, fragment) */
 	public Shader (String shaderCode, int type) {
 		shaderObjectId = glCreateShader(type);
 		if (shaderObjectId == 0) {
@@ -36,13 +40,14 @@ public class Shader extends Asset {
 		}
 	}
 
+	/** Retruns OpenGL Id of the shader
+	 * @return GLID */
 	public int getGLID () {
 		return shaderObjectId;
 	}
 
 	@Override
 	public void dispose () {
-		// TODO Auto-generated method stub
-
+		glDeleteShader(shaderObjectId);
 	}
 }

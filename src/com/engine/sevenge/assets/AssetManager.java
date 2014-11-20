@@ -17,7 +17,9 @@ import com.engine.sevenge.io.IO;
 public class AssetManager {
 	private final String TAG = "AssetManager";
 
+	/** Holds assets using id string as the key and asset as the value of a hashmap */
 	private Map<String, Asset> assets = new HashMap<String, Asset>();
+	/** Holds asset loaders using type of loaded asset as key and asset as the value */
 	private Map<String, AssetLoader> loaders = new HashMap<String, AssetLoader>();
 
 	public AssetManager () {
@@ -30,6 +32,8 @@ public class AssetManager {
 		loaders.put("spriteSheet", new SpriteSheetLoader(this));
 	}
 
+	/** Reads the package file specified by the path and loads the specified assets
+	 * @param path leading to asset package file */
 	public void loadAssets (String path) {
 		String content;
 		try {
@@ -50,18 +54,28 @@ public class AssetManager {
 		}
 	}
 
+	/** Register the assets in the hashmap
+	 * @param key asset id
+	 * @param res asset to be stored */
 	public void registerAsset (String key, Asset res) {
 		assets.put(key, res);
 	}
 
+	/** Add a loader to the hashmap
+	 * @param key asset type string
+	 * @param l loader handling loading of some asset type */
 	public void addLoader (String key, AssetLoader l) {
 		loaders.put(key, l);
 	}
 
+	/** Retrieve assets by their id string
+	 * @param id string identifying uniquely an asset
+	 * @return requested asset */
 	public Asset getAsset (String id) {
 		return assets.get(id);// TODO handle missing assets
 	}
 
+	/** Remove all loaded assets */
 	public void clearAssets () {
 		Collection<Asset> cl = assets.values();
 		Iterator<Asset> it = cl.iterator();

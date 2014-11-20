@@ -5,12 +5,16 @@ import java.util.HashMap;
 
 import com.engine.sevenge.SevenGE;
 
+/** Class responsible for creating sprite batches and puting sprites in the correct batches for fast and easy drawing */
 public class SpriteBatcher {
 	private SpriteBatch[] batches;
 	private HashMap<Integer, Integer> batchIndex;
 	private int[] batchesSize;
 	private int usedBatches;
 
+	/** Creates a new spriteBatcher
+	 * @param size number of batches
+	 * @param batchSizeHint hint number of sprites in a batch */
 	public SpriteBatcher (int sizeHint, int batchSizeHint) {
 		usedBatches = 0;
 		batches = new SpriteBatch[sizeHint];
@@ -24,7 +28,10 @@ public class SpriteBatcher {
 		}
 	}
 
-	public void batchSprite (float[] vdata, Texture2D tex) {
+	/** Add a sprite to the correct batch for drawing
+	 * @param vdata sprite vertex and uv data
+	 * @param tex texture to be used for this sprite */
+	public void addSprite (float[] vdata, Texture tex) {
 		int glid;
 		int i;
 		glid = tex.getGLID();
@@ -40,16 +47,13 @@ public class SpriteBatcher {
 		batches[i].add(vdata);
 	}
 
+	/** Draw the created batches using specified view projection matrix
+	 * @param vpm view projection matrix */
 	public void draw (float[] vpm) {
 		for (int i = 0; i < usedBatches; i++) {
 			batches[i].upload();
 			batches[i].draw(vpm);
 			batches[i].clear();
 		}
-	}
-
-	public int getBatchIndexByTextureGLID (int glid) {
-		if (batchIndex.containsKey(glid)) return batchIndex.get(glid);
-		return -1;
 	}
 }

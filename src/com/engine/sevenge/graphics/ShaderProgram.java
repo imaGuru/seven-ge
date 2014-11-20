@@ -15,6 +15,7 @@ import static android.opengl.GLES20.glValidateProgram;
 import com.engine.sevenge.assets.Asset;
 import com.engine.sevenge.utils.Log;
 
+/** Class providing the base for every shaderProgram */
 class ShaderProgram extends Asset {
 	// Uniform constants
 	protected static final String U_MATRIX = "u_Matrix";
@@ -27,6 +28,9 @@ class ShaderProgram extends Asset {
 
 	protected final int programID;
 
+	/** Creates an opengl shader program
+	 * @param vs vertex shader
+	 * @param fs fragment shader */
 	public ShaderProgram (Shader vs, Shader fs) {
 		programID = glCreateProgram();
 		if (programID == 0) {
@@ -45,14 +49,19 @@ class ShaderProgram extends Asset {
 		}
 	}
 
+	/** Use this shader program in opengl drawing */
 	public void use () {
 		glUseProgram(programID);
 	}
 
+	/** Returns opengl id of this shader program
+	 * @return Opengl ID */
 	public int getGLID () {
 		return programID;
 	}
 
+	/** Validate the compilation of this shader program
+	 * @return true if program successfully validated else false */
 	public boolean validateProgram () {
 		glValidateProgram(programID);
 		final int[] validateStatus = new int[1];
@@ -63,7 +72,6 @@ class ShaderProgram extends Asset {
 
 	@Override
 	public void dispose () {
-		// TODO Auto-generated method stub
-
+		glDeleteProgram(programID);
 	}
 }

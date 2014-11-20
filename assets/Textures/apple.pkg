@@ -1,6 +1,6 @@
 {
 "textureID":"apple",
-"subtextures": 
+"textureRegions": 
 	[{"id":"applesp",
 		"x":"0",
 		"y":"0",

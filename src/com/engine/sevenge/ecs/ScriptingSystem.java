@@ -21,7 +21,7 @@ public class ScriptingSystem extends System {
 		luaState.openLibs();
 		luaState.register("simplelol", new NamedJavaFunction[] {new DebugLog()}, true);
 		try {
-			luaState.load(SevenGE.io.asset("Scripts/main.lua").getInputStream(), "=main", "t");
+			luaState.load(SevenGE.io.openAsset("Scripts/main.lua"), "=main", "t");
 
 			// Evaluate the chunk, thus defining the function
 			luaState.call(0, 0); // No arguments, no returns

@@ -16,6 +16,7 @@ import com.engine.sevenge.input.GestureProcessor;
 public class CameraSystem extends System implements GestureProcessor {
 	private static int SYSTEM_MASK = CameraComponent.MASK | PositionComponent.MASK;
 	private float[] coords = new float[4];
+	private float[] devCoords = new float[4];
 
 	boolean scrolled = false;
 	float me2x;
@@ -33,10 +34,11 @@ public class CameraSystem extends System implements GestureProcessor {
 			if ((SYSTEM_MASK & entity.mask) == SYSTEM_MASK) {
 				if (scrolled) {
 					CameraComponent cc = (CameraComponent)entity.components.get(8);
-					Camera2D.unProject(me2x + distX, me2y + distY, cc.width, cc.height, cc.invertedVPMatrix, coords);
+					Camera2D.unProject((int)(me2x + distX), (int)(me2y + distY), cc.width, cc.height, devCoords, cc.invertedVPMatrix,
+						coords);
 					float x1 = coords[0];
 					float y1 = coords[1];
-					Camera2D.unProject(me2x, me2y, cc.width, cc.height, cc.invertedVPMatrix, coords);
+					Camera2D.unProject((int)me2x, (int)me2y, cc.width, cc.height, devCoords, cc.invertedVPMatrix, coords);
 					float x2 = coords[0];
 					float y2 = coords[1];
 					PositionComponent cp = (PositionComponent)entity.components.get(1);

@@ -1,6 +1,7 @@
 
 package com.engine.sevenge.sample;
 
+import static android.opengl.Matrix.invertM;
 import static android.opengl.Matrix.multiplyMM;
 import static android.opengl.Matrix.orthoM;
 import static android.opengl.Matrix.setLookAtM;
@@ -24,7 +25,7 @@ import com.engine.sevenge.ecs.PositionComponent;
 import com.engine.sevenge.ecs.RendererSystem;
 import com.engine.sevenge.ecs.ScriptingSystem;
 import com.engine.sevenge.ecs.SpriteComponent;
-import com.engine.sevenge.graphics.SubTexture2D;
+import com.engine.sevenge.graphics.TextureRegion;
 import com.engine.sevenge.input.GestureProcessor;
 import com.engine.sevenge.input.InputProcessor;
 import com.engine.sevenge.utils.Log;
@@ -47,7 +48,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		SevenGE.input.addInputProcessor(this);
 		SevenGE.input.addGestureProcessor(this);
 
-		SevenGE.assetManager.loadAssets(SevenGE.io.asset("sample.pkg"));
+		SevenGE.assetManager.loadAssets("sample.pkg");
 
 		rendererSystem = new RendererSystem();
 		cameraSystem = new CameraSystem();
@@ -58,35 +59,35 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		entities = new ArrayList<Entity>();
 		Entity cam = new Entity();
 		entities.add(cam);
-		for (int i = 0; i < 350; i++) {
+		for (int i = 0; i < 100; i++) {
 			Entity e = new Entity();
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
 			cs.scale = 1.0f;
 			float rnd = rng.nextFloat();
 			if (rnd < 0.5f) {
-				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("applesp");
-				cs.scale = 0.2f;
+				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("applesp");
+				cs.scale = 0.6f;
 			} else if (rnd < 0.7f)
-				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("meteorBrown_small2");
+				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_small2");
 			else if (rnd < 0.95f)
-				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("meteorBrown_tiny2");
+				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_tiny2");
 			else {
-				cs.subTexture = (SubTexture2D)SevenGE.assetManager.getAsset("enemyRed1");
+				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("enemyRed1");
 				AnimationComponent ca = new AnimationComponent();
-				ca.frameList = new SubTexture2D[] {(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack1"),
-					(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack2"),
-					(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack3"),
-					(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack4"),
-					(SubTexture2D)SevenGE.assetManager.getAsset("enemyBlack5")};
+				ca.frameList = new TextureRegion[] {(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack1"),
+					(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack2"),
+					(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack3"),
+					(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack4"),
+					(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack5")};
 				ca.durations = new int[] {500, 1000, 2000, 234, 666};
 				ca.isPlaying = true;
 				e.add(ca, 4);
 			}
 
 			cp.rotation = rng.nextFloat() * 360.0f;
-			cp.x = rng.nextFloat() * 1000f;
-			cp.y = rng.nextFloat() * 1000f;
+			cp.x = rng.nextFloat() * 2000f;
+			cp.y = rng.nextFloat() * 2000f;
 
 			e.add(cp, 1);
 			e.add(cs, 2);
@@ -107,12 +108,13 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		cc.width = width;
 		cc.scale = 0.7f;
 		PositionComponent cp = new PositionComponent();
-		cp.x = 500;
-		cp.y = 500;
+		cp.x = 0;
+		cp.y = 0;
 		setLookAtM(cc.viewMatrix, 0, cp.x, cp.y, 1f, cp.x, cp.y, 0f, 0f, 1.0f, 0.0f);
 		orthoM(cc.projectionMatrix, 0, -width / cc.scale / 2, width / cc.scale / 2, -height / cc.scale / 2, height / cc.scale / 2,
 			0f, 1f);
 		multiplyMM(cc.viewProjectionMatrix, 0, cc.projectionMatrix, 0, cc.viewMatrix, 0);
+		invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
 		e.add(cp, 1);
 		e.add(cc, 8);
 	}
@@ -137,7 +139,6 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void dispose () {
-		// TODO Auto-generated method stub
 
 	}
 

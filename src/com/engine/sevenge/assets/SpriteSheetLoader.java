@@ -1,14 +1,15 @@
 
 package com.engine.sevenge.assets;
 
+import java.io.IOException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.engine.sevenge.SevenGE;
-import com.engine.sevenge.graphics.SubTexture2D;
-import com.engine.sevenge.graphics.Texture2D;
-import com.engine.sevenge.io.FileHandle;
+import com.engine.sevenge.graphics.Texture;
+import com.engine.sevenge.graphics.TextureRegion;
+import com.engine.sevenge.io.IO;
 
 public class SpriteSheetLoader extends AssetLoader {
 
@@ -18,29 +19,27 @@ public class SpriteSheetLoader extends AssetLoader {
 
 	@Override
 	public void load (String content) {
-		String textureId;
 		try {
-			FileHandle fileh;
 			JSONArray jarr = new JSONArray(content);
 			for (int i = 0; i < jarr.length(); i++) {
-				JSONObject jSprite = jarr.getJSONObject(i);
-				fileh = SevenGE.io.asset(jSprite.get("path").toString());
-				String subtextureContent = fileh.readString();
-				JSONObject jSubtexture = new JSONObject(subtextureContent);
-				textureId = jSubtexture.getString("textureID");
-				JSONArray jSubtextureArr = jSubtexture.getJSONArray("subtextures");
-				for (int j = 0; j < jSubtextureArr.length(); j++) {
-					JSONObject jSub = jSubtextureArr.getJSONObject(j);
-					assetManager.registerAsset(
-						jSub.getString("id"),
-						new SubTexture2D(jSub.getString("id"), jSub.getInt("width"), jSub.getInt("height"), jSub.getInt("x"), jSub
-							.getInt("y"), (Texture2D)assetManager.getAsset(textureId)));
+				JSONObject jSpriteSheet = jarr.getJSONObject(i);
+				String spriteSheetData = IO.readToString(IO.openAsset(jSpriteSheet.getString("path")));
+				JSONObject jSpriteSheetData = new JSONObject(spriteSheetData);
+				String textureId = jSpriteSheetData.getString("textureID");
+				JSONArray jTextureRegions = jSpriteSheetData.getJSONArray("textureRegions");
+				for (int j = 0; j < jTextureRegions.length(); j++) {
+					JSONObject jRegion = jTextureRegions.getJSONObject(j);
+					assetManager.registerAsset(jRegion.getString("id"),
+						new TextureRegion(jRegion.getInt("width"), jRegion.getInt("height"), jRegion.getInt("x"), jRegion.getInt("y"),
+							(Texture)assetManager.getAsset(textureId)));
 				}
 			}
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
-
 }

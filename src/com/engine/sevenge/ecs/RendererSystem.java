@@ -12,18 +12,22 @@ import static android.opengl.GLES20.glEnable;
 
 import java.util.List;
 
-import android.graphics.Matrix;
+import android.opengl.Matrix;
 
 import com.engine.sevenge.graphics.SpriteBatcher;
-import com.engine.sevenge.graphics.SubTexture2D;
+import com.engine.sevenge.graphics.TextureRegion;
 
 public class RendererSystem extends System {
 
 	private static int SYSTEM_MASK = SpriteComponent.MASK | PositionComponent.MASK;
 
+	private int i;
 	private SpriteBatcher spriteBatcher;
-	private float[] uvs, v = new float[8], t = new float[16];
-	private Matrix transform = new Matrix();
+	private float[] uvs;
+	private float[] v;
+	private float[] r = new float[8], sv = new float[8], temp = new float[4], tempr = new float[4];
+	private float[] t = new float[16];
+	private float[] transform = new float[16], scaleMatrix = new float[16];
 	private int hw, hh;
 
 	public RendererSystem () {
@@ -31,10 +35,7 @@ public class RendererSystem extends System {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
 		spriteBatcher = new SpriteBatcher(2, 200);
-		// Texture2D tex = (Texture2D)SevenGE.assetManager.getAsset("spaceSheet");
-		// spriteBatch = new SpriteBatch(tex, tsp, 1000);
 	}
 
 	@Override
@@ -45,41 +46,51 @@ public class RendererSystem extends System {
 			if ((SYSTEM_MASK & entity.mask) == SYSTEM_MASK) {
 				PositionComponent cp = (PositionComponent)entity.components.get(1);
 				SpriteComponent cs = (SpriteComponent)entity.components.get(2);
-				SubTexture2D sprite = cs.subTexture;
+				TextureRegion sprite = cs.subTexture;
 
-				hw = sprite.getWidth() / 2;
-				hh = sprite.getHeight() / 2;
-				transform.setTranslate(hw, hh);
-				transform.preRotate(cp.rotation);
-				transform.preTranslate(cp.x, cp.y);
-				transform.preScale(cs.scale, cs.scale);
-				v[0] = cp.x + hw;
-				v[1] = cp.y + hh;
-				v[2] = cp.x - hw;
-				v[3] = cp.y + hh;
-				v[4] = cp.x - hw;
-				v[5] = cp.y - hh;
-				v[6] = cp.x + hw;
-				v[7] = cp.y - hh;
-				transform.mapPoints(v);
-				uvs = sprite.getUVs();
-				t[0] = v[0];
-				t[1] = v[1];
+				hw = sprite.width / 2;
+				hh = sprite.height / 2;
+				uvs = sprite.uvs;
+				v = sprite.v;
+
+				// TODO Move this to components so we only multiply. Avoid useless creation of transforms
+
+				Matrix.setIdentityM(scaleMatrix, 0);
+				Matrix.scaleM(scaleMatrix, 0, cs.scale, cs.scale, 1.0f);
+
+				Matrix.setIdentityM(transform, 0);
+				Matrix.translateM(transform, 0, hw, hh, 0f);
+				Matrix.rotateM(transform, 0, cp.rotation, 0f, 0f, 1.0f);
+				Matrix.translateM(transform, 0, cp.x, cp.y, 0f);
+				for (i = 0; i < 4; i++) {
+					temp[0] = v[i * 2];
+					temp[1] = v[i * 2 + 1];
+					temp[2] = 0;
+					temp[3] = 1;
+					Matrix.multiplyMV(tempr, 0, scaleMatrix, 0, temp, 0);
+					Matrix.multiplyMV(temp, 0, transform, 0, tempr, 0);
+					r[i * 2] = temp[0];
+					r[i * 2 + 1] = temp[1];
+				}
+
+				t[0] = r[0];
+				t[1] = r[1];
 				t[2] = uvs[0];
 				t[3] = uvs[1];
-				t[4] = v[2];
-				t[5] = v[3];
+				t[4] = r[2];
+				t[5] = r[3];
 				t[6] = uvs[2];
 				t[7] = uvs[3];
-				t[8] = v[4];
-				t[9] = v[5];
+				t[8] = r[4];
+				t[9] = r[5];
 				t[10] = uvs[4];
 				t[11] = uvs[5];
-				t[12] = v[6];
-				t[13] = v[7];
+				t[12] = r[6];
+				t[13] = r[7];
 				t[14] = uvs[6];
 				t[15] = uvs[7];
-				spriteBatcher.batchSprite(t, sprite.getTexture());
+
+				spriteBatcher.addSprite(t, sprite.texture);
 			} else if ((entity.mask & CameraComponent.MASK) == CameraComponent.MASK) {
 				CameraComponent cc = (CameraComponent)entity.components.get(8);
 				vpm = cc.viewProjectionMatrix;

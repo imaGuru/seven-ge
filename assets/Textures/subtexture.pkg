@@ -1,6 +1,6 @@
 {
 "textureID":"spaceSheet",
-"subtextures": [{"id":"beam0","x":"143","y":"377","width":"43","height":"31"},
+"textureRegions": [{"id":"beam0","x":"143","y":"377","width":"43","height":"31"},
 	{"id":"beam1","x":"327","y":"644","width":"40","height":"20" },
 	{"id":"beam2","x":"262","y":"907","width":"38","height":"31" },
 	{"id":"beam3","x":"396","y":"384","width":"29","height":"29" },

@@ -1,8 +1,6 @@
 
 package com.engine.sevenge.test;
 
-import java.util.concurrent.CountDownLatch;
-
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.engine.sevenge.OpenGLES20UnitTestActivity;
@@ -29,16 +27,13 @@ public class BaseOpenGLES20UnitTest extends ActivityInstrumentationTestCase2<Ope
 	}
 
 	public void runOnGLThread (final TestWrapper test) throws Throwable {
-		final CountDownLatch latch = new CountDownLatch(1);
-
-		activity.getSurfaceView().queueEvent(new Runnable() {
+		Thread t = new Thread(new Runnable() {
 			public void run () {
 				test.executeWrapper();
-				latch.countDown();
 			}
 		});
-
-		latch.await();
+		activity.getSurfaceView().queueEvent(t);
+		t.join();
 		test.rethrowExceptions();
 	}
 

@@ -31,7 +31,7 @@ public class Camera2D {
 	 * @param devCoords temporary array of length 4 to avoid constant allocation in the method
 	 * @param invertedVPM inverted viewProjection matrix
 	 * @param unpCoords output in world coordinates. Array has to be of length 4 */
-	public static void unProject (int x, int y, int w, int h, float[] devCoords, float[] invertedVPM, float[] unpCoords) {
+	public static void unproject (int x, int y, int w, int h, float[] devCoords, float[] invertedVPM, float[] unpCoords) {
 		devCoords[0] = 1.0f * x / w * 2 - 1;
 		devCoords[1] = -1.0f * y / h * 2 + 1;
 		devCoords[2] = 0;

@@ -1,0 +1,12 @@
+Dzika Locha v1.0
+================
+- textures
+- sprites
+- shaders
+- shaderprograms
+- framelimited gameloop
+- lifecycle support
+- support for game states
+- asset loading and management
+- basic asset types (Shaders, ShaderPrograms, Textures, TextureRegions, Music, Sounds)
+- IO for android file system

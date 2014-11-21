@@ -24,7 +24,8 @@ public class Camera2D {
 		setLookAtM(viewMatrix, 0, x, y, 1f, x, y, 0f, 0f, 1.0f, 0.0f);
 	}
 
-	/** @param x coordinate in device coordinates
+	/** Unprojects x y screen coordinates into world coordinates
+	 * @param x coordinate in device coordinates
 	 * @param y coordinate in device coordinates
 	 * @param w width of the screen
 	 * @param h height of the screen

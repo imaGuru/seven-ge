@@ -15,7 +15,7 @@ import com.engine.sevenge.utils.Log;
 /** Class creating opengl shader and holding reference to opengl object */
 public class Shader extends Asset {
 	private static final String TAG = "Shader";
-	private final int shaderObjectId;
+	private int shaderObjectId;
 
 	/** Creates shader of specified type (vertex, fragment)
 	 * @param shaderCode string with shader code to compile
@@ -35,6 +35,7 @@ public class Shader extends Asset {
 		if (compileStatus[0] == 0) {
 			// If it failed, delete the shader object.
 			glDeleteShader(shaderObjectId);
+			shaderObjectId = 0;
 			Log.w(TAG, "Compilation of shader failed.");
 			return;
 		}

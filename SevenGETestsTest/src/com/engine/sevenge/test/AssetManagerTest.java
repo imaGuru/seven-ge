@@ -35,4 +35,12 @@ public class AssetManagerTest extends TestCase {
 		asset = SevenGE.assetManager.getAsset("apple");
 		assertNotNull(asset);
 	}
+	public void clearAssetsTest(){
+		
+		Asset asset=null;
+		SevenGE.assetManager.loadAssets("sample.pkg");
+		SevenGE.assetManager.clearAssets();
+		asset = SevenGE.assetManager.getAsset("apple");
+		assertNull(asset);
+	}
 }

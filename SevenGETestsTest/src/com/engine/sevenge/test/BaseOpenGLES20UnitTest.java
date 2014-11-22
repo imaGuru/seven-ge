@@ -7,6 +7,8 @@ import com.engine.sevenge.OpenGLES20UnitTestActivity;
 import com.engine.sevenge.SevenGE;
 import com.engine.sevenge.io.IO;
 
+
+
 public class BaseOpenGLES20UnitTest extends ActivityInstrumentationTestCase2<OpenGLES20UnitTestActivity> {
 	private OpenGLES20UnitTestActivity activity;
 

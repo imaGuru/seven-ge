@@ -35,7 +35,7 @@ public class RendererSystem extends System {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		spriteBatcher = new SpriteBatcher(2, 200);
+		spriteBatcher = new SpriteBatcher(2, 1000);
 	}
 
 	@Override

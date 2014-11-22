@@ -9,6 +9,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
+import android.opengl.Matrix;
+
 /** Drawable batch of sprites using a single texture */
 public class SpriteBatch implements Drawable {
 
@@ -84,7 +86,7 @@ public class SpriteBatch implements Drawable {
 	/** Add sprite opengl data
 	 * @param vertexData locations of 4 vertices with uv coordinates */
 	public void add (float[] vertexData) {
-		if (spriteCount > size) {
+		if (spriteCount > size - 1) {
 			// TODO
 			return;
 		}
@@ -117,5 +119,59 @@ public class SpriteBatch implements Drawable {
 		vertexArray.setVertexAttribPointer(POSITION_COMPONENT_COUNT, program.getTextureCoordinatesAttributeLocation(),
 			TEXTURE_COORDINATES_COMPONENT_COUNT, STRIDE);
 		glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_SHORT, indexBuffer);
+	}
+
+	public void add (TextureRegion sprite, float scale, float rotation, int x, int y) {
+
+		int i;
+		float[] uvs;
+		float[] v;
+		float[] r = new float[8], sv = new float[8], temp = new float[4], tempr = new float[4];
+		float[] t = new float[16];
+		float[] transform = new float[16], scaleMatrix = new float[16];
+		int hw, hh;
+
+		hw = sprite.width / 2;
+		hh = sprite.height / 2;
+		uvs = sprite.uvs;
+		v = sprite.v;
+
+		Matrix.setIdentityM(scaleMatrix, 0);
+		Matrix.scaleM(scaleMatrix, 0, scale, scale, 1.0f);
+
+		Matrix.setIdentityM(transform, 0);
+		Matrix.translateM(transform, 0, hw, hh, 0f);
+		Matrix.rotateM(transform, 0, rotation, 0f, 0f, 1.0f);
+		Matrix.translateM(transform, 0, x, y, 0f);
+		for (i = 0; i < 4; i++) {
+			temp[0] = v[i * 2];
+			temp[1] = v[i * 2 + 1];
+			temp[2] = 0;
+			temp[3] = 1;
+			Matrix.multiplyMV(tempr, 0, scaleMatrix, 0, temp, 0);
+			Matrix.multiplyMV(temp, 0, transform, 0, tempr, 0);
+			r[i * 2] = temp[0];
+			r[i * 2 + 1] = temp[1];
+		}
+
+		t[0] = r[0];
+		t[1] = r[1];
+		t[2] = uvs[0];
+		t[3] = uvs[1];
+		t[4] = r[2];
+		t[5] = r[3];
+		t[6] = uvs[2];
+		t[7] = uvs[3];
+		t[8] = r[4];
+		t[9] = r[5];
+		t[10] = uvs[4];
+		t[11] = uvs[5];
+		t[12] = r[6];
+		t[13] = r[7];
+		t[14] = uvs[6];
+		t[15] = uvs[7];
+
+		add(t);
+
 	}
 }

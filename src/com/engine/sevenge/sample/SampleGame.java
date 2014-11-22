@@ -8,7 +8,7 @@ public class SampleGame extends GameActivity {
 
 	@Override
 	public GameState getStartStage () {
-		return new SampleGameState(this);
+		return new Demo1(this);
 
 	}
 

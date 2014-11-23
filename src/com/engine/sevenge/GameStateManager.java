@@ -4,13 +4,19 @@ package com.engine.sevenge;
 public class GameStateManager {
 
 	private GameState currentState = null;
-	
+	private int width;
+	private int height;
+
 	/** Sets the current game state
-	 * @param currentState the GameState instance which will be set  */
+	 * @param currentState the GameState instance which will be set */
 	public void setCurrentState (GameState currentState) {
 		if (currentState == null) {
 			throw new NullPointerException("Cannot set a null State");
 		}
+
+		boolean forceOnSurfaceChange = false;
+
+		if (this.currentState != null) forceOnSurfaceChange = true;
 
 		if (this.currentState != currentState) {
 			if (this.currentState != null) {
@@ -21,30 +27,45 @@ public class GameStateManager {
 			// currentState.update();
 			this.currentState = currentState;
 		}
+
+		/*
+		 * ensures that onSurfaceChange will be called at the beginning of new state and not before width and height are set at
+		 * least once
+		 */
+		if (forceOnSurfaceChange) this.currentState.onSurfaceChange(width, height);
+
 	}
-	/*Invokes the update() method of the current GameState*/
+
+	/* Invokes the update() method of the current GameState */
 	public void update () {
 		if (currentState != null) this.currentState.update();
 	}
-	/*Invokes the draw() method of the current GameState*/
+
+	/* Invokes the draw() method of the current GameState */
 	public void draw () {
 		if (currentState != null) this.currentState.draw();
 	}
-	/*Invokes the pause() method of the current GameState*/
+
+	/* Invokes the pause() method of the current GameState */
 	public void pause () {
 		if (currentState != null) this.currentState.pause();
 	}
-	/*Invokes the resume() method of the current GameState*/
+
+	/* Invokes the resume() method of the current GameState */
 	public void resume () {
 		if (currentState != null) this.currentState.resume();
 	}
-	/*Invokes the dispose() method of the current GameState*/
+
+	/* Invokes the dispose() method of the current GameState */
 	public void dispose () {
 		if (currentState != null) this.currentState.dispose();
 	}
-	/*Invokes the onSurfaceChange() method of the current GameState*/
+
+	/* Invokes the onSurfaceChange() method of the current GameState */
 	public void onSurfaceChange (int width, int height) {
 		if (currentState != null) this.currentState.onSurfaceChange(width, height);
+		this.width = width;
+		this.height = height;
 	}
 
 }

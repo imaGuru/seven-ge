@@ -1,6 +1,15 @@
 
 package com.engine.sevenge.sample;
 
+import static android.opengl.GLES20.GL_BLEND;
+import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_ONE;
+import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
+import static android.opengl.GLES20.glBlendFunc;
+import static android.opengl.GLES20.glClear;
+import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.glEnable;
+
 import com.engine.sevenge.GameActivity;
 import com.engine.sevenge.GameState;
 import com.engine.sevenge.SevenGE;
@@ -20,7 +29,7 @@ public class Demo1 extends GameState {
 	int cameraX = 0;
 	int cameraY = 0;
 	float angle = 0;
-	float lastTime = 0;
+	long lastTime = 0;
 
 	public Demo1 (GameActivity gameActivity) {
 		super(gameActivity);
@@ -39,7 +48,11 @@ public class Demo1 extends GameState {
 		this.spriteBatch.add(tr3, 1.5f, 99, 200, 100);
 
 		this.spriteBatch.upload();
-		lastTime = System.currentTimeMillis() + 1000;
+		lastTime = System.currentTimeMillis() + 5000;
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 
 	@Override
@@ -50,8 +63,8 @@ public class Demo1 extends GameState {
 
 	@Override
 	public void draw () {
-
-		this.spriteBatch.draw(viewProjectionMatrix);
+		glClear(GL_COLOR_BUFFER_BIT);
+		spriteBatch.draw(viewProjectionMatrix);
 	}
 
 	@Override

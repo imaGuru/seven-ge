@@ -9,7 +9,6 @@ import com.engine.sevenge.SevenGE;
 public class SpriteBatcher {
 	private SpriteBatch[] batches;
 	private HashMap<Integer, Integer> batchIndex;
-	private int[] batchesSize;
 	private int usedBatches;
 
 	/** Creates a new spriteBatcher
@@ -18,12 +17,10 @@ public class SpriteBatcher {
 	public SpriteBatcher (int sizeHint, int batchSizeHint) {
 		usedBatches = 0;
 		batches = new SpriteBatch[sizeHint];
-		batchesSize = new int[sizeHint];
 		batchIndex = new HashMap<Integer, Integer>(sizeHint);
 		TextureShaderProgram tsp = (TextureShaderProgram)SevenGE.assetManager.getAsset("spriteShader");
 		for (int i = 0; i < sizeHint; i++) {
 			batches[i] = new SpriteBatch(batchSizeHint);
-			batchesSize[i] = 0;
 			batches[i].setProgram(tsp);
 		}
 	}
@@ -40,10 +37,9 @@ public class SpriteBatcher {
 		} else {
 			i = usedBatches;
 			batchIndex.put(glid, i);
-			usedBatches++;
 			batches[i].setTexture(tex);
+			usedBatches++;
 		}
-		batchesSize[i]++;
 		batches[i].add(vdata);
 	}
 
@@ -53,7 +49,11 @@ public class SpriteBatcher {
 		for (int i = 0; i < usedBatches; i++) {
 			batches[i].upload();
 			batches[i].draw(vpm);
-			batches[i].clear();
 		}
+	}
+
+	public void clear () {
+		for (int i = 0; i < usedBatches; i++)
+			batches[i].clear();
 	}
 }

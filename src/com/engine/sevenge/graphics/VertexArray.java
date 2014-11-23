@@ -17,23 +17,23 @@ public class VertexArray {
 
 	/** Creates new vertex array object with specified data
 	 * @param vertexData */
-	public VertexArray (float[] vertexData) {
-		floatBuffer = ByteBuffer.allocateDirect(vertexData.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer()
-			.put(vertexData);
-		memoryAllocated = vertexData.length * BYTES_PER_FLOAT;
+	public VertexArray (float[] vertexData, int length) {
+		floatBuffer = ByteBuffer.allocateDirect(length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer()
+			.put(vertexData, 0, length);
+		memoryAllocated = length * BYTES_PER_FLOAT;
 	}
 
 	/** Reupload the data to GPU
 	 * @param vertexData */
-	public void reuploadData (float[] vertexData) {
+	public void reuploadData (float[] vertexData, int length) {
 		floatBuffer.rewind();
-		if (vertexData.length * BYTES_PER_FLOAT <= memoryAllocated)
-			floatBuffer.put(vertexData);
+		if (length * BYTES_PER_FLOAT <= memoryAllocated)
+			floatBuffer.put(vertexData, 0, length);
 		else {
-			floatBuffer = ByteBuffer.allocateDirect(vertexData.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder())
-				.asFloatBuffer().put(vertexData);
-			memoryAllocated = vertexData.length * BYTES_PER_FLOAT;
+			floatBuffer = ByteBuffer.allocateDirect(length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer()
+				.put(vertexData, 0, length);
 		}
+		memoryAllocated = length * BYTES_PER_FLOAT;
 	}
 
 	/** Attribute location setting

@@ -35,13 +35,14 @@ public class RendererSystem extends System {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		spriteBatcher = new SpriteBatcher(2, 1000);
+		spriteBatcher = new SpriteBatcher(3, 400);
 	}
 
 	@Override
 	public void process (List<Entity> entities) {
 		glClear(GL_COLOR_BUFFER_BIT);
 		float[] vpm = null;
+		spriteBatcher.clear();
 		for (Entity entity : entities) {
 			if ((SYSTEM_MASK & entity.mask) == SYSTEM_MASK) {
 				PositionComponent cp = (PositionComponent)entity.components.get(1);

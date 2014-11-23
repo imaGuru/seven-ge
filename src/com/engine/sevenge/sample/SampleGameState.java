@@ -59,15 +59,16 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		entities = new ArrayList<Entity>();
 		Entity cam = new Entity();
 		entities.add(cam);
-		for (int i = 0; i < 100; i++) {
+		Log.d(TAG, "LOLOLOLOLL");
+		for (int i = 0; i < 350; i++) {
 			Entity e = new Entity();
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
 			cs.scale = 1.0f;
 			float rnd = rng.nextFloat();
 			if (rnd < 0.5f) {
-				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("applesp");
-				cs.scale = 0.6f;
+				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_big1");
+				cs.scale = 1f;
 			} else if (rnd < 0.7f)
 				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_small2");
 			else if (rnd < 0.95f)

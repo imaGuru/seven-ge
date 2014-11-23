@@ -66,9 +66,6 @@ public class SpriteBatch implements Drawable {
 			indices[indexOffset + 4] = (short)(vertexOffset + 2);
 			indices[indexOffset + 5] = (short)(vertexOffset + 3);
 		}
-		indexBuffer = ByteBuffer.allocateDirect(indices.length * BYTES_PER_SHORT).order(ByteOrder.nativeOrder()).asShortBuffer()
-			.put(indices);
-		indexBuffer.position(0);
 	}
 
 	/** Set new shader program
@@ -86,10 +83,6 @@ public class SpriteBatch implements Drawable {
 	/** Add sprite opengl data
 	 * @param vertexData locations of 4 vertices with uv coordinates */
 	public void add (float[] vertexData) {
-		if (spriteCount > size - 1) {
-			// TODO
-			return;
-		}
 		for (i = 0; i < vertexData.length; i++)
 			spriteData[offset + i] = vertexData[i];
 		offset = ++spriteCount * 4 * (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT);
@@ -98,10 +91,14 @@ public class SpriteBatch implements Drawable {
 	/** Upload data to the graphics card. Should be executed after any change to the spritebatch */
 	public void upload () {
 		if (!VAOinitialized) {
-			vertexArray = new VertexArray(spriteData);
+			vertexArray = new VertexArray(spriteData, spriteCount * 4
+				* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT));
 			VAOinitialized = true;
 		} else
-			vertexArray.reuploadData(spriteData);
+			vertexArray.reuploadData(spriteData, spriteCount * 4 * (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT));
+		indexBuffer = ByteBuffer.allocateDirect(spriteCount * INDICES_PER_SPRITE * BYTES_PER_SHORT).order(ByteOrder.nativeOrder())
+			.asShortBuffer().put(indices, 0, spriteCount * INDICES_PER_SPRITE);
+		indexBuffer.position(0);
 	}
 
 	/** Remove every sprite from the batch */
@@ -118,7 +115,7 @@ public class SpriteBatch implements Drawable {
 		vertexArray.setVertexAttribPointer(0, program.getPositionAttributeLocation(), POSITION_COMPONENT_COUNT, STRIDE);
 		vertexArray.setVertexAttribPointer(POSITION_COMPONENT_COUNT, program.getTextureCoordinatesAttributeLocation(),
 			TEXTURE_COORDINATES_COMPONENT_COUNT, STRIDE);
-		glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_SHORT, indexBuffer);
+		glDrawElements(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_SHORT, indexBuffer);
 	}
 
 	public void add (TextureRegion sprite, float scale, float rotation, int x, int y) {

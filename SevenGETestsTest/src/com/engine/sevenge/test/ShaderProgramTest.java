@@ -39,7 +39,7 @@ public class ShaderProgramTest extends BaseOpenGLES20UnitTest {
 		});
 	}
 
-	public void testProgramValidationInvalid () throws Throwable {
+	public void emulatortestProgramValidationInvalid () throws Throwable {
 		runOnGLThread(new TestWrapper() {
 			@Override
 			public void executeTest () throws Throwable {

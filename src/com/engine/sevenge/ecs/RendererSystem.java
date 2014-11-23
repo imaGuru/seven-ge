@@ -21,7 +21,7 @@ public class RendererSystem extends System {
 
 	private static int SYSTEM_MASK = SpriteComponent.MASK | PositionComponent.MASK;
 
-	private int i;
+	private int i, j;
 	private SpriteBatcher spriteBatcher;
 	private float[] uvs;
 	private float[] v;
@@ -43,7 +43,8 @@ public class RendererSystem extends System {
 		glClear(GL_COLOR_BUFFER_BIT);
 		float[] vpm = null;
 		spriteBatcher.clear();
-		for (Entity entity : entities) {
+		for (j = 0; j < entities.size(); j++) {
+			Entity entity = entities.get(j);
 			if ((SYSTEM_MASK & entity.mask) == SYSTEM_MASK) {
 				PositionComponent cp = (PositionComponent)entity.components.get(1);
 				SpriteComponent cs = (SpriteComponent)entity.components.get(2);
@@ -56,20 +57,13 @@ public class RendererSystem extends System {
 
 				// TODO Move this to components so we only multiply. Avoid useless creation of transforms
 
-				Matrix.setIdentityM(scaleMatrix, 0);
-				Matrix.scaleM(scaleMatrix, 0, cs.scale, cs.scale, 1.0f);
-
-				Matrix.setIdentityM(transform, 0);
-				Matrix.translateM(transform, 0, hw, hh, 0f);
-				Matrix.rotateM(transform, 0, cp.rotation, 0f, 0f, 1.0f);
-				Matrix.translateM(transform, 0, cp.x, cp.y, 0f);
 				for (i = 0; i < 4; i++) {
 					temp[0] = v[i * 2];
 					temp[1] = v[i * 2 + 1];
 					temp[2] = 0;
 					temp[3] = 1;
-					Matrix.multiplyMV(tempr, 0, scaleMatrix, 0, temp, 0);
-					Matrix.multiplyMV(temp, 0, transform, 0, tempr, 0);
+					Matrix.multiplyMV(tempr, 0, cp.scaleMatrix, 0, temp, 0);
+					Matrix.multiplyMV(temp, 0, cp.transform, 0, tempr, 0);
 					r[i * 2] = temp[0];
 					r[i * 2 + 1] = temp[1];
 				}

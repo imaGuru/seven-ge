@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import android.opengl.Matrix;
 import android.view.MotionEvent;
 
 import com.engine.sevenge.GameActivity;
@@ -60,7 +61,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		Entity cam = new Entity();
 		entities.add(cam);
 		Log.d(TAG, "LOLOLOLOLL");
-		for (int i = 0; i < 350; i++) {
+		for (int i = 0; i < 50; i++) {
 			Entity e = new Entity();
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
@@ -87,8 +88,15 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			}
 
 			cp.rotation = rng.nextFloat() * 360.0f;
-			cp.x = rng.nextFloat() * 2000f;
-			cp.y = rng.nextFloat() * 2000f;
+			cp.x = rng.nextFloat() * 1000f;
+			cp.y = rng.nextFloat() * 1000f;
+			Matrix.setIdentityM(cp.scaleMatrix, 0);
+			Matrix.scaleM(cp.scaleMatrix, 0, cs.scale, cs.scale, 1.0f);
+
+			Matrix.setIdentityM(cp.transform, 0);
+			Matrix.translateM(cp.transform, 0, cs.subTexture.width / 2, cs.subTexture.height / 2, 0f);
+			Matrix.rotateM(cp.transform, 0, cp.rotation, 0f, 0f, 1.0f);
+			Matrix.translateM(cp.transform, 0, cp.x, cp.y, 0f);
 
 			e.add(cp, 1);
 			e.add(cs, 2);

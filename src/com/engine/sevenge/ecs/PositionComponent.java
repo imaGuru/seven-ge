@@ -6,4 +6,6 @@ public class PositionComponent extends Component {
 	public float x;
 	public float y;
 	public float rotation;
+	public float[] scaleMatrix = new float[16];
+	public float[] transform = new float[16];
 }

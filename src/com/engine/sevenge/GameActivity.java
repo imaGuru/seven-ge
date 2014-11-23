@@ -181,7 +181,6 @@ public abstract class GameActivity extends Activity implements Renderer {
 				sleepTime += FRAME_TIME;
 				SevenGE.stateManager.update();
 				framesSkipped++;
-				Log.d(TAG, "SKIPPED");
 			}
 
 			startTime = System.currentTimeMillis();

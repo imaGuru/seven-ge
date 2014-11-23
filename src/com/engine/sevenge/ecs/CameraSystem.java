@@ -17,6 +17,7 @@ public class CameraSystem extends System implements GestureProcessor {
 	private static int SYSTEM_MASK = CameraComponent.MASK | PositionComponent.MASK;
 	private float[] coords = new float[4];
 	private float[] devCoords = new float[4];
+	private int i = 0;
 
 	boolean scrolled = false;
 	float me2x;
@@ -30,7 +31,8 @@ public class CameraSystem extends System implements GestureProcessor {
 
 	@Override
 	public void process (List<Entity> entities) {
-		for (Entity entity : entities) {
+		for (i = 0; i < entities.size(); i++) {
+			Entity entity = entities.get(i);
 			if ((SYSTEM_MASK & entity.mask) == SYSTEM_MASK) {
 				if (scrolled) {
 					CameraComponent cc = (CameraComponent)entity.components.get(8);

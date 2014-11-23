@@ -25,10 +25,8 @@ public class RendererSystem extends System {
 	private SpriteBatcher spriteBatcher;
 	private float[] uvs;
 	private float[] v;
-	private float[] r = new float[8], sv = new float[8], temp = new float[4], tempr = new float[4];
+	private float[] r = new float[8], temp = new float[4], tempr = new float[4];
 	private float[] t = new float[16];
-	private float[] transform = new float[16], scaleMatrix = new float[16];
-	private int hw, hh;
 
 	public RendererSystem () {
 
@@ -50,12 +48,8 @@ public class RendererSystem extends System {
 				SpriteComponent cs = (SpriteComponent)entity.components.get(2);
 				TextureRegion sprite = cs.subTexture;
 
-				hw = sprite.width / 2;
-				hh = sprite.height / 2;
 				uvs = sprite.uvs;
 				v = sprite.v;
-
-				// TODO Move this to components so we only multiply. Avoid useless creation of transforms
 
 				for (i = 0; i < 4; i++) {
 					temp[0] = v[i * 2];

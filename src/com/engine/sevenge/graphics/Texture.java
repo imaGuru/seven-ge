@@ -26,8 +26,8 @@ import com.engine.sevenge.utils.Log;
 public class Texture extends Asset {
 	private static final String TAG = "Texture2D";
 	private final int[] textureID;
-	private final int width;
-	private final int height;
+	public final int width;
+	public final int height;
 
 	/** Loads the texture from specified inputstream
 	 * @param in InputStream with texture data */

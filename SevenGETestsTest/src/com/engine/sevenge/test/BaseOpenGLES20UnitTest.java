@@ -3,17 +3,15 @@ package com.engine.sevenge.test;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.engine.sevenge.OpenGLES20UnitTestActivity;
 import com.engine.sevenge.SevenGE;
+import com.engine.sevenge.UnitTestActivity;
 import com.engine.sevenge.io.IO;
 
-
-
-public class BaseOpenGLES20UnitTest extends ActivityInstrumentationTestCase2<OpenGLES20UnitTestActivity> {
-	private OpenGLES20UnitTestActivity activity;
+public class BaseOpenGLES20UnitTest extends ActivityInstrumentationTestCase2<UnitTestActivity> {
+	private UnitTestActivity activity;
 
 	public BaseOpenGLES20UnitTest () {
-		super(OpenGLES20UnitTestActivity.class);
+		super(UnitTestActivity.class);
 	}
 
 	@Override

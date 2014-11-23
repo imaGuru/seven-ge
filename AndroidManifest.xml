@@ -27,7 +27,7 @@
             </intent-filter>
             
         </activity>
-        <activity android:name="OpenGLES20UnitTestActivity"></activity>
+        <activity android:name="UnitTestActivity"></activity>
     </application>
 
 </manifest>

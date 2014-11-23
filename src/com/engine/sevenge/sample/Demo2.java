@@ -1,6 +1,17 @@
 
 package com.engine.sevenge.sample;
 
+import static android.opengl.GLES20.GL_BLEND;
+import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_ONE;
+import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
+import static android.opengl.GLES20.glBlendFunc;
+import static android.opengl.GLES20.glClear;
+import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.glEnable;
+
+import java.util.Random;
+
 import com.engine.sevenge.GameActivity;
 import com.engine.sevenge.GameState;
 import com.engine.sevenge.SevenGE;
@@ -19,7 +30,7 @@ public class Demo2 extends GameState {
 	int cameraX = 0;
 	int cameraY = 0;
 	float angle = 0;
-	float lastTime = 0;
+	long lastTime = 0;
 
 	public Demo2 (GameActivity gameActivity) {
 		super(gameActivity);
@@ -28,17 +39,40 @@ public class Demo2 extends GameState {
 		Texture texture = (Texture)SevenGE.assetManager.getAsset("spaceSheet");
 		TextureShaderProgram tsp = (TextureShaderProgram)SevenGE.assetManager.getAsset("spriteShader");
 		this.spriteBatch = new SpriteBatch(texture, tsp, 100);
+		Random rng = new Random();
 
-		TextureRegion tr1 = (TextureRegion)SevenGE.assetManager.getAsset("cockpitRed_0");
-		TextureRegion tr2 = (TextureRegion)SevenGE.assetManager.getAsset("cockpitYellow_2");
-		TextureRegion tr3 = (TextureRegion)SevenGE.assetManager.getAsset("cockpitYellow_3");
+		for (int i = 0; i < 50; i++) {
 
-		this.spriteBatch.add(tr1, 1.5f, 100, 500, 100);
-		this.spriteBatch.add(tr2, 1.5f, 66, 150, 150);
-		this.spriteBatch.add(tr3, 1.5f, 99, 200, 100);
+			float scale = 1.0f;
+			float rotation = 1.0f;
+			float x, y;
+			TextureRegion tr;
+
+			float rnd = rng.nextFloat();
+			if (rnd < 0.25f) {
+				tr = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_big1");
+				scale = 1f;
+			} else if (rnd < 0.5f)
+				tr = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_small2");
+			else if (rnd < 0.75f)
+				tr = (TextureRegion)SevenGE.assetManager.getAsset("enemyBlue1");
+			else {
+				tr = (TextureRegion)SevenGE.assetManager.getAsset("enemyRed1");
+			}
+
+			rotation = rng.nextFloat() * 360.0f;
+			x = rng.nextFloat() * 500f;
+			y = rng.nextFloat() * 500f;
+
+			this.spriteBatch.add(tr, scale, rotation, (int)x, (int)y);
+		}
 
 		this.spriteBatch.upload();
 		lastTime = System.currentTimeMillis() + 5000;
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 
 	@Override
@@ -49,25 +83,16 @@ public class Demo2 extends GameState {
 
 	@Override
 	public void draw () {
-
-		this.spriteBatch.draw(viewProjectionMatrix);
+		glClear(GL_COLOR_BUFFER_BIT);
+		spriteBatch.draw(viewProjectionMatrix);
 	}
 
 	@Override
 	public void update () {
 
-		angle = (float)((angle + 0.1f) % (2 * Math.PI));
-		cameraX = (int)(Math.cos(angle) * 100) + 116;
-		cameraY = (int)(Math.sin(angle) * 100) + 283;
-
-		Camera2D.lookAt(cameraX, cameraY, viewMatrix);
-		Camera2D.getVPM(viewProjectionMatrix, projectionMatrix, viewMatrix);
-
-// if (lastTime < System.currentTimeMillis()) {
-// lastTime = (System.currentTimeMillis() + 5000);
-		SevenGE.stateManager.setCurrentState(new SampleGameState(gameActivity));
-// Log.d("GUFNO", lastTime + "");
-// }
+		if (lastTime < System.currentTimeMillis()) {
+			SevenGE.stateManager.setCurrentState(new Demo1(gameActivity));
+		}
 
 	}
 

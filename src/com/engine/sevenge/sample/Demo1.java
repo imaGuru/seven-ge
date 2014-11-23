@@ -18,7 +18,6 @@ import com.engine.sevenge.graphics.SpriteBatch;
 import com.engine.sevenge.graphics.Texture;
 import com.engine.sevenge.graphics.TextureRegion;
 import com.engine.sevenge.graphics.TextureShaderProgram;
-import com.engine.sevenge.utils.Log;
 
 public class Demo1 extends GameState {
 
@@ -50,6 +49,10 @@ public class Demo1 extends GameState {
 		this.spriteBatch.upload();
 		lastTime = System.currentTimeMillis() + 5000;
 
+		angle = (float)((angle + 0.1f) % (2 * Math.PI));
+		cameraX = (int)(Math.cos(angle) * 100) + 116;
+		cameraY = (int)(Math.sin(angle) * 100) + 283;
+
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -78,8 +81,7 @@ public class Demo1 extends GameState {
 		Camera2D.getVPM(viewProjectionMatrix, projectionMatrix, viewMatrix);
 
 		if (lastTime < System.currentTimeMillis()) {
-			SevenGE.stateManager.setCurrentState(new SampleGameState(gameActivity));
-			Log.d("GUFNO", lastTime + "");
+			SevenGE.stateManager.setCurrentState(new Demo2(gameActivity));
 		}
 
 	}

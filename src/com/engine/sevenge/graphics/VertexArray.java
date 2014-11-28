@@ -13,27 +13,35 @@ import java.nio.FloatBuffer;
 public class VertexArray {
 	private FloatBuffer floatBuffer;
 	private static final int BYTES_PER_FLOAT = 4;
-	private int memoryAllocated = 0;
+	private int actualSize = 0;
 
 	/** Creates new vertex array object with specified data
-	 * @param vertexData */
-	public VertexArray (float[] vertexData, int length) {
-		floatBuffer = ByteBuffer.allocateDirect(length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer()
-			.put(vertexData, 0, length);
-		memoryAllocated = length * BYTES_PER_FLOAT;
+	 * @param vertices */
+	public VertexArray (int size) {
+		floatBuffer = ByteBuffer.allocateDirect(size * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
 	}
 
-	/** Reupload the data to GPU
-	 * @param vertexData */
-	public void reuploadData (float[] vertexData, int length) {
+	public void clear () {
 		floatBuffer.rewind();
-		if (length * BYTES_PER_FLOAT <= memoryAllocated)
-			floatBuffer.put(vertexData, 0, length);
-		else {
-			floatBuffer = ByteBuffer.allocateDirect(length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer()
-				.put(vertexData, 0, length);
-		}
-		memoryAllocated = length * BYTES_PER_FLOAT;
+		actualSize = 0;
+	}
+
+	/** Put data at the end of vertex array
+	 * @param vertexData */
+	public void put (float[] vertexData, int length) {
+		floatBuffer.position(actualSize);
+		floatBuffer.put(vertexData, 0, length);
+		actualSize += length;
+	}
+
+	public void put (FloatBuffer fb) {
+		floatBuffer.position(actualSize);
+		floatBuffer.put(fb);
+		actualSize = floatBuffer.position();
+	}
+
+	public int size () {
+		return actualSize;
 	}
 
 	/** Attribute location setting
@@ -45,6 +53,5 @@ public class VertexArray {
 		floatBuffer.position(dataOffset);
 		glVertexAttribPointer(attributeLocation, componentCount, GL_FLOAT, false, stride, floatBuffer);
 		glEnableVertexAttribArray(attributeLocation);
-		floatBuffer.position(0);
 	}
 }

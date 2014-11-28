@@ -3,7 +3,7 @@ package com.engine.sevenge.test;
 
 import android.opengl.GLES20;
 
-import com.engine.sevenge.graphics.Shader;
+import com.engine.sevenge.graphics.ShaderUtils;
 
 public class ShaderTest extends BaseOpenGLES20UnitTest {
 	private static final String validFragmentShaderCode = "precision mediump float;                            \n"
@@ -21,7 +21,7 @@ public class ShaderTest extends BaseOpenGLES20UnitTest {
 		runOnGLThread(new TestWrapper() {
 			@Override
 			public void executeTest () throws Throwable {
-				Shader handle = new Shader(validFragmentShaderCode, GLES20.GL_FRAGMENT_SHADER);
+				ShaderUtils handle = new ShaderUtils(validFragmentShaderCode, GLES20.GL_FRAGMENT_SHADER);
 				assertTrue(handle.getGLID() != 0);
 				assertTrue(GLES20.glIsShader(handle.getGLID()));
 			}
@@ -32,7 +32,7 @@ public class ShaderTest extends BaseOpenGLES20UnitTest {
 		runOnGLThread(new TestWrapper() {
 			@Override
 			public void executeTest () throws Throwable {
-				Shader handle = new Shader(invalidFragmentShaderCode, GLES20.GL_FRAGMENT_SHADER);
+				ShaderUtils handle = new ShaderUtils(invalidFragmentShaderCode, GLES20.GL_FRAGMENT_SHADER);
 				assertEquals(0, handle.getGLID());
 			}
 		});

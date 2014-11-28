@@ -16,17 +16,19 @@ import android.view.MotionEvent;
 import com.engine.sevenge.GameActivity;
 import com.engine.sevenge.GameState;
 import com.engine.sevenge.SevenGE;
+import com.engine.sevenge.assets.TextureRegion;
 import com.engine.sevenge.audio.Music;
 import com.engine.sevenge.ecs.AnimationComponent;
 import com.engine.sevenge.ecs.AnimationSystem;
 import com.engine.sevenge.ecs.CameraComponent;
 import com.engine.sevenge.ecs.CameraSystem;
+import com.engine.sevenge.ecs.Component;
 import com.engine.sevenge.ecs.Entity;
 import com.engine.sevenge.ecs.PositionComponent;
 import com.engine.sevenge.ecs.RendererSystem;
 import com.engine.sevenge.ecs.ScriptingSystem;
 import com.engine.sevenge.ecs.SpriteComponent;
-import com.engine.sevenge.graphics.TextureRegion;
+import com.engine.sevenge.graphics.Camera2D;
 import com.engine.sevenge.input.GestureProcessor;
 import com.engine.sevenge.input.InputProcessor;
 import com.engine.sevenge.utils.Log;
@@ -41,7 +43,16 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private AnimationSystem animationSystem;
 	private List<Entity> entities;
 	private int changeme = 0;
+	private Component[] optimizedEntites = new Component[1000];
+	private int oec = 0;
+	private CameraComponent cc;
 	private ScriptingSystem scriptingSystem;
+
+	private float angle;
+
+	private int cameraX;
+
+	private int cameraY;
 
 	public SampleGameState (GameActivity gameActivity) {
 		super(gameActivity);
@@ -60,22 +71,21 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		entities = new ArrayList<Entity>();
 		Entity cam = new Entity();
 		entities.add(cam);
-		Log.d(TAG, "LOLOLOLOLL");
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 100; i++) {
 			Entity e = new Entity();
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
 			cs.scale = 1.0f;
 			float rnd = rng.nextFloat();
 			if (rnd < 0.5f) {
-				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_big1");
+				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_big1");
 				cs.scale = 1f;
 			} else if (rnd < 0.7f)
-				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_small2");
+				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_small2");
 			else if (rnd < 0.95f)
-				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_tiny2");
+				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_tiny2");
 			else {
-				cs.subTexture = (TextureRegion)SevenGE.assetManager.getAsset("enemyRed1");
+				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("enemyRed1");
 				AnimationComponent ca = new AnimationComponent();
 				ca.frameList = new TextureRegion[] {(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack1"),
 					(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack2"),
@@ -88,31 +98,35 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			}
 
 			cp.rotation = rng.nextFloat() * 360.0f;
-			cp.x = rng.nextFloat() * 1000f;
-			cp.y = rng.nextFloat() * 1000f;
+			cp.x = rng.nextFloat() * 500f;
+			cp.y = rng.nextFloat() * 500f;
 			Matrix.setIdentityM(cp.scaleMatrix, 0);
 			Matrix.scaleM(cp.scaleMatrix, 0, cs.scale, cs.scale, 1.0f);
 
 			Matrix.setIdentityM(cp.transform, 0);
-			Matrix.translateM(cp.transform, 0, cs.subTexture.width / 2, cs.subTexture.height / 2, 0f);
+			Matrix.translateM(cp.transform, 0, cs.textureRegion.width / 2, cs.textureRegion.height / 2, 0f);
 			Matrix.rotateM(cp.transform, 0, cp.rotation, 0f, 0f, 1.0f);
 			Matrix.translateM(cp.transform, 0, cp.x, cp.y, 0f);
 
 			e.add(cp, 1);
 			e.add(cs, 2);
+
+			optimizedEntites[oec++] = cp;
+			optimizedEntites[oec++] = cs;
+
 			entities.add(e);
 		}
 
-		music = (Music)SevenGE.assetManager.getAsset("music1");
-		music.setLooping(true);
-		music.play();
+		// music = (Music)SevenGE.assetManager.getAsset("music1");
+		// music.setLooping(true);
+		// music.play();
 
 	}
 
 	@Override
 	public void onSurfaceChange (int width, int height) {
 		Entity e = entities.get(0);
-		CameraComponent cc = new CameraComponent();
+		cc = new CameraComponent();
 		cc.height = height;
 		cc.width = width;
 		cc.scale = 0.7f;
@@ -130,10 +144,17 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void update () {
-		SevenGE.input.process();
+		// SevenGE.input.process();
 
-		animationSystem.process(entities);
-		cameraSystem.process(entities);
+		angle = (float)((angle + 0.1f) % (Math.PI * 2));
+		cameraX = (int)(Math.cos(angle) * 100);
+		cameraY = (int)(Math.sin(angle) * 100);
+
+		Camera2D.lookAt(cameraX, cameraY, cc.viewMatrix);
+		Camera2D.getVPM(cc.viewProjectionMatrix, cc.projectionMatrix, cc.viewMatrix);
+
+		// animationSystem.process(entities);
+		// cameraSystem.process(entities);
 		if (changeme >= 30) {
 			changeme = 0;
 			scriptingSystem.process(entities);
@@ -143,7 +164,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void draw () {
-		rendererSystem.process(entities);
+		rendererSystem.process(optimizedEntites, cc.viewProjectionMatrix, oec);
 	}
 
 	@Override
@@ -153,13 +174,13 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void pause () {
-		music.pause();
+		// music.pause();
 
 	}
 
 	@Override
 	public void resume () {
-		music.play();
+		// music.play();
 
 	}
 

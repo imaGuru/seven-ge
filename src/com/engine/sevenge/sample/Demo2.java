@@ -4,10 +4,10 @@ package com.engine.sevenge.sample;
 import com.engine.sevenge.GameActivity;
 import com.engine.sevenge.GameState;
 import com.engine.sevenge.SevenGE;
+import com.engine.sevenge.assets.Texture;
+import com.engine.sevenge.assets.TextureRegion;
 import com.engine.sevenge.graphics.Camera2D;
 import com.engine.sevenge.graphics.SpriteBatch;
-import com.engine.sevenge.graphics.Texture;
-import com.engine.sevenge.graphics.TextureRegion;
 import com.engine.sevenge.graphics.TextureShaderProgram;
 
 public class Demo2 extends GameState {
@@ -27,7 +27,7 @@ public class Demo2 extends GameState {
 		SevenGE.assetManager.loadAssets("sample.pkg");
 		Texture texture = (Texture)SevenGE.assetManager.getAsset("spaceSheet");
 		TextureShaderProgram tsp = (TextureShaderProgram)SevenGE.assetManager.getAsset("spriteShader");
-		this.spriteBatch = new SpriteBatch(texture, tsp, 100);
+		this.spriteBatch = new SpriteBatch(texture.glID, tsp, 100);
 
 		TextureRegion tr1 = (TextureRegion)SevenGE.assetManager.getAsset("cockpitRed_0");
 		TextureRegion tr2 = (TextureRegion)SevenGE.assetManager.getAsset("cockpitYellow_2");
@@ -37,7 +37,6 @@ public class Demo2 extends GameState {
 		this.spriteBatch.add(tr2, 1.5f, 66, 150, 150);
 		this.spriteBatch.add(tr3, 1.5f, 99, 200, 100);
 
-		this.spriteBatch.upload();
 		lastTime = System.currentTimeMillis() + 5000;
 	}
 

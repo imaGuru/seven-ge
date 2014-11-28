@@ -4,7 +4,7 @@ package com.engine.sevenge.test;
 import android.opengl.GLES20;
 
 import com.engine.sevenge.graphics.ColorShaderProgram;
-import com.engine.sevenge.graphics.Shader;
+import com.engine.sevenge.graphics.ShaderUtils;
 import com.engine.sevenge.graphics.TextureShaderProgram;
 import com.engine.sevenge.io.IO;
 
@@ -18,8 +18,8 @@ public class ShaderProgramTest extends BaseOpenGLES20UnitTest {
 		runOnGLThread(new TestWrapper() {
 			@Override
 			public void executeTest () throws Throwable {
-				Shader v = new Shader(IO.readToString(IO.openAsset("Shaders/simple_vertex_shader.glsl")), GLES20.GL_VERTEX_SHADER);
-				Shader f = new Shader(IO.readToString(IO.openAsset("Shaders/simple_fragment_shader.glsl")), GLES20.GL_FRAGMENT_SHADER);
+				ShaderUtils v = new ShaderUtils(IO.readToString(IO.openAsset("Shaders/simple_vertex_shader.glsl")), GLES20.GL_VERTEX_SHADER);
+				ShaderUtils f = new ShaderUtils(IO.readToString(IO.openAsset("Shaders/simple_fragment_shader.glsl")), GLES20.GL_FRAGMENT_SHADER);
 				ColorShaderProgram csp = new ColorShaderProgram(v, f);
 				assertFalse(csp.getGLID() == 0);
 			}
@@ -30,8 +30,8 @@ public class ShaderProgramTest extends BaseOpenGLES20UnitTest {
 		runOnGLThread(new TestWrapper() {
 			@Override
 			public void executeTest () throws Throwable {
-				Shader v = new Shader(IO.readToString(IO.openAsset("Shaders/texture_vertex_shader.glsl")), GLES20.GL_VERTEX_SHADER);
-				Shader f = new Shader(IO.readToString(IO.openAsset("Shaders/texture_fragment_shader.glsl")),
+				ShaderUtils v = new ShaderUtils(IO.readToString(IO.openAsset("Shaders/texture_vertex_shader.glsl")), GLES20.GL_VERTEX_SHADER);
+				ShaderUtils f = new ShaderUtils(IO.readToString(IO.openAsset("Shaders/texture_fragment_shader.glsl")),
 					GLES20.GL_FRAGMENT_SHADER);
 				TextureShaderProgram tsp = new TextureShaderProgram(v, f);
 				assertFalse(tsp.getGLID() == 0);
@@ -43,7 +43,7 @@ public class ShaderProgramTest extends BaseOpenGLES20UnitTest {
 		runOnGLThread(new TestWrapper() {
 			@Override
 			public void executeTest () throws Throwable {
-				Shader f = new Shader(IO.readToString(IO.openAsset("Shaders/texture_fragment_shader.glsl")),
+				ShaderUtils f = new ShaderUtils(IO.readToString(IO.openAsset("Shaders/texture_fragment_shader.glsl")),
 					GLES20.GL_FRAGMENT_SHADER);
 				TextureShaderProgram tsp = new TextureShaderProgram(f, f);
 				assertFalse(tsp.validateProgram());
@@ -55,8 +55,8 @@ public class ShaderProgramTest extends BaseOpenGLES20UnitTest {
 		runOnGLThread(new TestWrapper() {
 			@Override
 			public void executeTest () throws Throwable {
-				Shader v = new Shader(IO.readToString(IO.openAsset("Shaders/texture_vertex_shader.glsl")), GLES20.GL_VERTEX_SHADER);
-				Shader f = new Shader(IO.readToString(IO.openAsset("Shaders/texture_fragment_shader.glsl")),
+				ShaderUtils v = new ShaderUtils(IO.readToString(IO.openAsset("Shaders/texture_vertex_shader.glsl")), GLES20.GL_VERTEX_SHADER);
+				ShaderUtils f = new ShaderUtils(IO.readToString(IO.openAsset("Shaders/texture_fragment_shader.glsl")),
 					GLES20.GL_FRAGMENT_SHADER);
 				TextureShaderProgram tsp = new TextureShaderProgram(v, f);
 				assertTrue(tsp.validateProgram());

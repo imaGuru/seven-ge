@@ -13,10 +13,10 @@ import static android.opengl.GLES20.glEnable;
 import com.engine.sevenge.GameActivity;
 import com.engine.sevenge.GameState;
 import com.engine.sevenge.SevenGE;
+import com.engine.sevenge.assets.Texture;
+import com.engine.sevenge.assets.TextureRegion;
 import com.engine.sevenge.graphics.Camera2D;
 import com.engine.sevenge.graphics.SpriteBatch;
-import com.engine.sevenge.graphics.Texture;
-import com.engine.sevenge.graphics.TextureRegion;
 import com.engine.sevenge.graphics.TextureShaderProgram;
 import com.engine.sevenge.utils.Log;
 
@@ -37,7 +37,7 @@ public class Demo1 extends GameState {
 		SevenGE.assetManager.loadAssets("sample.pkg");
 		Texture texture = (Texture)SevenGE.assetManager.getAsset("spaceSheet");
 		TextureShaderProgram tsp = (TextureShaderProgram)SevenGE.assetManager.getAsset("spriteShader");
-		this.spriteBatch = new SpriteBatch(texture, tsp, 100);
+		this.spriteBatch = new SpriteBatch(texture.glID, tsp, 100);
 
 		TextureRegion tr1 = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_big2");
 		TextureRegion tr2 = (TextureRegion)SevenGE.assetManager.getAsset("playerShip1_red");
@@ -47,7 +47,6 @@ public class Demo1 extends GameState {
 		this.spriteBatch.add(tr2, 1.5f, 66, 150, 150);
 		this.spriteBatch.add(tr3, 1.5f, 99, 200, 100);
 
-		this.spriteBatch.upload();
 		lastTime = System.currentTimeMillis() + 5000;
 
 		glEnable(GL_BLEND);

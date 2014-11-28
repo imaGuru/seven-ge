@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.engine.sevenge.graphics.Texture;
+import com.engine.sevenge.graphics.TextureUtils;
 import com.engine.sevenge.io.IO;
 
 public class TextureLoader extends AssetLoader {
@@ -23,7 +23,8 @@ public class TextureLoader extends AssetLoader {
 			jarr = new JSONArray(content);
 			for (int i = 0; i < jarr.length(); i++) {
 				JSONObject jTexture = jarr.getJSONObject(i);
-				assetManager.registerAsset(jTexture.getString("id"), new Texture(IO.openAsset(jTexture.getString("path"))));
+				assetManager.registerAsset(jTexture.getString("id"),
+					TextureUtils.createTexture(IO.openAsset(jTexture.getString("path"))));
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

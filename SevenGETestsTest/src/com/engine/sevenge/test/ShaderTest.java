@@ -21,9 +21,9 @@ public class ShaderTest extends BaseOpenGLES20UnitTest {
 		runOnGLThread(new TestWrapper() {
 			@Override
 			public void executeTest () throws Throwable {
-				ShaderUtils handle = new ShaderUtils(validFragmentShaderCode, GLES20.GL_FRAGMENT_SHADER);
-				assertTrue(handle.getGLID() != 0);
-				assertTrue(GLES20.glIsShader(handle.getGLID()));
+				int handle = ShaderUtils.compileShader(validFragmentShaderCode, GLES20.GL_FRAGMENT_SHADER);
+				assertTrue(handle != 0);
+				assertTrue(GLES20.glIsShader(handle));
 			}
 		});
 	}
@@ -32,8 +32,8 @@ public class ShaderTest extends BaseOpenGLES20UnitTest {
 		runOnGLThread(new TestWrapper() {
 			@Override
 			public void executeTest () throws Throwable {
-				ShaderUtils handle = new ShaderUtils(invalidFragmentShaderCode, GLES20.GL_FRAGMENT_SHADER);
-				assertEquals(0, handle.getGLID());
+				int handle = ShaderUtils.compileShader(invalidFragmentShaderCode, GLES20.GL_FRAGMENT_SHADER);
+				assertEquals(0, handle);
 			}
 		});
 	}

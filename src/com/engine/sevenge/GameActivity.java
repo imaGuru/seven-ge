@@ -17,6 +17,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
@@ -38,11 +39,11 @@ public abstract class GameActivity extends Activity implements Renderer {
 	/** Time updating and drawing the frame took */
 	private long deltaTime = 0;
 	/** Time to sleep in order to cap the rendering to desired framerate */
-	private long sleepTime = 0;
+	private long lastTime = 0, accum;
 	/** Number of frames skipped because the rendering took too long */
 	private int framesSkipped = 0;
 	/** The maximum frame time in milliseconds */
-	public static final long FRAME_TIME = 32;
+	public static final long FRAME_TIME = 33;
 	/** The maximum number of frames until the simulation falls behind. Prevents spiral of death */
 	private static final int MAX_FRAME_SKIPS = 5;
 
@@ -59,6 +60,8 @@ public abstract class GameActivity extends Activity implements Renderer {
 
 	/** Tiny webserver for serving a web console (not yet implemented) */
 	private HelloServer hs;
+
+	private boolean updated = false;
 
 	/** Function required by android lifecycle, responsible for initialization of the game engine and setting up the OpenGL surface */
 	@Override
@@ -168,25 +171,20 @@ public abstract class GameActivity extends Activity implements Renderer {
 		}
 		if (state == GLGameState.Running) {
 
-			deltaTime = (System.currentTimeMillis() - startTime);
-			sleepTime = FRAME_TIME - deltaTime;
-			if (sleepTime > 0) {
-				try {
-					Thread.sleep(sleepTime);
-				} catch (InterruptedException e) {
-				}
-			}
-			framesSkipped = 0;
-			while (sleepTime < 0 && framesSkipped < MAX_FRAME_SKIPS) {
-				sleepTime += FRAME_TIME;
+			startTime = SystemClock.uptimeMillis();
+			deltaTime = startTime - lastTime;
+			lastTime = startTime;
+			if (deltaTime > 250) deltaTime = 250;
+
+			accum += deltaTime;
+			while (accum >= FRAME_TIME) {
 				SevenGE.stateManager.update();
-				framesSkipped++;
+				accum -= FRAME_TIME;
+				updated = true;
 			}
-
-			startTime = System.currentTimeMillis();
-
-			SevenGE.stateManager.update();
-			SevenGE.stateManager.draw();
+			float a = 1.0f * accum / FRAME_TIME;
+			SevenGE.stateManager.draw(a, updated);
+			updated = false;
 
 		}
 		if (state == GLGameState.Paused) {

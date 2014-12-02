@@ -14,7 +14,7 @@ public abstract class GameState {
 	public abstract void dispose ();
 
 	/** Handles all drawing by the game state */
-	public abstract void draw ();
+	public abstract void draw (float a, boolean updated);
 
 	/** Handles all game logic updates of the game state */
 	public abstract void update ();

@@ -10,9 +10,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
-import com.engine.sevenge.assets.TextureRegion;
-
 import android.opengl.Matrix;
+
+import com.engine.sevenge.assets.TextureRegion;
 
 /** Drawable batch of sprites using a single texture */
 public class SpriteBatch {
@@ -93,9 +93,10 @@ public class SpriteBatch {
 	}
 
 	/** Draw this spritebatch using specified view projection matrix */
-	public void draw (float[] vpMatrix) {
-		vertexArray.put(sprites, spriteCount * VERTICES_PER_SPRITE
-			* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT));
+	public void draw (float[] vpMatrix, boolean updated) {
+		if (updated)
+			vertexArray.put(sprites, spriteCount * VERTICES_PER_SPRITE
+				* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT));
 
 		glUseProgram(program.glID);
 		program.setUniforms(vpMatrix, texture);

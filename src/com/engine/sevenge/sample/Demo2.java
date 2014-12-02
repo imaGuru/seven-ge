@@ -47,9 +47,9 @@ public class Demo2 extends GameState {
 	}
 
 	@Override
-	public void draw () {
+	public void draw (float a, boolean updated) {
 
-		this.spriteBatch.draw(viewProjectionMatrix);
+		this.spriteBatch.draw(viewProjectionMatrix, updated);
 	}
 
 	@Override

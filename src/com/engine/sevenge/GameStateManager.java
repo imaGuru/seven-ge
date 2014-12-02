@@ -38,32 +38,32 @@ public class GameStateManager {
 
 	/* Invokes the update() method of the current GameState */
 	public void update () {
-		if (currentState != null) this.currentState.update();
+		this.currentState.update();
 	}
 
 	/* Invokes the draw() method of the current GameState */
-	public void draw () {
-		if (currentState != null) this.currentState.draw();
+	public void draw (float a, boolean updated) {
+		this.currentState.draw(a, updated);
 	}
 
 	/* Invokes the pause() method of the current GameState */
 	public void pause () {
-		if (currentState != null) this.currentState.pause();
+		this.currentState.pause();
 	}
 
 	/* Invokes the resume() method of the current GameState */
 	public void resume () {
-		if (currentState != null) this.currentState.resume();
+		this.currentState.resume();
 	}
 
 	/* Invokes the dispose() method of the current GameState */
 	public void dispose () {
-		if (currentState != null) this.currentState.dispose();
+		this.currentState.dispose();
 	}
 
 	/* Invokes the onSurfaceChange() method of the current GameState */
 	public void onSurfaceChange (int width, int height) {
-		if (currentState != null) this.currentState.onSurfaceChange(width, height);
+		this.currentState.onSurfaceChange(width, height);
 		this.width = width;
 		this.height = height;
 	}

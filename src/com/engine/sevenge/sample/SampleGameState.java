@@ -23,7 +23,6 @@ import com.engine.sevenge.ecs.PositionComponent;
 import com.engine.sevenge.ecs.RendererSystem;
 import com.engine.sevenge.ecs.ScriptingSystem;
 import com.engine.sevenge.ecs.SpriteComponent;
-import com.engine.sevenge.graphics.Camera2D;
 import com.engine.sevenge.input.GestureProcessor;
 import com.engine.sevenge.input.InputProcessor;
 import com.engine.sevenge.utils.Log;
@@ -38,16 +37,16 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private AnimationSystem animationSystem;
 	private List<Entity> entities;
 	private int changeme = 0;
-	private Component[] optimizedEntites = new Component[1000];
+	private Component[] optimizedEntites = new Component[10000];
 	private int oec = 0;
 	private CameraComponent cc;
 	private ScriptingSystem scriptingSystem;
 
 	private float angle;
 
-	private int cameraX;
+	private float cameraX;
 
-	private int cameraY;
+	private float cameraY;
 
 	public SampleGameState (GameActivity gameActivity) {
 		super(gameActivity);
@@ -66,7 +65,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		entities = new ArrayList<Entity>();
 		Entity cam = new Entity();
 		entities.add(cam);
-		for (int i = 0; i < 500; i++) {
+		for (int i = 0; i < 50; i++) {
 			Entity e = new Entity();
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
@@ -93,8 +92,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			}
 
 			cp.rotation = rng.nextFloat() * 360.0f;
-			cp.x = rng.nextFloat() * 500f;
-			cp.y = rng.nextFloat() * 500f;
+			cp.x = rng.nextFloat() * 1000f;
+			cp.y = rng.nextFloat() * 1000f;
 			Matrix.setIdentityM(cp.scaleMatrix, 0);
 			Matrix.scaleM(cp.scaleMatrix, 0, cs.scale, cs.scale, 1.0f);
 
@@ -142,11 +141,13 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		// SevenGE.input.process();
 
 		angle = (float)((angle + 0.1f) % (Math.PI * 2));
-		cameraX = (int)(Math.cos(angle) * 100);
-		cameraY = (int)(Math.sin(angle) * 100);
+		cameraX = (float)(Math.cos(angle) * 500);
+		cameraY = (float)(Math.sin(angle) * 200);
 
-		Camera2D.lookAt(cameraX, cameraY, cc.viewMatrix);
-		Camera2D.getVPM(cc.viewProjectionMatrix, cc.projectionMatrix, cc.viewMatrix);
+		cc.px = cc.x;
+		cc.py = cc.y;
+		cc.x = cameraX;
+		cc.y = cameraY;
 
 		// animationSystem.process(entities);
 		// cameraSystem.process(entities);
@@ -158,8 +159,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	}
 
 	@Override
-	public void draw () {
-		rendererSystem.process(optimizedEntites, cc.viewProjectionMatrix, oec);
+	public void draw (float a, boolean updated) {
+		rendererSystem.process(optimizedEntites, cc, oec, a, updated);
 	}
 
 	@Override

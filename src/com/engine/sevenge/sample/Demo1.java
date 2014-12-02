@@ -61,9 +61,9 @@ public class Demo1 extends GameState {
 	}
 
 	@Override
-	public void draw () {
+	public void draw (float a, boolean updated) {
 		glClear(GL_COLOR_BUFFER_BIT);
-		spriteBatch.draw(viewProjectionMatrix);
+		spriteBatch.draw(viewProjectionMatrix, updated);
 	}
 
 	@Override

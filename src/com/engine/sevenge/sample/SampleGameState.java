@@ -1,11 +1,6 @@
 
 package com.engine.sevenge.sample;
 
-import static android.opengl.Matrix.invertM;
-import static android.opengl.Matrix.multiplyMM;
-import static android.opengl.Matrix.orthoM;
-import static android.opengl.Matrix.setLookAtM;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -71,7 +66,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		entities = new ArrayList<Entity>();
 		Entity cam = new Entity();
 		entities.add(cam);
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 500; i++) {
 			Entity e = new Entity();
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
@@ -133,11 +128,11 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		PositionComponent cp = new PositionComponent();
 		cp.x = 0;
 		cp.y = 0;
-		setLookAtM(cc.viewMatrix, 0, cp.x, cp.y, 1f, cp.x, cp.y, 0f, 0f, 1.0f, 0.0f);
-		orthoM(cc.projectionMatrix, 0, -width / cc.scale / 2, width / cc.scale / 2, -height / cc.scale / 2, height / cc.scale / 2,
-			0f, 1f);
-		multiplyMM(cc.viewProjectionMatrix, 0, cc.projectionMatrix, 0, cc.viewMatrix, 0);
-		invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
+		Matrix.setLookAtM(cc.viewMatrix, 0, cp.x, cp.y, 1f, cp.x, cp.y, 0f, 0f, 1.0f, 0.0f);
+		Matrix.orthoM(cc.projectionMatrix, 0, -width / cc.scale / 2, width / cc.scale / 2, -height / cc.scale / 2, height
+			/ cc.scale / 2, 0f, 1f);
+		Matrix.multiplyMM(cc.viewProjectionMatrix, 0, cc.projectionMatrix, 0, cc.viewMatrix, 0);
+		Matrix.invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
 		e.add(cp, 1);
 		e.add(cc, 8);
 	}

@@ -10,8 +10,8 @@ import java.io.InputStream;
 import junit.framework.Assert;
 import android.test.AndroidTestCase;
 
-import com.engine.sevenge.SevenGE;
-import com.engine.sevenge.io.IO;
+import com.sevenge.IO;
+import com.sevenge.SevenGE;
 
 public class IOTest extends AndroidTestCase {
 

@@ -3,9 +3,9 @@ package com.engine.sevenge.test;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.engine.sevenge.SevenGE;
-import com.engine.sevenge.UnitTestActivity;
-import com.engine.sevenge.io.IO;
+import com.sevenge.IO;
+import com.sevenge.SevenGE;
+import com.sevenge.utils.UnitTestActivity;
 
 public class BaseOpenGLES20UnitTest extends ActivityInstrumentationTestCase2<UnitTestActivity> {
 	private UnitTestActivity activity;

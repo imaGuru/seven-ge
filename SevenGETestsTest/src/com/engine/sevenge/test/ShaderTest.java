@@ -3,7 +3,7 @@ package com.engine.sevenge.test;
 
 import android.opengl.GLES20;
 
-import com.engine.sevenge.graphics.ShaderUtils;
+import com.sevenge.graphics.ShaderUtils;
 
 public class ShaderTest extends BaseOpenGLES20UnitTest {
 	private static final String validFragmentShaderCode = "precision mediump float;                            \n"

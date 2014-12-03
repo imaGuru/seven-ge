@@ -3,22 +3,23 @@ package com.engine.sevenge.test;
 
 import android.content.Intent;
 import android.test.ActivityUnitTestCase;
-import com.engine.sevenge.SevenGE;
-import com.engine.sevenge.TestActivity;
-import com.engine.sevenge.assets.Asset;
-import com.engine.sevenge.assets.AssetManager;
-import com.engine.sevenge.audio.Audio;
-import com.engine.sevenge.io.IO;
 
-public class AssetManagerTest extends ActivityUnitTestCase<TestActivity> {
+import com.sevenge.IO;
+import com.sevenge.SevenGE;
+import com.sevenge.assets.Asset;
+import com.sevenge.assets.AssetManager;
+import com.sevenge.audio.Audio;
+import com.sevenge.utils.UnitTestActivity;
 
-	private TestActivity activity;
+public class AssetManagerTest extends ActivityUnitTestCase<UnitTestActivity> {
+
+	private UnitTestActivity activity;
 
 	public AssetManagerTest () {
-		super(TestActivity.class);
+		super(UnitTestActivity.class);
 	}
 
-	public AssetManagerTest (Class<TestActivity> activityClass) {
+	public AssetManagerTest (Class<UnitTestActivity> activityClass) {
 		super(activityClass);
 		// TODO Auto-generated constructor stub
 	}
@@ -26,7 +27,7 @@ public class AssetManagerTest extends ActivityUnitTestCase<TestActivity> {
 	@Override
 	public void setUp () throws Exception {
 		super.setUp();
-		Intent intent = new Intent(getInstrumentation().getTargetContext(), TestActivity.class);
+		Intent intent = new Intent(getInstrumentation().getTargetContext(), UnitTestActivity.class);
 		startActivity(intent, null, null);
 		activity = getActivity();
 		SevenGE.audio = new Audio(activity);

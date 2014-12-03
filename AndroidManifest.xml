@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.engine.sevenge.sample.SampleGame"
+            android:name="com.sevenge.sample.SampleGame"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:screenOrientation="landscape"

@@ -5,10 +5,10 @@ import java.io.IOException;
 
 import junit.framework.Assert;
 
-import com.engine.sevenge.assets.Texture;
-import com.engine.sevenge.assets.TextureRegion;
-import com.engine.sevenge.graphics.TextureUtils;
-import com.engine.sevenge.io.IO;
+import com.sevenge.IO;
+import com.sevenge.assets.Texture;
+import com.sevenge.assets.TextureRegion;
+import com.sevenge.graphics.TextureUtils;
 
 public class TextureTest extends BaseOpenGLES20UnitTest {
 

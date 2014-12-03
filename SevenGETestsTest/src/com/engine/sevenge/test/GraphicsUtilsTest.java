@@ -4,7 +4,7 @@ package com.engine.sevenge.test;
 import junit.framework.Assert;
 import android.opengl.Matrix;
 
-import com.engine.sevenge.graphics.Camera2D;
+import com.sevenge.graphics.Camera2D;
 
 public class GraphicsUtilsTest extends BaseOpenGLES20UnitTest {
 

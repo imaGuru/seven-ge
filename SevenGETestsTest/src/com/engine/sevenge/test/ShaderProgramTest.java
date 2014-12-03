@@ -3,10 +3,10 @@ package com.engine.sevenge.test;
 
 import android.opengl.GLES20;
 
-import com.engine.sevenge.graphics.ColorShaderProgram;
-import com.engine.sevenge.graphics.ShaderUtils;
-import com.engine.sevenge.graphics.TextureShaderProgram;
-import com.engine.sevenge.io.IO;
+import com.sevenge.IO;
+import com.sevenge.graphics.ColorShaderProgram;
+import com.sevenge.graphics.ShaderUtils;
+import com.sevenge.graphics.TextureShaderProgram;
 
 public class ShaderProgramTest extends BaseOpenGLES20UnitTest {
 

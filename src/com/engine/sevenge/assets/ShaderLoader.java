@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 import android.opengl.GLES20;
 
-import com.engine.sevenge.graphics.Shader;
+import com.engine.sevenge.graphics.ShaderUtils;
 import com.engine.sevenge.io.IO;
 
 public class ShaderLoader extends AssetLoader {
@@ -26,7 +26,7 @@ public class ShaderLoader extends AssetLoader {
 				JSONObject jShader = jarr.getJSONObject(i);
 				int type = jShader.getString("type").equals("vertex") ? GLES20.GL_VERTEX_SHADER : GLES20.GL_FRAGMENT_SHADER;
 				assetManager.registerAsset(jShader.getString("id"),
-					new Shader(IO.readToString(IO.openAsset(jShader.getString("path"))), type));
+					new Shader(ShaderUtils.compileShader(IO.readToString(IO.openAsset(jShader.getString("path"))), type), type));
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

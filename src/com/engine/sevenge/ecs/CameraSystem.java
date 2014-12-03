@@ -1,10 +1,6 @@
 
 package com.engine.sevenge.ecs;
 
-import static android.opengl.Matrix.invertM;
-import static android.opengl.Matrix.multiplyMM;
-import static android.opengl.Matrix.setLookAtM;
-
 import java.util.List;
 
 import android.view.MotionEvent;
@@ -44,12 +40,14 @@ public class CameraSystem extends System implements GestureProcessor {
 					float x2 = coords[0];
 					float y2 = coords[1];
 					PositionComponent cp = (PositionComponent)entity.components.get(1);
-					cp.x -= x2 - x1;
-					cp.y -= y2 - y1;
+					cc.px = cc.x;
+					cc.py = cc.y;
+					cc.x -= x2 - x1;
+					cc.y -= y2 - y1;
 
-					setLookAtM(cc.viewMatrix, 0, cp.x, cp.y, 1f, cp.x, cp.y, 0f, 0f, 1.0f, 0.0f);
-					multiplyMM(cc.viewProjectionMatrix, 0, cc.projectionMatrix, 0, cc.viewMatrix, 0);
-					invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
+					// setLookAtM(cc.viewMatrix, 0, cp.x, cp.y, 1f, cp.x, cp.y, 0f, 0f, 1.0f, 0.0f);
+					// multiplyMM(cc.viewProjectionMatrix, 0, cc.projectionMatrix, 0, cc.viewMatrix, 0);
+					// invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
 
 					scrolled = false;
 				}

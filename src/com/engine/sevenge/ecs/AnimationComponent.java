@@ -1,7 +1,7 @@
 
 package com.engine.sevenge.ecs;
 
-import com.engine.sevenge.graphics.TextureRegion;
+import com.engine.sevenge.assets.TextureRegion;
 
 public class AnimationComponent extends Component {
 	public static int MASK = 1 << 2; // 0x04

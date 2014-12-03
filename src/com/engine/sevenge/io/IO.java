@@ -16,8 +16,9 @@ import android.util.Log;
 public class IO {
 	private static Context context = null;
 
+	// static
 	public IO (Context context) {
-		IO.context = context;
+		this.context = context;
 	}
 
 	/** Opens or creates a file residing in internal android storage

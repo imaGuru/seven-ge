@@ -2,11 +2,9 @@
 package com.engine.sevenge.sample;
 
 import static android.opengl.GLES20.GL_BLEND;
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_ONE;
 import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
 import static android.opengl.GLES20.glBlendFunc;
-import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glEnable;
 
@@ -15,10 +13,10 @@ import java.util.Random;
 import com.engine.sevenge.GameActivity;
 import com.engine.sevenge.GameState;
 import com.engine.sevenge.SevenGE;
+import com.engine.sevenge.assets.Texture;
+import com.engine.sevenge.assets.TextureRegion;
 import com.engine.sevenge.graphics.Camera2D;
 import com.engine.sevenge.graphics.SpriteBatch;
-import com.engine.sevenge.graphics.Texture;
-import com.engine.sevenge.graphics.TextureRegion;
 import com.engine.sevenge.graphics.TextureShaderProgram;
 
 public class Demo2 extends GameState {
@@ -38,8 +36,8 @@ public class Demo2 extends GameState {
 		SevenGE.assetManager.loadAssets("sample.pkg");
 		Texture texture = (Texture)SevenGE.assetManager.getAsset("spaceSheet");
 		TextureShaderProgram tsp = (TextureShaderProgram)SevenGE.assetManager.getAsset("spriteShader");
-		this.spriteBatch = new SpriteBatch(texture, tsp, 100);
 		Random rng = new Random();
+		this.spriteBatch = new SpriteBatch(texture.glID, tsp, 100);
 
 		for (int i = 0; i < 50; i++) {
 
@@ -67,7 +65,6 @@ public class Demo2 extends GameState {
 			this.spriteBatch.add(tr, scale, rotation, (int)x, (int)y);
 		}
 
-		this.spriteBatch.upload();
 		lastTime = System.currentTimeMillis() + 5000;
 
 		glEnable(GL_BLEND);
@@ -82,9 +79,9 @@ public class Demo2 extends GameState {
 	}
 
 	@Override
-	public void draw () {
-		glClear(GL_COLOR_BUFFER_BIT);
-		spriteBatch.draw(viewProjectionMatrix);
+	public void draw (float a, boolean updated) {
+
+		this.spriteBatch.draw(viewProjectionMatrix, updated);
 	}
 
 	@Override

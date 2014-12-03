@@ -5,8 +5,9 @@ import java.io.IOException;
 
 import junit.framework.Assert;
 
-import com.engine.sevenge.graphics.Texture;
-import com.engine.sevenge.graphics.TextureRegion;
+import com.engine.sevenge.assets.Texture;
+import com.engine.sevenge.assets.TextureRegion;
+import com.engine.sevenge.graphics.TextureUtils;
 import com.engine.sevenge.io.IO;
 
 public class TextureTest extends BaseOpenGLES20UnitTest {
@@ -25,8 +26,8 @@ public class TextureTest extends BaseOpenGLES20UnitTest {
 				Texture tex;
 				int glid = 0;
 				try {
-					tex = new Texture(IO.openAsset("Textures/SpaceSheet.png"));
-					glid = tex.getGLID();
+					tex = TextureUtils.createTexture(IO.openAsset("Textures/SpaceSheet.png"));
+					glid = tex.glID;
 				} catch (IOException e) {
 					Assert.fail("Error " + e.getMessage());
 					e.printStackTrace();
@@ -43,11 +44,11 @@ public class TextureTest extends BaseOpenGLES20UnitTest {
 				Texture tex;
 				int glid = 0;
 				try {
-					tex = new Texture(IO.openAsset("Textures/SpaceSheet.png"));
+					tex = TextureUtils.createTexture(IO.openAsset("Textures/SpaceSheet.png"));
 					TextureRegion tr = new TextureRegion(10, 10, 0, 0, tex);
-					for (int i = 0; i < tr.uvs.length; i++) {
-						if (tr.v[i] != correctv[i]) Assert.fail("Bad texture region vertex coordinate variables");
-						if (tr.uvs[i] != correctuvs[i]) Assert.fail("Bad texture region uv coordinate variables");
+					for (int i = 0; i < tr.UVs.length; i++) {
+						if (tr.vertices[i] != correctv[i]) Assert.fail("Bad texture region vertex coordinate variables");
+						if (tr.UVs[i] != correctuvs[i]) Assert.fail("Bad texture region uv coordinate variables");
 
 					}
 				} catch (IOException e) {

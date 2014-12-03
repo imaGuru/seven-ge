@@ -3,7 +3,6 @@ package com.engine.sevenge.test;
 
 import android.content.Intent;
 import android.test.ActivityUnitTestCase;
-
 import com.engine.sevenge.SevenGE;
 import com.engine.sevenge.TestActivity;
 import com.engine.sevenge.assets.Asset;

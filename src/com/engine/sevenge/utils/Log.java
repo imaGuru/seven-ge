@@ -5,7 +5,7 @@ package com.engine.sevenge.utils;
  * Static wrapper around android.util.Log. Enable/Disable log output using the LOG_ENABLED boolean variable. 
  */
 public class Log {
-	public static boolean LOG_ENABLED = true;
+	public static boolean LOG_ENABLED = false;
 
 	public static void d (String tag, String msg) {
 		if (LOG_ENABLED) {

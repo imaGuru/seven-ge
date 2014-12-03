@@ -22,7 +22,7 @@ public class AnimationSystem extends System {
 					if (ca.currentFrameTick * GameActivity.FRAME_TIME > ca.durations[ca.currentFrame]) {
 						ca.currentFrame = (ca.currentFrame + 1) % ca.durations.length;
 						ca.currentFrameTick = 1;
-						cs.subTexture = ca.frameList[ca.currentFrame];
+						cs.textureRegion = ca.frameList[ca.currentFrame];
 					}
 				}
 			}

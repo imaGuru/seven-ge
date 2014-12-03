@@ -7,45 +7,38 @@ import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniform1i;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 
-public final class TextureShaderProgram extends ShaderProgram {
+import com.engine.sevenge.assets.Asset;
+
+public final class TextureShaderProgram extends Asset {
+
 	private final int matrixLocation;
 	private final int textureUnitLocation;
 	// Attribute locations
-	private final int attributePositionLocation;
-	private final int attributeTextureCoordinatesLocation;
+	public final int attributePositionLocation;
+	public final int attributeTextureCoordinatesLocation;
+
+	public final int glID;
 
 	/** Texture shader program for drawing textured objects in OpenGL
 	 * @param vs vertex shader
 	 * @param fs fragment shader */
-	public TextureShaderProgram (Shader vs, Shader fs) {
-		super(vs, fs);
+	public TextureShaderProgram (int vs, int fs) {
+		glID = ShaderUtils.linkShaderProgram(vs, fs);
 
-		matrixLocation = glGetUniformLocation(programID, U_MATRIX);
-		textureUnitLocation = glGetUniformLocation(programID, U_TEXTURE_UNIT);
+		matrixLocation = glGetUniformLocation(glID, "u_Matrix");
+		textureUnitLocation = glGetUniformLocation(glID, "u_TextureUnit");
 		// Retrieve attribute locations for the shader program.
-		attributePositionLocation = glGetAttribLocation(programID, A_POSITION);
-		attributeTextureCoordinatesLocation = glGetAttribLocation(programID, A_TEXTURE_COORDINATES);
+		attributePositionLocation = glGetAttribLocation(glID, "a_Position");
+		attributeTextureCoordinatesLocation = glGetAttribLocation(glID, "a_TextureCoordinates");
 	}
 
 	/** Set texture and matrix to be used with the shader program
 	 * @param matrix
 	 * @param texture */
-	public void setUniforms (float[] matrix, Texture texture) {
+	public void setUniforms (float[] matrix, int texture) {
 		// Pass the matrix into the shader program.
 		glUniformMatrix4fv(matrixLocation, 1, false, matrix, 0);
-		texture.bindTexture(GL_TEXTURE0);
+		TextureUtils.bindTexture(GL_TEXTURE0, texture);
 		glUniform1i(textureUnitLocation, 0);
-	}
-
-	/** Return position attribute location
-	 * @return position attribute location */
-	public int getPositionAttributeLocation () {
-		return attributePositionLocation;
-	}
-
-	/** Return texturecoordinates attribute location
-	 * @return texturecoordinates attribute location */
-	public int getTextureCoordinatesAttributeLocation () {
-		return attributeTextureCoordinatesLocation;
 	}
 }

@@ -19,26 +19,21 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
 
-import com.engine.sevenge.assets.Asset;
+import com.engine.sevenge.assets.Texture;
 import com.engine.sevenge.utils.Log;
 
 /** Responsible for loading and using textures in opengl */
-public class Texture extends Asset {
+public class TextureUtils {
 	private static final String TAG = "Texture2D";
-	private final int[] textureID;
-	public final int width;
-	public final int height;
 
 	/** Loads the texture from specified inputstream
 	 * @param in InputStream with texture data */
-	public Texture (InputStream in) {
-		textureID = new int[1];
+	public static Texture createTexture (InputStream in) {
+		int[] textureID = new int[1];
 		glGenTextures(1, textureID, 0);
 		if (textureID[0] == 0) {
 			Log.w(TAG, "Could not generate a new OpenGL texture object.");
-			width = 0;
-			height = 0;
-			return;
+			return null;
 		}
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inScaled = false;
@@ -51,40 +46,16 @@ public class Texture extends Asset {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
-		width = bitmap.getWidth();
-		height = bitmap.getHeight();
 		bitmap.recycle();
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
+		return new Texture(textureID[0], bitmap.getWidth(), bitmap.getHeight());
 	}
 
 	/** Bind this texture to use it for drawing
 	 * @param textureUnit texture unit to use */
-	public void bindTexture (int textureUnit) {
+	public static void bindTexture (int textureUnit, int glID) {
 		glActiveTexture(textureUnit);
-		glBindTexture(GL_TEXTURE_2D, textureID[0]);
-	}
-
-	/** Retrieve OpenGL ID of this texture
-	 * @return OpenGL ID */
-	public int getGLID () {
-		return textureID[0];
-	}
-
-	@Override
-	public void dispose () {
-		glDeleteTextures(1, textureID, 0);
-	}
-
-	/** Retrieve the height of the texture
-	 * @return height */
-	public int getHeight () {
-		return height;
-	}
-
-	/** Retrieve the width of the texture
-	 * @return width */
-	public int getWidth () {
-		return width;
+		glBindTexture(GL_TEXTURE_2D, glID);
 	}
 }

@@ -5,7 +5,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.engine.sevenge.graphics.Shader;
 import com.engine.sevenge.graphics.TextureShaderProgram;
 
 public class TextureShaderProgramLoader extends AssetLoader {
@@ -20,10 +19,9 @@ public class TextureShaderProgramLoader extends AssetLoader {
 			JSONArray jarr = new JSONArray(content);
 			for (int i = 0; i < jarr.length(); i++) {
 				JSONObject jProgram = jarr.getJSONObject(i);
-				assetManager.registerAsset(
-					jProgram.getString("id"),
-					new TextureShaderProgram((Shader)assetManager.getAsset(jProgram.getString("vertexShader")), (Shader)assetManager
-						.getAsset(jProgram.getString("fragmentShader"))));
+				Shader v = (Shader)assetManager.getAsset(jProgram.getString("vertexShader"));
+				Shader f = (Shader)assetManager.getAsset(jProgram.getString("fragmentShader"));
+				assetManager.registerAsset(jProgram.getString("id"), new TextureShaderProgram(v.glID, f.glID));
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

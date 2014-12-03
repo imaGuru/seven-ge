@@ -65,7 +65,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		entities = new ArrayList<Entity>();
 		Entity cam = new Entity();
 		entities.add(cam);
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 200; i++) {
 			Entity e = new Entity();
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
@@ -108,7 +108,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			optimizedEntites[oec++] = cp;
 			optimizedEntites[oec++] = cs;
 
-			entities.add(e);
+			// entities.add(e);
 		}
 
 		// music = (Music)SevenGE.assetManager.getAsset("music1");
@@ -134,23 +134,25 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		Matrix.invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
 		e.add(cp, 1);
 		e.add(cc, 8);
+		entities.add(e);
 	}
 
 	@Override
 	public void update () {
-		// SevenGE.input.process();
+		SevenGE.input.process();
 
-		angle = (float)((angle + 0.1f) % (Math.PI * 2));
+		angle = (float)((angle + 0.05f) % (Math.PI * 2));
 		cameraX = (float)(Math.cos(angle) * 500);
 		cameraY = (float)(Math.sin(angle) * 200);
 
-		cc.px = cc.x;
-		cc.py = cc.y;
-		cc.x = cameraX;
-		cc.y = cameraY;
+		// cc.px = cc.x;
+		// cc.py = cc.y;
+		// cc.x = cameraX;
+		// cc.y = cameraY;
 
 		// animationSystem.process(entities);
-		// cameraSystem.process(entities);
+
+		cameraSystem.process(entities);
 		if (changeme >= 30) {
 			changeme = 0;
 			scriptingSystem.process(entities);

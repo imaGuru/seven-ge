@@ -20,7 +20,6 @@ public class RendererSystem extends System {
 
 	private static int SYSTEM_MASK = SpriteComponent.MASK | PositionComponent.MASK;
 
-	private int i, j;
 	private SpriteBatcher spriteBatcher;
 	private float[] uvs;
 	private float[] v;
@@ -32,20 +31,20 @@ public class RendererSystem extends System {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		spriteBatcher = new SpriteBatcher(1, 600);
+		spriteBatcher = new SpriteBatcher(1, 1000);
 	}
 
 	public void process (Component[] entities, CameraComponent c, int count, float a, boolean updated) {
 		if (updated) {
 			spriteBatcher.clear();
-			for (j = 0; j < count; j += 2) {
+			for (int j = 0; j < count; j += 2) {
 				PositionComponent cp = (PositionComponent)entities[j];
 				SpriteComponent cs = (SpriteComponent)entities[j + 1];
 				TextureRegion sprite = cs.textureRegion;
 				uvs = sprite.UVs;
 				v = sprite.vertices;
 
-				for (i = 0; i < 4; i++) {
+				for (int i = 0; i < 4; i++) {
 					temp[0] = v[i * 2];
 					temp[1] = v[i * 2 + 1];
 					temp[2] = 0;

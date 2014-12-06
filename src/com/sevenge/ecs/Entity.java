@@ -1,22 +1,30 @@
 
 package com.sevenge.ecs;
 
-import java.util.HashMap;
-
 public class Entity {
-	private static int idc = 0;
 	public int id;
 	public int mask;
-	public HashMap<Integer, Component> components;
+	public Component[] components;
 
-	public Entity () {
-		id = idc++;
+	public Entity (int id, Component[] compArray) {
+		this.id = id;
 		mask = 0;
-		components = new HashMap<Integer, Component>();
+		components = compArray;
 	}
 
-	public void add (Component comp, int type) {
-		components.put(type, comp);
-		mask |= type;
+	public Entity (int id, Component[] compArray, int mask) {
+		this.id = id;
+		this.mask = mask;
+		components = compArray;
+	}
+
+	public void addComponent (Component comp, int index) {
+		components[index] = comp;
+		mask |= (int)Math.pow(2, index);
+	}
+
+	public void removeComonent (int index) {
+		components[index] = null;
+		mask -= (int)Math.pow(2, index);
 	}
 }

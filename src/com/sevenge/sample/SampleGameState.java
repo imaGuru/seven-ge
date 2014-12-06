@@ -23,9 +23,11 @@ import com.sevenge.ecs.PositionComponent;
 import com.sevenge.ecs.RendererSystem;
 import com.sevenge.ecs.ScriptingSystem;
 import com.sevenge.ecs.SpriteComponent;
+import com.sevenge.fonts.GLText;
 import com.sevenge.input.GestureProcessor;
 import com.sevenge.input.InputProcessor;
 import com.sevenge.utils.Log;
+import javax.microedition.khronos.opengles.GL10;
 
 public class SampleGameState extends GameState implements InputProcessor, GestureProcessor {
 
@@ -61,6 +63,9 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		animationSystem = new AnimationSystem();
 		scriptingSystem = new ScriptingSystem();
 
+		GLText txt = new GLText(null,gameActivity.getAssets());
+		txt.load("Fonts/cs_regular.ttf", 12, 0, 0);
+		
 		Random rng = new Random();
 		entities = new ArrayList<Entity>();
 		Entity cam = new Entity();

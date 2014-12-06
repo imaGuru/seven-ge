@@ -40,6 +40,7 @@ public class RendererSystem extends System {
 			for (int j = 0; j < count; j += 2) {
 				PositionComponent cp = (PositionComponent)entities[j];
 				SpriteComponent cs = (SpriteComponent)entities[j + 1];
+
 				TextureRegion sprite = cs.textureRegion;
 				uvs = sprite.UVs;
 				v = sprite.vertices;

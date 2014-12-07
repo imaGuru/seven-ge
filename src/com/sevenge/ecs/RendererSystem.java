@@ -48,6 +48,14 @@ public class RendererSystem extends System {
 			uvs = sprite.UVs;
 			v = sprite.vertices;
 
+			Matrix.setIdentityM(cp.scaleMatrix, 0);
+			Matrix.scaleM(cp.scaleMatrix, 0, cs.scale, cs.scale, 1.0f);
+
+			Matrix.setIdentityM(cp.transform, 0);
+			Matrix.translateM(cp.transform, 0, cs.textureRegion.width / 2, cs.textureRegion.height / 2, 0f);
+			Matrix.rotateM(cp.transform, 0, cp.rotation, 0f, 0f, 1.0f);
+			Matrix.translateM(cp.transform, 0, cp.x, cp.y, 0f);
+
 			for (int i = 0; i < 4; i++) {
 				temp[0] = v[i * 2];
 				temp[1] = v[i * 2 + 1];

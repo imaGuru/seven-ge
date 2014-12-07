@@ -57,7 +57,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		SevenGE.assetManager.loadAssets("sample.pkg");
 
 		rendererSystem = new RendererSystem();
-		cameraSystem = new CameraSystem();
+		
 		animationSystem = new AnimationSystem();
 		scriptingSystem = new ScriptingSystem();
 
@@ -115,6 +115,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		// music.setLooping(true);
 		// music.play();
 
+		cameraSystem = new CameraSystem(cam);
+		
 	}
 
 	@Override
@@ -141,9 +143,9 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	public void update () {
 		SevenGE.input.process();
 
-		angle = (float)((angle + 0.05f) % (Math.PI * 2));
-		cameraX = (float)(Math.cos(angle) * 500);
-		cameraY = (float)(Math.sin(angle) * 200);
+//		angle = (float)((angle + 0.05f) % (Math.PI * 2));
+//		cameraX = (float)(Math.cos(angle) * 500);
+//		cameraY = (float)(Math.sin(angle) * 200);
 
 		// cc.px = cc.x;
 		// cc.py = cc.y;
@@ -152,7 +154,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		// animationSystem.process(entities);
 
-		cameraSystem.process(entities);
+		//cameraSystem.process(entities);
 		if (changeme >= 30) {
 			changeme = 0;
 			scriptingSystem.process(entities);

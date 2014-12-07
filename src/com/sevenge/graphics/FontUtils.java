@@ -1,28 +1,17 @@
-// This is a OpenGL ES 1.0 dynamic font rendering system. It loads actual font
-// files, generates a font map (texture) from them, and allows rendering of
-// text strings.
-//
-// NOTE: the rendering portions of this class uses a sprite batcher in order
-// provide decent speed rendering. Also, rendering assumes a BOTTOM-LEFT
-// origin, and the (x,y) positions are relative to that, as well as the
-// bottom-left of the string to render.
 
-package com.sevenge.fonts;
+package com.sevenge.graphics;
 
-import javax.microedition.khronos.opengles.GL10;
+import java.io.File;
 
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 
+import com.sevenge.assets.Font;
 import com.sevenge.assets.TextureRegion;
-import com.sevenge.graphics.SpriteBatch;
 
-public class GLText {
-
-	// --Constants--//
+public class FontUtils {
 	public final static int CHAR_START = 32; // First Character (ASCII Code)
 	public final static int CHAR_END = 126; // Last Character (ASCII Code)
 	public final static int CHAR_CNT = (((CHAR_END - CHAR_START) + 1) + 1); // Character Count
@@ -35,76 +24,28 @@ public class GLText {
 	public final static int FONT_SIZE_MIN = 6; // Minumum Font Size (Pixels)
 	public final static int FONT_SIZE_MAX = 180; // Maximum Font Size (Pixels)
 
-	public final static int CHAR_BATCH_SIZE = 100; // Number of Characters to Render Per Batch
+	public static Font load (File ttfFont, int size, int padX, int padY) {
+		int fontPadX, fontPadY; // Font Padding (Pixels; On Each Side, ie. Doubled on Both X+Y Axis)
 
-	// --Members--//
-	AssetManager assets; // Asset Manager
-	SpriteBatch batch; // Batch Renderer
+		float fontHeight; // Font Height (Actual; Pixels)
+		float fontAscent; // Font Ascent (Above Baseline; Pixels)
+		float fontDescent; // Font Descent (Below Baseline; Pixels)
 
-	int fontPadX, fontPadY; // Font Padding (Pixels; On Each Side, ie. Doubled on Both X+Y Axis)
-
-	float fontHeight; // Font Height (Actual; Pixels)
-	float fontAscent; // Font Ascent (Above Baseline; Pixels)
-	float fontDescent; // Font Descent (Below Baseline; Pixels)
-
-	float charWidthMax; // Character Width (Maximum; Pixels)
-	float charHeight; // Character Height (Maximum; Pixels)
-	final float[] charWidths; // Width of Each Character (Actual; Pixels)
-	TextureRegion[] charRgn; // Region of Each Character (Texture Coordinates)
-	int cellWidth, cellHeight; // Character Cell Width/Height
-	int rowCnt, colCnt; // Number of Rows/Columns
-	int textureSize;
-	float scaleX, scaleY; // Font Scale (X,Y Axis)
-	float spaceX; // Additional (X,Y Axis) Spacing (Unscaled)
-
-	// --Constructor--//
-	// D: save GL instance + asset manager, create arrays, and initialize the members
-	// A: gl - OpenGL ES 10 Instance
-	public GLText (GL10 gl, AssetManager assets) {
-		this.assets = assets; // Save the Asset Manager Instance
-
-		charWidths = new float[CHAR_CNT]; // Create the Array of Character Widths
-		charRgn = new TextureRegion[CHAR_CNT]; // Create the Array of Character Regions
-
-		// initialize remaining members
-		fontPadX = 0;
-		fontPadY = 0;
-
-		fontHeight = 0.0f;
-		fontAscent = 0.0f;
-		fontDescent = 0.0f;
-
-		textureSize = 0;
-
-		charWidthMax = 0;
-		charHeight = 0;
-
-		cellWidth = 0;
-		cellHeight = 0;
-		rowCnt = 0;
-		colCnt = 0;
-
-		scaleX = 1.0f; // Default Scale = 1 (Unscaled)
-		scaleY = 1.0f; // Default Scale = 1 (Unscaled)
-		spaceX = 0.0f;
-	}
-
-	// --Load Font--//
-	// description
-	// this will load the specified font file, create a texture for the defined
-	// character range, and setup all required values used to render with it.
-	// arguments:
-	// file - Filename of the font (.ttf, .otf) to use. In 'Assets' folder.
-	// size - Requested pixel size of font (height)
-	// padX, padY - Extra padding per character (X+Y Axis); to prevent overlapping characters.
-	public boolean load (String file, int size, int padX, int padY) {
-
+		float charWidthMax; // Character Width (Maximum; Pixels)
+		float charHeight; // Character Height (Maximum; Pixels)
+		final float[] charWidths = new float[CHAR_CNT]; // Width of Each Character (Actual; Pixels)
+		TextureRegion[] charRgn = new TextureRegion[CHAR_CNT]; // Region of Each Character (Texture Coordinates)
+		int cellWidth, cellHeight; // Character Cell Width/Height
+		int rowCnt, colCnt; // Number of Rows/Columns
+		int textureSize;
+		float scaleX, scaleY; // Font Scale (X,Y Axis)
+		float spaceX; // Additional (X,Y Axis) Spacing (Unscaled)
 		// setup requested values
 		fontPadX = padX; // Set Requested X Axis Padding
 		fontPadY = padY; // Set Requested Y Axis Padding
 
 		// load the font and setup paint instance for drawing
-		Typeface tf = Typeface.createFromAsset(assets, file); // Create the Typeface from Font File
+		Typeface tf = Typeface.createFromFile(ttfFont);
 		Paint paint = new Paint(); // Create Android Paint Instance
 		paint.setAntiAlias(true); // Enable Anti Alias
 		paint.setTextSize(size); // Set Text Size
@@ -146,7 +87,7 @@ public class GLText {
 		cellHeight = (int)charHeight + (2 * fontPadY); // Set Cell Height
 		int maxSize = cellWidth > cellHeight ? cellWidth : cellHeight; // Save Max Size (Width/Height)
 		if (maxSize < FONT_SIZE_MIN || maxSize > FONT_SIZE_MAX) // IF Maximum Size Outside Valid Bounds
-			return false; // Return Error
+			return null; // Return Error
 
 		// set texture size based on max font size (width or height)
 		// NOTE: these values are fixed, based on the defined characters. when
@@ -188,7 +129,32 @@ public class GLText {
 		canvas.drawText(s, 0, 1, x, y, paint); // Draw Character
 		// release the bitmap
 		bitmap.recycle(); // Release the Bitmap
-		return true;
+		return new Font();
 	}
 
+	public void draw (String text, float x, float y, Font font, SpriteBatcher sb) {
+		float chrHeight = font.cellHeight * font.scaleY; // Calculate Scaled Character Height
+		float chrWidth = font.cellWidth * font.scaleX; // Calculate Scaled Character Width
+		int len = text.length(); // Get String Length
+		x += (chrWidth / 2.0f) - (font.fontPadX * font.scaleX); // Adjust Start X
+		y += (chrHeight / 2.0f) - (font.fontPadY * font.scaleY); // Adjust Start Y
+		for (int i = 0; i < len; i++) { // FOR Each Character in String
+			int c = (int)text.charAt(i) - CHAR_START; // Calculate Character Index (Offset by First Char in Font)
+			if (c < 0 || c >= CHAR_CNT) // IF Character Not In Font
+				c = CHAR_UNKNOWN; // Set to Unknown Character Index
+			sb.addSprite(x, y, chrWidth, chrHeight, font.charRgn[c]); // Draw the Character
+			x += (font.charWidths[c] + font.spaceX) * font.scaleX; // Advance X Position by Scaled Character Width
+		}
+	}
+
+	public float getLength (String text) {
+		float len = 0.0f; // Working Length
+		int strLen = text.length(); // Get String Length (Characters)
+		for (int i = 0; i < strLen; i++) { // For Each Character in String (Except Last
+			int c = (int)text.charAt(i) - CHAR_START; // Calculate Character Index (Offset by First Char in Font)
+			len += (charWidths[c] * scaleX); // Add Scaled Character Width to Total Length
+		}
+		len += (strLen > 1 ? ((strLen - 1) * spaceX) * scaleX : 0); // Add Space Length
+		return len; // Return Total Length
+	}
 }

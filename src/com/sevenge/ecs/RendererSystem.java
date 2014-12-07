@@ -7,7 +7,6 @@ import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
 import static android.opengl.GLES20.glBlendFunc;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glEnable;
-import android.opengl.Matrix;
 
 import com.sevenge.assets.TextureRegion;
 import com.sevenge.graphics.Camera2D;
@@ -45,38 +44,9 @@ public class RendererSystem extends System {
 			SpriteComponent cs = (SpriteComponent)entity.components[1];
 
 			TextureRegion sprite = cs.textureRegion;
-			uvs = sprite.UVs;
-			v = sprite.vertices;
 
-			for (int i = 0; i < 4; i++) {
-				temp[0] = v[i * 2];
-				temp[1] = v[i * 2 + 1];
-				temp[2] = 0;
-				temp[3] = 1;
-				// Matrix.multiplyMV(tempr, 0, cp.scaleMatrix, 0, temp, 0);
-				Matrix.multiplyMV(tempr, 0, cp.transform, 0, temp, 0);
-				r[i * 2] = tempr[0];
-				r[i * 2 + 1] = tempr[1];
-			}
-
-			t[0] = r[0];
-			t[1] = r[1];
-			t[2] = uvs[0];
-			t[3] = uvs[1];
-			t[4] = r[2];
-			t[5] = r[3];
-			t[6] = uvs[2];
-			t[7] = uvs[3];
-			t[8] = r[4];
-			t[9] = r[5];
-			t[10] = uvs[4];
-			t[11] = uvs[5];
-			t[12] = r[6];
-			t[13] = r[7];
-			t[14] = uvs[6];
-			t[15] = uvs[7];
-
-			spriteBatcher.addSprite(t, sprite.texture);
+			// spriteBatcher.addSprite(t, sprite.texture);
+			spriteBatcher.addSprite(cp.transform, sprite);
 		}
 		Camera2D.lookAt(mCameraCP.x * interpolationAlpha + mCameraCP.px * (1 - interpolationAlpha), mCameraCP.y
 			* interpolationAlpha + mCameraCP.py * (1 - interpolationAlpha), mCameraCC.viewMatrix);

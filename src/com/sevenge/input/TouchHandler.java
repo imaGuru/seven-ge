@@ -92,7 +92,7 @@ public class TouchHandler {
 
 	private void registerTouchEvent (Input input, int type, int x, int y, int deltaX, int deltaY, int pointer, int index,
 		long timeStamp) {
-		TouchEvent event = input.touchEventPool.newObject();
+		TouchEvent event = new TouchEvent();
 		event.timeStamp = timeStamp;
 		event.pointer = pointer;
 		event.x = x;

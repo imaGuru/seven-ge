@@ -18,7 +18,7 @@ public class GestureHandler implements OnGestureListener, OnDoubleTapListener {
   @Override
   public boolean onDoubleTap(MotionEvent me) {
     synchronized (input) {
-      Gesture g = input.gesturePool.newObject();
+      Gesture g = new Gesture();
       g.type = Gesture.DOUBLETAP;
       g.motionEvent1 = me;
 
@@ -36,7 +36,7 @@ public class GestureHandler implements OnGestureListener, OnDoubleTapListener {
   @Override
   public boolean onSingleTapConfirmed(MotionEvent me) {
     synchronized (input) {
-      Gesture g = input.gesturePool.newObject();
+      Gesture g = new Gesture();
       g.type = Gesture.TAP;
       g.motionEvent1 = me;
 
@@ -55,7 +55,7 @@ public class GestureHandler implements OnGestureListener, OnDoubleTapListener {
   @Override
   public boolean onFling(MotionEvent me1, MotionEvent me2, float vx, float vy) {
     synchronized (input) {
-      Gesture g = input.gesturePool.newObject();
+      Gesture g = new Gesture();
       g.type = Gesture.FLING;
       g.motionEvent1 = me1;
       g.motionEvent1 = me2;
@@ -71,7 +71,7 @@ public class GestureHandler implements OnGestureListener, OnDoubleTapListener {
   @Override
   public void onLongPress(MotionEvent me1) {
     synchronized (input) {
-      Gesture g = input.gesturePool.newObject();
+      Gesture g = new Gesture();
       g.type = Gesture.LONGPRESS;
       g.motionEvent1 = me1;
 
@@ -83,7 +83,7 @@ public class GestureHandler implements OnGestureListener, OnDoubleTapListener {
   @Override
   public boolean onScroll(MotionEvent me1, MotionEvent me2, float dx, float dy) {
     synchronized (input) {
-      Gesture g = input.gesturePool.newObject();
+      Gesture g = new Gesture();
       g.type = Gesture.SCROLL;
       g.motionEvent1 = me1;
       g.motionEvent2 = me2;

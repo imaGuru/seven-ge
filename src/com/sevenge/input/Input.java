@@ -43,28 +43,28 @@ public class Input implements OnTouchListener {
   ArrayList<TouchEvent> touchEventsBuffer = new ArrayList<TouchEvent>();
   ArrayList<Gesture> gesturesBuffer = new ArrayList<Gesture>();
 
-  Pool<TouchEvent> touchEventPool;
-  Pool<Gesture> gesturePool;
+//  Pool<TouchEvent> touchEventPool;
+//  Pool<Gesture> gesturePool;
 
   public Input(GameActivity ga) {
     gestureDetector = new GestureDetectorCompat(ga, gestureHandler);
 
-    PoolObjectFactory<TouchEvent> touchEventFactory = new PoolObjectFactory<TouchEvent>() {
-      @Override
-      public TouchEvent createObject() {
-        return new TouchEvent();
-      }
-    };
+//    PoolObjectFactory<TouchEvent> touchEventFactory = new PoolObjectFactory<TouchEvent>() {
+//      @Override
+//      public TouchEvent createObject() {
+//        return new TouchEvent();
+//      }
+//    };
+//
+//    PoolObjectFactory<Gesture> gestureFactory = new PoolObjectFactory<Gesture>() {
+//      @Override
+//      public Gesture createObject() {
+//        return new Gesture();
+//      }
+//    };
 
-    PoolObjectFactory<Gesture> gestureFactory = new PoolObjectFactory<Gesture>() {
-      @Override
-      public Gesture createObject() {
-        return new Gesture();
-      }
-    };
-
-    touchEventPool = new Pool<TouchEvent>(touchEventFactory, POOL_SIZE);
-    gesturePool = new Pool<Gesture>(gestureFactory, POOL_SIZE);
+//    touchEventPool = new Pool<TouchEvent>(touchEventFactory, POOL_SIZE);
+//    gesturePool = new Pool<Gesture>(gestureFactory, POOL_SIZE);
   }
 
   static class TouchEvent {
@@ -145,13 +145,13 @@ public class Input implements OnTouchListener {
 
     synchronized (this) {
 
-      for (int i = 0; i < touchEventsBuffer.size(); i++) {
-        touchEventPool.free(touchEventsBuffer.get(i));
-      }
-
-      for (int i = 0; i < gesturesBuffer.size(); i++) {
-        gesturePool.free(gesturesBuffer.get(i));
-      }
+      // for (int i = 0; i < touchEventsBuffer.size(); i++) {
+      // touchEventPool.free(touchEventsBuffer.get(i));
+      // }
+      //
+      // for (int i = 0; i < gesturesBuffer.size(); i++) {
+      // gesturePool.free(gesturesBuffer.get(i));
+      // }
 
       touchEvents.clear();
       gestures.clear();
@@ -210,21 +210,31 @@ public class Input implements OnTouchListener {
       for (int i = 0; i < len; i++) {
         Gesture g = gestures.get(i);
 
-        for (GestureProcessor gp : gestureProcessors) {
 
-          switch (g.type) {
-            case Gesture.DOUBLETAP:
+
+        switch (g.type) {
+          case Gesture.DOUBLETAP:
+            for (GestureProcessor gp : gestureProcessors)
               gp.onDoubleTap(g.motionEvent1);
-            case Gesture.FLING:
+            break;
+          case Gesture.FLING:
+            for (GestureProcessor gp : gestureProcessors)
               gp.onFling(g.motionEvent1, g.motionEvent2, g.velX, g.velY);
-            case Gesture.LONGPRESS:
+            break;
+          case Gesture.LONGPRESS:
+            for (GestureProcessor gp : gestureProcessors)
               gp.onLongPress(g.motionEvent1);
-            case Gesture.SCROLL:
+            break;
+          case Gesture.SCROLL:
+            for (GestureProcessor gp : gestureProcessors)
               gp.onScroll(g.motionEvent1, g.motionEvent2, g.distX, g.distY);
-            case Gesture.TAP:
+            break;
+          case Gesture.TAP:
+            for (GestureProcessor gp : gestureProcessors)
               gp.onSingleTapConfirmed(g.motionEvent1);
-          }
+            break;
         }
+
 
       }
     }

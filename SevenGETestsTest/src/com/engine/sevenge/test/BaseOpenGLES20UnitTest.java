@@ -4,7 +4,6 @@ package com.engine.sevenge.test;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.sevenge.IO;
-import com.sevenge.SevenGE;
 import com.sevenge.utils.UnitTestActivity;
 
 public class BaseOpenGLES20UnitTest extends ActivityInstrumentationTestCase2<UnitTestActivity> {
@@ -17,13 +16,12 @@ public class BaseOpenGLES20UnitTest extends ActivityInstrumentationTestCase2<Uni
 	@Override
 	public void setUp () {
 		activity = getActivity();
-		SevenGE.io = new IO(activity);
+		IO.initialize(activity);
 	}
 
 	@Override
 	public void tearDown () {
 		activity.finish();
-		SevenGE.io = null;
 	}
 
 	public void runOnGLThread (final TestWrapper test) throws Throwable {

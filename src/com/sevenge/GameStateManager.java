@@ -42,8 +42,8 @@ public class GameStateManager {
 	}
 
 	/* Invokes the draw() method of the current GameState */
-	public void draw (float a, boolean updated) {
-		this.currentState.draw(a, updated);
+	public void draw (float a) {
+		this.currentState.draw(a);
 	}
 
 	/* Invokes the pause() method of the current GameState */

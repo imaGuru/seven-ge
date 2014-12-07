@@ -41,10 +41,10 @@ public class SpriteBatcher {
 
 	/** Draw the created batches using specified view projection matrix
 	 * @param vpm view projection matrix */
-	public void draw (float[] vpm, boolean updated) {
+	public void draw (float[] vpm) {
 		glClear(GL_COLOR_BUFFER_BIT);
 		for (int i = 0; i < usedBatches + 1; i++) {
-			batches[i].draw(vpm, updated);
+			batches[i].draw(vpm);
 		}
 	}
 

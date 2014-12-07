@@ -105,7 +105,7 @@ public class TouchHandler {
 		input.touchY[index] = y;
 		input.deltaX[index] = deltaX;
 		input.deltaY[index] = deltaY;
-		input.touchEvents.add(event);
+		input.touchEventsBuffer.add(event);
 		logAction(type, pointer);
 	}
 

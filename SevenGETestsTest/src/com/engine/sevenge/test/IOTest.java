@@ -11,7 +11,6 @@ import junit.framework.Assert;
 import android.test.AndroidTestCase;
 
 import com.sevenge.IO;
-import com.sevenge.SevenGE;
 
 public class IOTest extends AndroidTestCase {
 
@@ -20,12 +19,11 @@ public class IOTest extends AndroidTestCase {
 
 	@Override
 	public void setUp () {
-		SevenGE.io = new IO(mContext);
+		IO.initialize(mContext);
 	}
 
 	@Override
 	public void tearDown () {
-		SevenGE.io = null;
 		IO.internal("testCopy.pkg").delete();
 		IO.internal("renamed.pkg").delete();
 	}

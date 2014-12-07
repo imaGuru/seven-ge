@@ -4,7 +4,6 @@ package com.sevenge.input;
 import android.view.MotionEvent;
 
 import com.sevenge.input.Input.TouchEvent;
-import com.sevenge.utils.Log;
 
 public class TouchHandler {
 
@@ -88,7 +87,7 @@ public class TouchHandler {
 			actionStr = "MOVE";
 		else
 			actionStr = "UNKNOWN (" + action + ")";
-		Log.d("TouchHandler", "action " + actionStr + ", Android pointer id: " + pointer);
+		// Log.d("TouchHandler", "action " + actionStr + ", Android pointer id: " + pointer);
 	}
 
 	private void registerTouchEvent (Input input, int type, int x, int y, int deltaX, int deltaY, int pointer, int index,

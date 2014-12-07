@@ -31,7 +31,7 @@ public class AssetManagerTest extends ActivityUnitTestCase<UnitTestActivity> {
 		startActivity(intent, null, null);
 		activity = getActivity();
 		SevenGE.audio = new Audio(activity);
-		SevenGE.io = new IO(activity);
+		IO.initialize(activity);
 		SevenGE.assetManager = new AssetManager();
 
 	}

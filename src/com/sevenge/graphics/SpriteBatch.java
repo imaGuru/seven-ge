@@ -93,10 +93,9 @@ public class SpriteBatch {
 	}
 
 	/** Draw this spritebatch using specified view projection matrix */
-	public void draw (float[] vpMatrix, boolean updated) {
-		if (updated)
-			vertexArray.put(sprites, spriteCount * VERTICES_PER_SPRITE
-				* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT));
+	public void draw (float[] vpMatrix) {
+		vertexArray.put(sprites, spriteCount * VERTICES_PER_SPRITE
+			* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT));
 
 		glUseProgram(program.glID);
 		program.setUniforms(vpMatrix, texture);

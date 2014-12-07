@@ -1,18 +1,19 @@
 
 package com.sevenge.ecs;
 
+
 public class Entity {
 	public int id;
 	public int mask;
 	public Component[] components;
 
-	public Entity (int id, Component[] compArray) {
+	Entity (int id, Component[] compArray) {
 		this.id = id;
 		mask = 0;
 		components = compArray;
 	}
 
-	public Entity (int id, Component[] compArray, int mask) {
+	Entity (int id, Component[] compArray, int mask) {
 		this.id = id;
 		this.mask = mask;
 		components = compArray;

@@ -39,13 +39,8 @@ public abstract class GameActivity extends Activity implements Renderer {
 	private long deltaTime = 0;
 	/** Time to sleep in order to cap the rendering to desired framerate */
 	private long lastTime = 0, accum;
-	/** Number of frames skipped because the rendering took too long */
-	private int framesSkipped = 0;
 	/** The maximum frame time in milliseconds */
 	public static final long FRAME_TIME = 33;
-	/** The maximum number of frames until the simulation falls behind. Prevents spiral of death */
-	private static final int MAX_FRAME_SKIPS = 5;
-
 	private GLSurfaceView glSurfaceView;
 
 	/** Keep track of the state we are in. Changes according to android lifecycle */
@@ -84,8 +79,8 @@ public abstract class GameActivity extends Activity implements Renderer {
 				|| Build.FINGERPRINT.startsWith("unknown") || Build.MODEL.contains("google_sdk") || Build.MODEL.contains("Emulator") || Build.MODEL
 					.contains("Android SDK built for x86")));
 
+		IO.initialize(this);
 		SevenGE.input = new Input(this);
-		SevenGE.io = new IO(this);
 		SevenGE.audio = new Audio(this);
 		SevenGE.assetManager = new AssetManager();
 		SevenGE.stateManager = new GameStateManager();
@@ -182,19 +177,17 @@ public abstract class GameActivity extends Activity implements Renderer {
 				updated = true;
 			}
 			float a = 1.0f * accum / FRAME_TIME;
-			SevenGE.stateManager.draw(a, updated);
+			SevenGE.stateManager.draw(a);
 			updated = false;
 
-		}
-		if (state == GLGameState.Paused) {
+		} else if (state == GLGameState.Paused) {
 			SevenGE.stateManager.pause();
 			synchronized (stateChanged) {
 				this.state = GLGameState.Idle;
 				Log.d(TAG, "Idle");
 				stateChanged.notifyAll();
 			}
-		}
-		if (state == GLGameState.Finished) {
+		} else if (state == GLGameState.Finished) {
 			SevenGE.stateManager.pause();
 			SevenGE.stateManager.dispose();
 

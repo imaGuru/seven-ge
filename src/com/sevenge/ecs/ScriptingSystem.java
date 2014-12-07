@@ -2,7 +2,6 @@
 package com.sevenge.ecs;
 
 import java.io.IOException;
-import java.util.List;
 
 import android.util.Log;
 
@@ -11,17 +10,18 @@ import com.naef.jnlua.LuaState;
 import com.naef.jnlua.LuaSyntaxException;
 import com.naef.jnlua.LuaType;
 import com.naef.jnlua.NamedJavaFunction;
-import com.sevenge.SevenGE;
+import com.sevenge.IO;
 
 public class ScriptingSystem extends System {
 	private LuaState luaState;
 
 	public ScriptingSystem () {
+		super(16, 0);
 		luaState = new LuaState();
 		luaState.openLibs();
 		luaState.register("simplelol", new NamedJavaFunction[] {new DebugLog()}, true);
 		try {
-			luaState.load(SevenGE.io.openAsset("Scripts/main.lua"), "=main", "t");
+			luaState.load(IO.openAsset("Scripts/main.lua"), "=main", "t");
 
 			// Evaluate the chunk, thus defining the function
 			luaState.call(0, 0); // No arguments, no returns
@@ -35,8 +35,7 @@ public class ScriptingSystem extends System {
 
 	}
 
-	@Override
-	public void process (List<Entity> entities) {
+	public void process () {
 		// Prepare a function call
 		try {
 			luaState.getGlobal("wakeUpWaitingThreads"); // Push the function on the stack //
@@ -54,6 +53,7 @@ public class ScriptingSystem extends System {
 
 	}
 
+	@SuppressWarnings("unused")
 	private void stackDump () {
 		int i;
 		int top = luaState.getTop();

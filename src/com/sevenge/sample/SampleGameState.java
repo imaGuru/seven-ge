@@ -1,8 +1,6 @@
 
 package com.sevenge.sample;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import android.opengl.Matrix;
@@ -19,34 +17,32 @@ import com.sevenge.ecs.CameraComponent;
 import com.sevenge.ecs.CameraSystem;
 import com.sevenge.ecs.Component;
 import com.sevenge.ecs.Entity;
+import com.sevenge.ecs.EntityManager;
 import com.sevenge.ecs.PositionComponent;
 import com.sevenge.ecs.RendererSystem;
 import com.sevenge.ecs.ScriptingSystem;
 import com.sevenge.ecs.SpriteComponent;
 import com.sevenge.input.GestureProcessor;
 import com.sevenge.input.InputProcessor;
-import com.sevenge.utils.Log;
 
 public class SampleGameState extends GameState implements InputProcessor, GestureProcessor {
 
-	private final String TAG = "InputTest";
+	private final String TAG = "SampleGameState";
+
+	private EntityManager mEM;
+	private Component[] components = new Component[10];
 
 	private Music music;
+
 	private RendererSystem rendererSystem;
-	private CameraSystem cameraSystem;
+
 	private AnimationSystem animationSystem;
-	private List<Entity> entities;
-	private int changeme = 0;
-	private Component[] optimizedEntites = new Component[10000];
-	private int oec = 0;
-	private CameraComponent cc;
+
+	private CameraSystem cameraSystem;
+
 	private ScriptingSystem scriptingSystem;
 
-	private float angle;
-
-	private float cameraX;
-
-	private float cameraY;
+	private int counter = 0;
 
 	public SampleGameState (GameActivity gameActivity) {
 		super(gameActivity);
@@ -56,17 +52,18 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		SevenGE.assetManager.loadAssets("sample.pkg");
 
-		rendererSystem = new RendererSystem();
-		
-		animationSystem = new AnimationSystem();
+		rendererSystem = new RendererSystem(200);
+		animationSystem = new AnimationSystem(200);
+		cameraSystem = new CameraSystem(null);
 		scriptingSystem = new ScriptingSystem();
-
+		mEM = new EntityManager(300, 10);
+		mEM.addSystem(rendererSystem);
+		mEM.addSystem(animationSystem);
+		mEM.addSystem(cameraSystem);
+		mEM.addSystem(scriptingSystem);
 		Random rng = new Random();
-		entities = new ArrayList<Entity>();
-		Entity cam = new Entity();
-		entities.add(cam);
 		for (int i = 0; i < 200; i++) {
-			Entity e = new Entity();
+			Entity entity = mEM.createEntity(components, 0);
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
 			cs.scale = 1.0f;
@@ -79,7 +76,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			else if (rnd < 0.95f)
 				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_tiny2");
 			else {
-				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("enemyRed1");
+				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("enemyBlack1");
 				AnimationComponent ca = new AnimationComponent();
 				ca.frameList = new TextureRegion[] {(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack1"),
 					(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack2"),
@@ -88,7 +85,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 					(TextureRegion)SevenGE.assetManager.getAsset("enemyBlack5")};
 				ca.durations = new int[] {500, 1000, 2000, 234, 666};
 				ca.isPlaying = true;
-				e.add(ca, 4);
+				entity.addComponent(ca, 3);
 			}
 
 			cp.rotation = rng.nextFloat() * 360.0f;
@@ -102,30 +99,26 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			Matrix.rotateM(cp.transform, 0, cp.rotation, 0f, 0f, 1.0f);
 			Matrix.translateM(cp.transform, 0, cp.x, cp.y, 0f);
 
-			e.add(cp, 1);
-			e.add(cs, 2);
+			entity.addComponent(cp, 0);
+			entity.addComponent(cs, 1);
 
-			optimizedEntites[oec++] = cp;
-			optimizedEntites[oec++] = cs;
-
-			// entities.add(e);
 		}
+		mEM.assignEntities();
 
-		// music = (Music)SevenGE.assetManager.getAsset("music1");
-		// music.setLooping(true);
-		// music.play();
+		music = (Music)SevenGE.assetManager.getAsset("music1");
+		music.setLooping(true);
+		music.play();
 
-		cameraSystem = new CameraSystem(cam);
-		
 	}
 
 	@Override
 	public void onSurfaceChange (int width, int height) {
-		Entity e = entities.get(0);
-		cc = new CameraComponent();
+
+		CameraComponent cc = new CameraComponent();
 		cc.height = height;
 		cc.width = width;
 		cc.scale = 0.7f;
+
 		PositionComponent cp = new PositionComponent();
 		cp.x = 0;
 		cp.y = 0;
@@ -134,37 +127,30 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			/ cc.scale / 2, 0f, 1f);
 		Matrix.multiplyMM(cc.viewProjectionMatrix, 0, cc.projectionMatrix, 0, cc.viewMatrix, 0);
 		Matrix.invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
-		e.add(cp, 1);
-		e.add(cc, 8);
-		entities.add(e);
+
+		Entity camera = mEM.createEntity(components, 0);
+		camera.addComponent(cc, 2);
+		camera.addComponent(cp, 0);
+		cameraSystem.setCamera(camera);
+		rendererSystem.setCamera(camera);
+
 	}
 
 	@Override
 	public void update () {
+		cameraSystem.process();
 		SevenGE.input.process();
-
-//		angle = (float)((angle + 0.05f) % (Math.PI * 2));
-//		cameraX = (float)(Math.cos(angle) * 500);
-//		cameraY = (float)(Math.sin(angle) * 200);
-
-		// cc.px = cc.x;
-		// cc.py = cc.y;
-		// cc.x = cameraX;
-		// cc.y = cameraY;
-
-		// animationSystem.process(entities);
-
-		//cameraSystem.process(entities);
-		if (changeme >= 30) {
-			changeme = 0;
-			scriptingSystem.process(entities);
+		animationSystem.process();
+		if (counter == 33) {
+			counter = 0;
+			scriptingSystem.process();
 		}
-		changeme++;
+		counter++;
 	}
 
 	@Override
-	public void draw (float a, boolean updated) {
-		rendererSystem.process(optimizedEntites, cc, oec, a, updated);
+	public void draw (float interpolationAlpha) {
+		rendererSystem.process(interpolationAlpha);
 	}
 
 	@Override
@@ -174,61 +160,61 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void pause () {
-		// music.pause();
+		music.pause();
 
 	}
 
 	@Override
 	public void resume () {
-		// music.play();
+		music.play();
 
 	}
 
 	@Override
 	public boolean onDoubleTap (MotionEvent me) {
-		Log.d(TAG, "onDoubleTap");
+		// Log.d(TAG, "onDoubleTap");
 		return false;
 	}
 
 	@Override
 	public boolean onSingleTapConfirmed (MotionEvent arg0) {
-		Log.d(TAG, "onSingleTapConfirmed");
+		// Log.d(TAG, "onSingleTapConfirmed");
 		return false;
 	}
 
 	@Override
 	public boolean onFling (MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
-		Log.d(TAG, "onFling");
+		// Log.d(TAG, "onFling");
 		return false;
 	}
 
 	@Override
 	public void onLongPress (MotionEvent arg0) {
-		Log.d(TAG, "onLongPress");
+		// Log.d(TAG, "onLongPress");
 
 	}
 
 	@Override
 	public boolean onScroll (MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
-		Log.d(TAG, "onScroll");
+		// Log.d(TAG, "onScroll");
 		return false;
 	}
 
 	@Override
 	public boolean touchDown (int x, int y, int pointer, int button) {
-		Log.d(TAG, "touchDown" + " x : " + x + " , y : " + y + " , pointerid : " + pointer);
+		// Log.d(TAG, "touchDown" + " x : " + x + " , y : " + y + " , pointerid : " + pointer);
 		return false;
 	}
 
 	@Override
 	public boolean touchUp (int x, int y, int pointer, int button) {
-		Log.d(TAG, "touchUp" + " x : " + x + " , y : " + y + " , pointerid : " + pointer);
+		// Log.d(TAG, "touchUp" + " x : " + x + " , y : " + y + " , pointerid : " + pointer);
 		return false;
 	}
 
 	@Override
 	public boolean touchMove (int x, int y, int pointer) {
-		Log.d(TAG, "touchMove" + " x : " + x + " , y : " + y + " , pointerid : " + pointer);
+		// Log.d(TAG, "touchMove" + " x : " + x + " , y : " + y + " , pointerid : " + pointer);
 		return false;
 	}
 

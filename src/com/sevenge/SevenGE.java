@@ -9,7 +9,6 @@ import com.sevenge.input.Input;
 public class SevenGE {
 
 	public static Input input;
-	public static IO io;
 	public static Audio audio;
 	public static AssetManager assetManager;
 	public static GameStateManager stateManager;

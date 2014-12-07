@@ -17,8 +17,8 @@ public class IO {
 	private static Context context = null;
 
 	// static
-	public IO (Context context) {
-		this.context = context;
+	public static void initialize (Context context) {
+		IO.context = context;
 	}
 
 	/** Opens or creates a file residing in internal android storage

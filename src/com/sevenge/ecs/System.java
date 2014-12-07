@@ -1,15 +1,26 @@
 
 package com.sevenge.ecs;
 
-import java.util.List;
+import com.sevenge.utils.FixedArray;
 
 public abstract class System {
-	public abstract void process (List<Entity> entities);
+
+	int mMask;
+
+	FixedArray<Entity> entities;
+
+	public System (int mask, int size) {
+		mMask = mask;
+		entities = new FixedArray<Entity>(size, new EntityComparator());
+	}
 
 	public abstract void handleMessage (Message m, Entity e);
 
-	public void process (Component[] entities, float[] vpm, int count) {
-		// TODO Auto-generated method stub
+	public void process () {
+
+	}
+
+	public void process (float interpolationAlpha) {
 
 	}
 }

@@ -145,12 +145,12 @@ public class Input implements OnTouchListener {
 
     synchronized (this) {
 
-      for (int i = 0; i < touchEvents.size(); i++) {
-        touchEventPool.free(touchEvents.get(i));
+      for (int i = 0; i < touchEventsBuffer.size(); i++) {
+        touchEventPool.free(touchEventsBuffer.get(i));
       }
 
-      for (int i = 0; i < gestures.size(); i++) {
-        gesturePool.free(gestures.get(i));
+      for (int i = 0; i < gesturesBuffer.size(); i++) {
+        gesturePool.free(gesturesBuffer.get(i));
       }
 
       touchEvents.clear();

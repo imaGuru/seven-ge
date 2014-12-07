@@ -89,7 +89,6 @@ public class GestureHandler implements OnGestureListener, OnDoubleTapListener {
       g.motionEvent2 = me2;
       g.distX = dx;
       g.distY = dy;
-
       input.gesturesBuffer.add(g);
     }
     return false;

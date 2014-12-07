@@ -9,6 +9,8 @@ public class Font {
 	public int cellHeight;
 	public int scaleY;
 	public int scaleX;
-	public char[] charRgn;
+	public TextureRegion[] charRgn;
+	public int[] charWidths;
+	public int spaceX;
 
 }

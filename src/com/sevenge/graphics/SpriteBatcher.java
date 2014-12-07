@@ -16,6 +16,7 @@ public class SpriteBatcher {
 
 	private float[] uvs;
 	private float[] v;
+	private float[] transform;
 	private float[] r = new float[8], temp = new float[4], tempr = new float[4];
 	private float[] t = new float[16];
 
@@ -103,6 +104,9 @@ public class SpriteBatcher {
 		uvs = sprite.UVs;
 		v = sprite.vertices;
 
+		Matrix.setIdentityM(transform, 0);
+		Matrix.translateM(transform, 0, sprite.width / 2, sprite.height / 2, 0f);
+		Matrix.translateM(transform, 0, x, y, 0f);
 		for (int i = 0; i < 4; i++) {
 			temp[0] = v[i * 2];
 			temp[1] = v[i * 2 + 1];

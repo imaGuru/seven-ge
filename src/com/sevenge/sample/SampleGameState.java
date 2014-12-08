@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 
 import com.sevenge.GameActivity;
 import com.sevenge.GameState;
+import com.sevenge.IO;
 import com.sevenge.SevenGE;
 import com.sevenge.assets.TextureRegion;
 import com.sevenge.audio.Music;
@@ -22,7 +23,7 @@ import com.sevenge.ecs.PositionComponent;
 import com.sevenge.ecs.RendererSystem;
 import com.sevenge.ecs.ScriptingSystem;
 import com.sevenge.ecs.SpriteComponent;
-import com.sevenge.fonts.GLText;
+import com.sevenge.graphics.FontUtils;
 import com.sevenge.input.GestureProcessor;
 import com.sevenge.input.InputProcessor;
 
@@ -52,14 +53,12 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		SevenGE.input.addGestureProcessor(this);
 
 		SevenGE.assetManager.loadAssets("sample.pkg");
+		SevenGE.assetManager.registerAsset("font", FontUtils.load(IO.getAssetManager(), "Fonts/OpenSansBold.ttf", 20, 2, 0));
 
 		rendererSystem = new RendererSystem(200);
 		animationSystem = new AnimationSystem(200);
 		cameraSystem = new CameraSystem(null);
 		scriptingSystem = new ScriptingSystem();
-
-		GLText txt = new GLText(null, gameActivity.getAssets());
-		txt.load("Fonts/OpenSansBold.ttf", 12, 0, 0);
 
 		mEM = new EntityManager(300, 10);
 		mEM.addSystem(rendererSystem);
@@ -101,8 +100,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			Matrix.scaleM(cp.scaleMatrix, 0, cs.scale, cs.scale, 1.0f);
 
 			Matrix.setIdentityM(cp.transform, 0);
-			Matrix.translateM(cp.transform, 0, cs.textureRegion.width / 2, cs.textureRegion.height / 2, 0f);
-			Matrix.rotateM(cp.transform, 0, cp.rotation, 0f, 0f, 1.0f);
+			// Matrix.translateM(cp.transform, 0, cs.textureRegion.width / 2, cs.textureRegion.height / 2, 0f);
+			// Matrix.rotateM(cp.transform, 0, 0, 0f, 0f, 1.0f);
 			Matrix.translateM(cp.transform, 0, cp.x, cp.y, 0f);
 
 			entity.addComponent(cp, 0);
@@ -123,7 +122,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		CameraComponent cc = new CameraComponent();
 		cc.height = height;
 		cc.width = width;
-		cc.scale = 0.7f;
+		cc.scale = 1.5f;
 
 		PositionComponent cp = new PositionComponent();
 		cp.x = 0;

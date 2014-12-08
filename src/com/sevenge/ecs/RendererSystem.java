@@ -8,8 +8,11 @@ import static android.opengl.GLES20.glBlendFunc;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glEnable;
 
+import com.sevenge.SevenGE;
+import com.sevenge.assets.Font;
 import com.sevenge.assets.TextureRegion;
 import com.sevenge.graphics.Camera2D;
+import com.sevenge.graphics.FontUtils;
 import com.sevenge.graphics.SpriteBatcher;
 
 public class RendererSystem extends System {
@@ -21,10 +24,11 @@ public class RendererSystem extends System {
 	private float[] t = new float[16];
 	private PositionComponent mCameraCP;
 	private CameraComponent mCameraCC;
+	private Font font;
 
 	public RendererSystem (int size) {
 		super(SpriteComponent.MASK | PositionComponent.MASK, size);
-
+		font = (Font)SevenGE.assetManager.getAsset("font");
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -48,6 +52,7 @@ public class RendererSystem extends System {
 			// spriteBatcher.addSprite(t, sprite.texture);
 			spriteBatcher.addSprite(cp.transform, sprite);
 		}
+		FontUtils.draw("This is a text LOL plz work and write this text!", 0, 100, font, spriteBatcher);
 		Camera2D.lookAt(mCameraCP.x * interpolationAlpha + mCameraCP.px * (1 - interpolationAlpha), mCameraCP.y
 			* interpolationAlpha + mCameraCP.py * (1 - interpolationAlpha), mCameraCC.viewMatrix);
 		Camera2D.getVPM(mCameraCC.viewProjectionMatrix, mCameraCC.projectionMatrix, mCameraCC.viewMatrix);

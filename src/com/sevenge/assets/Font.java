@@ -1,16 +1,15 @@
 
 package com.sevenge.assets;
 
-public class Font {
+public class Font extends Asset {
 
 	public int fontPadX;
 	public int fontPadY;
 	public int cellWidth;
 	public int cellHeight;
-	public int scaleY;
-	public int scaleX;
+	public float scaleY = 1.f;
+	public float scaleX = 1.f;
 	public TextureRegion[] charRgn;
-	public int[] charWidths;
-	public int spaceX;
-
+	public float[] charWidths;
+	public float spaceX = 0;
 }

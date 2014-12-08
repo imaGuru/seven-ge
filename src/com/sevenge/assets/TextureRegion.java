@@ -1,7 +1,6 @@
 
 package com.sevenge.assets;
 
-
 /** Responsible for creating vertex and uv data for some region of the specified texture */
 public class TextureRegion extends Asset {
 	public final float[] UVs, vertices;
@@ -23,14 +22,14 @@ public class TextureRegion extends Asset {
 		this.texture = texture.glID;
 
 		float xMin = (float)x / texture.width, xMax = (float)(x + width) / texture.width;
-		float yMin = (float)y / texture.height, yMax = (float)(y + height) / texture.height;
+		float yMax = (float)y / texture.height, yMin = (float)(y + height) / texture.height;
 
-		UVs[0] = xMin;
-		UVs[1] = yMin;
+		UVs[0] = xMax;
+		UVs[1] = yMax;
 		UVs[2] = xMin;
 		UVs[3] = yMax;
-		UVs[4] = xMax;
-		UVs[5] = yMax;
+		UVs[4] = xMin;
+		UVs[5] = yMin;
 		UVs[6] = xMax;
 		UVs[7] = yMin;
 

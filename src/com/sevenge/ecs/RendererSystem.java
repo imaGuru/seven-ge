@@ -51,7 +51,7 @@ public class RendererSystem extends System {
 		}
 		font.scaleX = 4;
 		font.scaleY = 4;
-		FontUtils.draw("This is a physics test! Animated ships are suppposed to fall!", -400, -100, font, spriteBatcher);
+		FontUtils.draw("This is a physics test! Animated ships are suppposed to fall!", -500, -130, font, spriteBatcher);
 		Camera2D.lookAt(mCameraCP.x * interpolationAlpha + mCameraCP.px * (1 - interpolationAlpha), mCameraCP.y
 			* interpolationAlpha + mCameraCP.py * (1 - interpolationAlpha), mCameraCC.viewMatrix);
 		Camera2D.getVPM(mCameraCC.viewProjectionMatrix, mCameraCC.projectionMatrix, mCameraCC.viewMatrix);

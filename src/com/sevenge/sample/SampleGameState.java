@@ -94,7 +94,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 				cs.scale = 1f;
 			} else if (rnd < 0.7f)
 				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_small2");
-			else if (rnd < 0.95f)
+			else if (rnd < 0.75f)
 				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_tiny2");
 			else {
 				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("enemyBlack1");
@@ -138,9 +138,9 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		PhysicsComponent physicsComponent = new PhysicsComponent();
 		PositionComponent positionComponent = new PositionComponent();
 
-		int groundWidth = 1300;
+		int groundWidth = 1100;
 		int groundHeight = 1;
-		int groundX = groundWidth / 2;
+		int groundX = groundWidth / 2 + 140;
 		int groundY = groundHeight / 2;
 
 		positionComponent.x = groundX;
@@ -181,8 +181,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		cc.scale = 0.7f;
 
 		PositionComponent cp = new PositionComponent();
-		cp.x = 0;
-		cp.y = 0;
+		cp.x = 700;
+		cp.y = 650;
 
 		Camera2D.lookAt(cp.x, cp.y, cc.viewMatrix);
 		Camera2D.setOrthoProjection(width / cc.scale, height / cc.scale, cc.projectionMatrix);

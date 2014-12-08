@@ -9,10 +9,10 @@ public class PhysicsSystem extends System {
 	static final float BOX_STEP = 1 / 30f;
 	static final int BOX_VELOCITY_ITERATIONS = 6;
 	static final int BOX_POSITION_ITERATIONS = 2;
-	public static final float WORLD_TO_BOX = 1f;
-	public static final float BOX_TO_WORLD = 1;
+	public static final float WORLD_TO_BOX = 1/10f;
+	public static final float BOX_TO_WORLD = 1/WORLD_TO_BOX;
 
-	private static final Vector2 gravityVector = new Vector2(0, -100);
+	private static final Vector2 gravityVector = new Vector2(0, -10);
 
 	private World world;
 
@@ -45,7 +45,7 @@ public class PhysicsSystem extends System {
 
 			positionComponent.x = BOX_TO_WORLD * physicsComponent.getBody().getPosition().x;
 			positionComponent.y = BOX_TO_WORLD * physicsComponent.getBody().getPosition().y;
-			positionComponent.rotation = (float)Math.toDegrees(physicsComponent.getBody().getAngle());
+			//positionComponent.rotation = (float)Math.toDegrees(physicsComponent.getBody().getAngle());
 
 		}
 	}

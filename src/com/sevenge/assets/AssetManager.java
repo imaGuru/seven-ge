@@ -79,9 +79,9 @@ public class AssetManager {
 	 * @param id string identifying uniquely an asset
 	 * @return requested asset */
 	public Asset getAsset (String id) {
-		
-		if(assets.get(id)==null)// TODO handle missing assets 
-			return null;		//this is for tests only
+
+		if (assets.get(id) == null) // TODO handle missing assets
+			return null; // this is for tests only
 		return assets.get(id);
 	}
 

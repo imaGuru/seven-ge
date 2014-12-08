@@ -1,7 +1,6 @@
 
 package com.sevenge.ecs;
 
-
 public class Entity {
 	public int id;
 	public int mask;

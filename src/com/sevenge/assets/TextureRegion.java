@@ -1,7 +1,6 @@
 
 package com.sevenge.assets;
 
-
 /** Responsible for creating vertex and uv data for some region of the specified texture */
 public class TextureRegion extends Asset {
 	public final float[] UVs, vertices;

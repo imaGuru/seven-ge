@@ -5,6 +5,7 @@ import java.util.Random;
 
 import android.opengl.Matrix;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -279,5 +280,11 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		// Log.d(TAG, "touchMove" + " x : " + x + " , y : " + y + " , pointerid : " + pointer);
 		return false;
 	}
+
+  @Override
+  public boolean onScale(ScaleGestureDetector detector) {
+    // TODO Auto-generated method stub
+    return false;
+  }
 
 }

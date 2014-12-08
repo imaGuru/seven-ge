@@ -2,7 +2,9 @@
 package com.sevenge.ecs;
 
 import android.opengl.Matrix;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 
 import com.sevenge.SevenGE;
 import com.sevenge.graphics.Camera2D;
@@ -91,4 +93,10 @@ public class CameraSystem extends System implements GestureProcessor {
 
 		return false;
 	}
+
+  @Override
+  public boolean onScale(ScaleGestureDetector detector) {
+    Log.d("PINCH", "pinch detected");
+    return false;
+  }
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
@@ -27,6 +28,7 @@ public class Input implements OnTouchListener {
 	TouchHandler touchDetector = new TouchHandler();
 	GestureHandler gestureHandler = new GestureHandler(this);
 	GestureDetectorCompat gestureDetector;
+	ScaleGestureDetector SGD;
 
 	int[] touchX = new int[NUM_TOUCHPOINTS];
 	int[] touchY = new int[NUM_TOUCHPOINTS];
@@ -49,6 +51,7 @@ public class Input implements OnTouchListener {
 
 	public Input (GameActivity ga) {
 		gestureDetector = new GestureDetectorCompat(ga, gestureHandler);
+		SGD = new ScaleGestureDetector(ga, gestureHandler);
 
 // PoolObjectFactory<TouchEvent> touchEventFactory = new PoolObjectFactory<TouchEvent>() {
 // @Override
@@ -90,11 +93,14 @@ public class Input implements OnTouchListener {
 		static final int FLING = 2;
 		static final int SCROLL = 3;
 		static final int LONGPRESS = 4;
+		static final int SCALE = 5;
+		
 
 		int type;
 		MotionEvent motionEvent1, motionEvent2;
 		float distX, distY;
 		float velX, velY;
+		ScaleGestureDetector detector;
 
 	}
 
@@ -103,6 +109,7 @@ public class Input implements OnTouchListener {
 		// synchronized in handler.postTouchEvent()
 		touchDetector.onTouchEvent(event, this);
 		gestureDetector.onTouchEvent(event);
+		SGD.onTouchEvent(event);
 
 		// try {
 		// Thread.sleep(SLEEP_TIME);
@@ -232,6 +239,10 @@ public class Input implements OnTouchListener {
 					for (GestureProcessor gp : gestureProcessors)
 						gp.onSingleTapConfirmed(g.motionEvent1);
 					break;
+	            case Gesture.SCALE:
+	                 for (GestureProcessor gp : gestureProcessors)
+	                     gp.onScale(g.detector);
+	                 break;
 				}
 
 			}

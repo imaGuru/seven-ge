@@ -13,7 +13,7 @@ public class Camera2D {
 	 * @param height of the visible area
 	 * @param projectionMatrix OUT parameter with the orthographic projection matrix */
 	public static void setOrthoProjection (float width, float height, float[] projectionMatrix) {
-		orthoM(projectionMatrix, 0, -width / 2, width / 2, -height / 2, height / 2, 0f, 1f);
+		orthoM(projectionMatrix, 0, -width / 2, width / 2, -height / 2, height / 2, -1f, 1f);
 	}
 
 	/** Creates a view matrix looking at point (x,y) in the last parameter

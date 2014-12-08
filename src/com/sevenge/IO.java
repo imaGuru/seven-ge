@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.util.Log;
 
 /** Utility class providing easy execution of common io task in android file system such as creating moving renaming and opening
@@ -19,6 +20,10 @@ public class IO {
 	// static
 	public static void initialize (Context context) {
 		IO.context = context;
+	}
+
+	public static AssetManager getAssetManager () {
+		return IO.context.getAssets();
 	}
 
 	/** Opens or creates a file residing in internal android storage

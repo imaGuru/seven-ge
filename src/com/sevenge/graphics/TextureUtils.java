@@ -58,4 +58,25 @@ public class TextureUtils {
 		glActiveTexture(textureUnit);
 		glBindTexture(GL_TEXTURE_2D, glID);
 	}
+
+	public static Texture createTexture (Bitmap bitmap) {
+		int[] textureID = new int[1];
+		glGenTextures(1, textureID, 0);
+		if (textureID[0] == 0) {
+			Log.w(TAG, "Could not generate a new OpenGL texture object.");
+			return null;
+		}
+		if (bitmap == null) {
+			Log.w(TAG, "Texture is null.");
+			glDeleteTextures(1, textureID, 0);
+		}
+		glBindTexture(GL_TEXTURE_2D, textureID[0]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
+		bitmap.recycle();
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		return new Texture(textureID[0], bitmap.getWidth(), bitmap.getHeight());
+	}
 }

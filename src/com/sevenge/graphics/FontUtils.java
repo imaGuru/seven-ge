@@ -149,7 +149,7 @@ public class FontUtils {
 			int c = (int)text.charAt(i) - CHAR_START; // Calculate Character Index (Offset by First Char in Font)
 			if (c < 0 || c >= CHAR_CNT) // IF Character Not In Font
 				c = CHAR_UNKNOWN; // Set to Unknown Character Index
-			sb.addSprite(x, y, font.charRgn[c]); // Draw the Character
+			sb.addSprite(x, y, 0, font.scaleX, font.charRgn[c]); // Draw the Character
 			x += (font.charWidths[c] + font.spaceX) * font.scaleX; // Advance X Position by Scaled Character Width
 		}
 	}

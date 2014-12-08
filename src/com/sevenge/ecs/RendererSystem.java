@@ -46,17 +46,15 @@ public class RendererSystem extends System {
 			Entity entity = entities.get(j);
 			PositionComponent cp = (PositionComponent)entity.components[0];
 			SpriteComponent cs = (SpriteComponent)entity.components[1];
-
 			TextureRegion sprite = cs.textureRegion;
-
-			// spriteBatcher.addSprite(t, sprite.texture);
-			spriteBatcher.addSprite(cp.transform, sprite);
+			spriteBatcher.addSprite(cp.x, cp.y, cp.rotation, cs.scale, sprite);
 		}
-		FontUtils.draw("This is a text LOL plz work and write this text!", 0, 100, font, spriteBatcher);
+		font.scaleX = 4;
+		font.scaleY = 4;
+		FontUtils.draw("This is a physics test! Animated ships are suppposed to fall!", -400, -100, font, spriteBatcher);
 		Camera2D.lookAt(mCameraCP.x * interpolationAlpha + mCameraCP.px * (1 - interpolationAlpha), mCameraCP.y
 			* interpolationAlpha + mCameraCP.py * (1 - interpolationAlpha), mCameraCC.viewMatrix);
 		Camera2D.getVPM(mCameraCC.viewProjectionMatrix, mCameraCC.projectionMatrix, mCameraCC.viewMatrix);
-		// Matrix.invertM(mCameraCC.invertedVPMatrix, 0, mCameraCC.viewProjectionMatrix, 0);
 		spriteBatcher.draw(mCameraCC.viewProjectionMatrix);
 	}
 

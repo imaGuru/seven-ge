@@ -137,4 +137,43 @@ public class SpriteBatcher {
 		addSprite(t, sprite.texture);
 
 	}
+
+	public void addSprite (float x, float y, float rotation, float scale, TextureRegion sprite) {
+		uvs = sprite.UVs;
+		v = sprite.vertices;
+
+		Matrix.setIdentityM(transform, 0);
+		Matrix.translateM(transform, 0, x, y, 0f);
+		Matrix.rotateM(transform, 0, rotation, 0f, 0f, -1.0f);
+		Matrix.scaleM(transform, 0, scale, scale, 1);
+		for (int i = 0; i < 4; i++) {
+			temp[0] = v[i * 2];
+			temp[1] = v[i * 2 + 1];
+			temp[2] = 0;
+			temp[3] = 1;
+			// Matrix.multiplyMV(tempr, 0, cp.scaleMatrix, 0, temp, 0);
+			Matrix.multiplyMV(tempr, 0, transform, 0, temp, 0);
+			r[i * 2] = tempr[0];
+			r[i * 2 + 1] = tempr[1];
+		}
+
+		t[0] = r[0];
+		t[1] = r[1];
+		t[2] = uvs[0];
+		t[3] = uvs[1];
+		t[4] = r[2];
+		t[5] = r[3];
+		t[6] = uvs[2];
+		t[7] = uvs[3];
+		t[8] = r[4];
+		t[9] = r[5];
+		t[10] = uvs[4];
+		t[11] = uvs[5];
+		t[12] = r[6];
+		t[13] = r[7];
+		t[14] = uvs[6];
+		t[15] = uvs[7];
+
+		addSprite(t, sprite.texture);
+	}
 }

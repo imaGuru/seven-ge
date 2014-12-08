@@ -31,6 +31,7 @@ import com.sevenge.ecs.PositionComponent;
 import com.sevenge.ecs.RendererSystem;
 import com.sevenge.ecs.ScriptingSystem;
 import com.sevenge.ecs.SpriteComponent;
+import com.sevenge.graphics.Camera2D;
 import com.sevenge.graphics.FontUtils;
 import com.sevenge.input.GestureProcessor;
 import com.sevenge.input.InputProcessor;
@@ -84,8 +85,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
 			cp.rotation = rng.nextFloat() * 360.0f;
-			cp.x = rng.nextFloat() * 1000f;
-			cp.y = rng.nextFloat() * 1000f;
+			cp.x = rng.nextFloat() * 1400f;
+			cp.y = rng.nextFloat() * 1400f;
 			cs.scale = 1.0f;
 			float rnd = rng.nextFloat();
 			if (rnd < 0.5f) {
@@ -107,11 +108,11 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 				bodyDef.position.set(PhysicsSystem.WORLD_TO_BOX * cp.x, PhysicsSystem.WORLD_TO_BOX * cp.y);
 				Body body = physicsSystem.getWorld().createBody(bodyDef);
 				CircleShape dynamicCircle = new CircleShape();
-				dynamicCircle.setRadius(cs.textureRegion.height / 2);
+				dynamicCircle.setRadius(cs.textureRegion.height / 2 * PhysicsSystem.WORLD_TO_BOX);
 				FixtureDef fixtureDef = new FixtureDef();
 				fixtureDef.shape = dynamicCircle;
 				fixtureDef.density = 2.0f;
-				fixtureDef.friction = 0.2f;
+				fixtureDef.friction = 0.5f;
 				fixtureDef.restitution = 0.5f;
 				body.createFixture(fixtureDef);
 				physicsComponent.setBody(body);
@@ -133,6 +134,36 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			entity.addComponent(cs, 1);
 
 		}
+		Entity e = mEM.createEntity(components, 0);
+		PhysicsComponent physicsComponent = new PhysicsComponent();
+		PositionComponent positionComponent = new PositionComponent();
+
+		int groundWidth = 1300;
+		int groundHeight = 1;
+		int groundX = groundWidth / 2;
+		int groundY = groundHeight / 2;
+
+		positionComponent.x = groundX;
+		positionComponent.y = groundY;
+
+		groundX *= PhysicsSystem.WORLD_TO_BOX;
+		groundY *= PhysicsSystem.WORLD_TO_BOX;
+		groundWidth *= PhysicsSystem.WORLD_TO_BOX;
+		groundHeight *= PhysicsSystem.WORLD_TO_BOX;
+
+		BodyDef groundBodyDef = new BodyDef();
+		groundBodyDef.position.set(new Vector2(groundX, groundY));
+		Body groundBody = physicsSystem.getWorld().createBody(groundBodyDef);
+		PolygonShape groundBox = new PolygonShape();
+		groundBox.setAsBox(groundWidth, groundHeight);
+		groundBody.createFixture(groundBox, 0.0f);
+
+		physicsComponent.setBody(groundBody);
+
+		e.addComponent(positionComponent, 0);
+		// e.addComponent(spriteComponent, 1);
+		e.addComponent(physicsComponent, 4);
+
 		mEM.assignEntities();
 
 		music = (Music)SevenGE.assetManager.getAsset("music1");
@@ -147,95 +178,23 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		CameraComponent cc = new CameraComponent();
 		cc.height = height;
 		cc.width = width;
-		cc.scale = 1.5f;
+		cc.scale = 0.7f;
 
 		PositionComponent cp = new PositionComponent();
 		cp.x = 0;
 		cp.y = 0;
-		Matrix.setLookAtM(cc.viewMatrix, 0, cp.x, cp.y, 1f, cp.x, cp.y, 0f, 0f, 1.0f, 0.0f);
-		Matrix.orthoM(cc.projectionMatrix, 0, -width / cc.scale / 2, width / cc.scale / 2, -height / cc.scale / 2, height
-			/ cc.scale / 2, 0f, 1f);
-		Matrix.multiplyMM(cc.viewProjectionMatrix, 0, cc.projectionMatrix, 0, cc.viewMatrix, 0);
+
+		Camera2D.lookAt(cp.x, cp.y, cc.viewMatrix);
+		Camera2D.setOrthoProjection(width / cc.scale, height / cc.scale, cc.projectionMatrix);
+		Camera2D.getVPM(cc.viewProjectionMatrix, cc.projectionMatrix, cc.viewMatrix);
 		Matrix.invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
 
 		Entity camera = mEM.createEntity(components, 0);
 		camera.addComponent(cc, 2);
 		camera.addComponent(cp, 0);
+
 		cameraSystem.setCamera(camera);
 		rendererSystem.setCamera(camera);
-
-		for (int i = 0; i < 4; i++) {
-
-			Entity e = mEM.createEntity(components, 0);
-			PhysicsComponent physicsComponent = new PhysicsComponent();
-			PositionComponent positionComponent = new PositionComponent();
-			SpriteComponent spriteComponent = new SpriteComponent();
-
-			spriteComponent.scale = 1.0f;
-			spriteComponent.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("buttonRed");
-
-			int groundX = 0;
-			int groundY = 0;
-			int groundWidth = 0;
-			int groundHeight = 0;
-
-// if (i == 0) {
-// groundX = 500;
-// groundY = 0;
-// groundWidth = 1000;
-// groundHeight = 1;
-//
-// } else if (i == 1) {
-//
-// groundX = 500;
-// groundY = 1000;
-// groundWidth = 1000;
-// groundHeight = 1;
-//
-//
-//
-// } else if (i == 2) {
-//
-// groundX = 0;
-// groundY = 500;
-// groundWidth = 1;
-// groundHeight = 1000;
-//
-// } else if (i == 3) {
-//
-// groundX = 1000;
-// groundY = 500;
-// groundWidth = 1;
-// groundHeight = 1000;
-//
-//
-// }
-
-			positionComponent.x = groundX;
-			positionComponent.y = groundY;
-
-			groundX *= PhysicsSystem.WORLD_TO_BOX;
-			groundY *= PhysicsSystem.WORLD_TO_BOX;
-			groundWidth *= PhysicsSystem.WORLD_TO_BOX;
-			groundHeight *= PhysicsSystem.WORLD_TO_BOX;
-
-			BodyDef groundBodyDef = new BodyDef();
-			groundBodyDef.position.set(new Vector2(groundX, groundY));
-			Body groundBody = physicsSystem.getWorld().createBody(groundBodyDef);
-			PolygonShape groundBox = new PolygonShape();
-			groundBox.setAsBox(groundWidth / 2, groundHeight / 2);
-			groundBody.createFixture(groundBox, 0.0f);
-
-			physicsComponent.setBody(groundBody);
-
-			e.addComponent(positionComponent, 0);
-			e.addComponent(spriteComponent, 1);
-			e.addComponent(physicsComponent, 4);
-
-		}
-
-		mEM.assignEntities();
-
 	}
 
 	@Override

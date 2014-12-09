@@ -9,6 +9,9 @@ public class FixedArray<T> {
 	private int mCount;
 	private Comparator<T> mComparator;
 
+	/** Creates gameloop friendly collection without costly allocations
+	 * @param size of the container
+	 * @param comparator for finding and sorting elements */
 	@SuppressWarnings("unchecked")
 	public FixedArray (int size, Comparator<T> comparator) {
 		super();
@@ -17,6 +20,8 @@ public class FixedArray<T> {
 		mComparator = comparator;
 	}
 
+	/** Adds element to collection
+	 * @param object to add */
 	public final void add (T object) {
 		if (mCount < mArray.length) {
 			mArray[mCount] = object;
@@ -24,13 +29,18 @@ public class FixedArray<T> {
 		}
 	}
 
+	/** Removes element from collection and shifts remaining elements to fill the gap
+	 * @param object to remove */
 	public final void remove (T object) {
+		// changeme
 		if (mCount < mArray.length) {
 			mArray[mCount] = object;
 			mCount++;
 		}
 	}
 
+	/** Removes element with specified index from collection and shifts remaining elements to fill the gap
+	 * @param index of the object to remove */
 	public void remove (int index) {
 		if (index < mCount) {
 			for (int x = index; x < mCount; x++) {
@@ -44,6 +54,7 @@ public class FixedArray<T> {
 		}
 	}
 
+	/** Removes all elements from this collection */
 	public void clear () {
 		for (int x = 0; x < mCount; x++) {
 			mArray[x] = null;
@@ -51,6 +62,9 @@ public class FixedArray<T> {
 		mCount = 0;
 	}
 
+	/** Retrieves element with given index
+	 * @param index of the object to retrieve
+	 * @return stored object */
 	public T get (int index) {
 		T result = null;
 		if (index < mCount && index >= 0) {
@@ -59,14 +73,22 @@ public class FixedArray<T> {
 		return result;
 	}
 
+	/** Returns the current size of the collection
+	 * @return count of elements contained */
 	public int getCount () {
 		return mCount;
 	}
 
+	/** Returns the capacity of this collection
+	 * @return maximum count of elements that can be store in this array */
 	public int getCapacity () {
 		return mArray.length;
 	}
 
+	/** Finds the specified object in the array
+	 * @param object to find
+	 * @param ignoreComparator whether to use comparator or not
+	 * @return index of the object if found and -1 otherwise */
 	public int find (T object, boolean ignoreComparator) {
 		int index = -1;
 		final int count = mCount;

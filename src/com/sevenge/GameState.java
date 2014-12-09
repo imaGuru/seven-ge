@@ -13,7 +13,8 @@ public abstract class GameState {
 	/** Handles destruction and cleanup of the game state */
 	public abstract void dispose ();
 
-	/** Handles all drawing by the game state */
+	/** Handles all drawing by the game state
+	 * @param interpolationAlpha interpolation variable telling us how much to draw of the current state */
 	public abstract void draw (float interpolationAlpha);
 
 	/** Handles all game logic updates of the game state */

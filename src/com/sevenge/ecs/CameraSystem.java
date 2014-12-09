@@ -2,7 +2,6 @@
 package com.sevenge.ecs;
 
 import android.opengl.Matrix;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
@@ -94,9 +93,27 @@ public class CameraSystem extends System implements GestureProcessor {
 		return false;
 	}
 
-  @Override
-  public boolean onScale(ScaleGestureDetector detector) {
-    Log.d("PINCH", "pinch detected");
-    return false;
-  }
+	@Override
+	public boolean onScale (ScaleGestureDetector detector) {
+		CameraComponent cc = (CameraComponent)camera.components[2];
+		float scale;
+		float fx = detector.getCurrentSpanX();
+		float fy = detector.getCurrentSpanY();
+		Camera2D.unproject((int)(fx), (int)(fy), cc.width, cc.height, devCoords, cc.invertedVPMatrix, coords);
+		float x1 = coords[0];
+		float y1 = coords[1];
+		fx = detector.getPreviousSpanX();
+		fy = detector.getPreviousSpanY();
+		Camera2D.unproject((int)(fx), (int)(fy), cc.width, cc.height, devCoords, cc.invertedVPMatrix, coords);
+		float x2 = coords[0];
+		float y2 = coords[1];
+		scale = (float)(Math.sqrt(x1 * x1 + y1 * y1) / Math.sqrt(x2 * x2 + y2 * y2));
+		// Don't let the object get too small or too large.
+		cc.scale = Math.max(0.1f, Math.min(cc.scale * detector.getScaleFactor(), 10.0f));
+		// Log.d("PINCH", "pinch detected " + cc.scale);
+		Camera2D.setOrthoProjection(cc.width / cc.scale, cc.height / cc.scale, cc.projectionMatrix);
+		Camera2D.getVPM(cc.viewProjectionMatrix, cc.projectionMatrix, cc.viewMatrix);
+		Matrix.invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
+		return false;
+	}
 }

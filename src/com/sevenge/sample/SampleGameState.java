@@ -169,7 +169,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		music = (Music)SevenGE.assetManager.getAsset("music1");
 		music.setLooping(true);
-		// music.play();
+		music.play();
 
 	}
 
@@ -229,7 +229,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void resume () {
-		// music.play();
+		music.play();
 
 	}
 
@@ -281,10 +281,10 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		return false;
 	}
 
-  @Override
-  public boolean onScale(ScaleGestureDetector detector) {
-    // TODO Auto-generated method stub
-    return false;
-  }
+	@Override
+	public boolean onScale (ScaleGestureDetector detector) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

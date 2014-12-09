@@ -49,6 +49,10 @@ public class ShaderUtils {
 		return shaderObjectId;
 	}
 
+	/** Links given vertex shader and fragment shader into an OpenGL shaderProgram
+	 * @param vs OpenGL id of vertexShader
+	 * @param fs OpenGL id of fragmentShader
+	 * @return OpenGL id of compiled shaderProgram */
 	public static int linkShaderProgram (int vs, int fs) {
 		int programID = glCreateProgram();
 		if (programID == 0) {
@@ -68,6 +72,9 @@ public class ShaderUtils {
 		return programID;
 	}
 
+	/** Validates whether compilation of given OpenGL shaderProgram completed successfully
+	 * @param programID
+	 * @return */
 	public static boolean validateProgram (int programID) {
 		glValidateProgram(programID);
 		final int[] validateStatus = new int[1];

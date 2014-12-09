@@ -56,6 +56,7 @@ public class SpriteBatcher {
 		}
 	}
 
+	/** Removes content of all batches */
 	public void clear () {
 		for (int i = 0; i < usedBatches + 1; i++) {
 			batches[i].clear();
@@ -138,6 +139,12 @@ public class SpriteBatcher {
 
 	}
 
+	/** Adds the sprite in the specified world x, y location and with specified rotation and scale
+	 * @param x world coordinate
+	 * @param y world coordinate
+	 * @param rotation of the sprite
+	 * @param scale of the sprite
+	 * @param sprite to draw */
 	public void addSprite (float x, float y, float rotation, float scale, TextureRegion sprite) {
 		uvs = sprite.UVs;
 		v = sprite.vertices;

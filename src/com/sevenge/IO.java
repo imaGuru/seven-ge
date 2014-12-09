@@ -17,11 +17,12 @@ import android.util.Log;
 public class IO {
 	private static Context context = null;
 
-	// static
+	/** Initializes IO with context of app activity. Has to be called before use */
 	public static void initialize (Context context) {
 		IO.context = context;
 	}
 
+	/** Returns android asset manager of the current app */
 	public static AssetManager getAssetManager () {
 		return IO.context.getAssets();
 	}

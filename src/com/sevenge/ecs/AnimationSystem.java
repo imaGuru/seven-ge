@@ -1,7 +1,7 @@
 
 package com.sevenge.ecs;
 
-import com.sevenge.GameActivity;
+import com.sevenge.SevenGE;
 
 public class AnimationSystem extends System {
 	private int i;
@@ -19,7 +19,7 @@ public class AnimationSystem extends System {
 			if (ca.isPlaying) {
 				SpriteComponent cs = (SpriteComponent)entity.components[1];
 				ca.currentFrameTick++;
-				if (ca.currentFrameTick * GameActivity.FRAME_TIME > ca.durations[ca.currentFrame]) {
+				if (ca.currentFrameTick * SevenGE.FRAME_TIME > ca.durations[ca.currentFrame]) {
 					ca.currentFrame = (ca.currentFrame + 1) % ca.durations.length;
 					ca.currentFrameTick = 1;
 					cs.textureRegion = ca.frameList[ca.currentFrame];

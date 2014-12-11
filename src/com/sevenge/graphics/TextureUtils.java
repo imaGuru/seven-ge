@@ -20,7 +20,7 @@ import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
 
 import com.sevenge.assets.Texture;
-import com.sevenge.utils.Log;
+import com.sevenge.utils.DebugLog;
 
 /** Responsible for loading and using textures in opengl */
 public class TextureUtils {
@@ -32,14 +32,14 @@ public class TextureUtils {
 		int[] textureID = new int[1];
 		glGenTextures(1, textureID, 0);
 		if (textureID[0] == 0) {
-			Log.w(TAG, "Could not generate a new OpenGL texture object.");
+			DebugLog.w(TAG, "Could not generate a new OpenGL texture object.");
 			return null;
 		}
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inScaled = false;
 		final Bitmap bitmap = BitmapFactory.decodeStream(in, null, options);
 		if (bitmap == null) {
-			Log.w(TAG, "Texture could not be decoded.");
+			DebugLog.w(TAG, "Texture could not be decoded.");
 			glDeleteTextures(1, textureID, 0);
 		}
 		glBindTexture(GL_TEXTURE_2D, textureID[0]);
@@ -63,11 +63,11 @@ public class TextureUtils {
 		int[] textureID = new int[1];
 		glGenTextures(1, textureID, 0);
 		if (textureID[0] == 0) {
-			Log.w(TAG, "Could not generate a new OpenGL texture object.");
+			DebugLog.w(TAG, "Could not generate a new OpenGL texture object.");
 			return null;
 		}
 		if (bitmap == null) {
-			Log.w(TAG, "Texture is null.");
+			DebugLog.w(TAG, "Texture is null.");
 			glDeleteTextures(1, textureID, 0);
 		}
 		glBindTexture(GL_TEXTURE_2D, textureID[0]);

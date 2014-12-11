@@ -3,16 +3,12 @@ package com.sevenge.input;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.support.v4.view.GestureDetectorCompat;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.View.OnTouchListener;
-
-import com.sevenge.GameActivity;
-import com.sevenge.utils.Pool;
-import com.sevenge.utils.Pool.PoolObjectFactory;
 
 public class Input implements OnTouchListener {
 
@@ -49,9 +45,9 @@ public class Input implements OnTouchListener {
 // Pool<TouchEvent> touchEventPool;
 // Pool<Gesture> gesturePool;
 
-	public Input (GameActivity ga) {
-		gestureDetector = new GestureDetectorCompat(ga, gestureHandler);
-		SGD = new ScaleGestureDetector(ga, gestureHandler);
+	public Input (Activity activity) {
+		gestureDetector = new GestureDetectorCompat(activity, gestureHandler);
+		SGD = new ScaleGestureDetector(activity, gestureHandler);
 
 // PoolObjectFactory<TouchEvent> touchEventFactory = new PoolObjectFactory<TouchEvent>() {
 // @Override
@@ -94,7 +90,6 @@ public class Input implements OnTouchListener {
 		static final int SCROLL = 3;
 		static final int LONGPRESS = 4;
 		static final int SCALE = 5;
-		
 
 		int type;
 		MotionEvent motionEvent1, motionEvent2;
@@ -239,10 +234,10 @@ public class Input implements OnTouchListener {
 					for (GestureProcessor gp : gestureProcessors)
 						gp.onSingleTapConfirmed(g.motionEvent1);
 					break;
-	            case Gesture.SCALE:
-	                 for (GestureProcessor gp : gestureProcessors)
-	                     gp.onScale(g.detector);
-	                 break;
+				case Gesture.SCALE:
+					for (GestureProcessor gp : gestureProcessors)
+						gp.onScale(g.detector);
+					break;
 				}
 
 			}

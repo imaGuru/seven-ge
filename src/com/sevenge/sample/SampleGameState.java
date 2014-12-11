@@ -13,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.sevenge.GameActivity;
 import com.sevenge.GameState;
 import com.sevenge.IO;
 import com.sevenge.SevenGE;
@@ -58,9 +57,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	private int counter = 0;
 
-	public SampleGameState (GameActivity gameActivity) {
-		super(gameActivity);
-
+	public SampleGameState () {
 		SevenGE.input.addInputProcessor(this);
 		SevenGE.input.addGestureProcessor(this);
 

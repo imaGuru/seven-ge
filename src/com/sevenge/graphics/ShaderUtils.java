@@ -18,7 +18,7 @@ import static android.opengl.GLES20.glLinkProgram;
 import static android.opengl.GLES20.glShaderSource;
 import static android.opengl.GLES20.glValidateProgram;
 
-import com.sevenge.utils.Log;
+import com.sevenge.utils.DebugLog;
 
 /** Class creating opengl shader and holding reference to opengl object */
 public class ShaderUtils {
@@ -30,7 +30,7 @@ public class ShaderUtils {
 	public static int compileShader (String shaderCode, int type) {
 		int shaderObjectId = glCreateShader(type);
 		if (shaderObjectId == 0) {
-			Log.w(TAG, "Could not create new shader.");
+			DebugLog.w(TAG, "Could not create new shader.");
 			return shaderObjectId;
 		}
 		glShaderSource(shaderObjectId, shaderCode);
@@ -38,12 +38,12 @@ public class ShaderUtils {
 
 		final int[] compileStatus = new int[1];
 		glGetShaderiv(shaderObjectId, GL_COMPILE_STATUS, compileStatus, 0);
-		Log.v(TAG, "Results of compiling source:" + "\n" + shaderCode + "\n:" + glGetShaderInfoLog(shaderObjectId));
+		DebugLog.v(TAG, "Results of compiling source:" + "\n" + shaderCode + "\n:" + glGetShaderInfoLog(shaderObjectId));
 		if (compileStatus[0] == 0) {
 			// If it failed, delete the shader object.
 			glDeleteShader(shaderObjectId);
 			shaderObjectId = 0;
-			Log.w(TAG, "Compilation of shader failed.");
+			DebugLog.w(TAG, "Compilation of shader failed.");
 			return shaderObjectId;
 		}
 		return shaderObjectId;
@@ -56,18 +56,18 @@ public class ShaderUtils {
 	public static int linkShaderProgram (int vs, int fs) {
 		int programID = glCreateProgram();
 		if (programID == 0) {
-			Log.w(TAG, "Could not create new program");
+			DebugLog.w(TAG, "Could not create new program");
 		}
 		glAttachShader(programID, vs);
 		glAttachShader(programID, fs);
 		glLinkProgram(programID);
 		final int[] linkStatus = new int[1];
 		glGetProgramiv(programID, GL_LINK_STATUS, linkStatus, 0);
-		Log.v(TAG, "Results of linking program:\n" + glGetProgramInfoLog(programID));
+		DebugLog.v(TAG, "Results of linking program:\n" + glGetProgramInfoLog(programID));
 		if (linkStatus[0] == 0) {
 			// If it failed, delete the program object.
 			glDeleteProgram(programID);
-			Log.w(TAG, "Linking of program failed.");
+			DebugLog.w(TAG, "Linking of program failed.");
 		}
 		return programID;
 	}
@@ -79,7 +79,7 @@ public class ShaderUtils {
 		glValidateProgram(programID);
 		final int[] validateStatus = new int[1];
 		glGetProgramiv(programID, GL_VALIDATE_STATUS, validateStatus, 0);
-		Log.v(TAG, "Results of validating program: " + validateStatus[0] + "\nLog:" + glGetProgramInfoLog(programID));
+		DebugLog.v(TAG, "Results of validating program: " + validateStatus[0] + "\nLog:" + glGetProgramInfoLog(programID));
 		return validateStatus[0] != 0;
 	}
 }

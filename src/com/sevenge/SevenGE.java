@@ -23,7 +23,7 @@ import com.sevenge.utils.DebugLog;
 
 /** Class exposing game engine subsystems anywhere in the code. */
 public class SevenGE implements Renderer {
-	private static final String TAG = "GameEnginee";
+	private static final String TAG = "GameEngine";
 	public static Input input;
 	public static Audio audio;
 	public static AssetManager assetManager;
@@ -144,7 +144,8 @@ public class SevenGE implements Renderer {
 	@Override
 	public void onSurfaceChanged (GL10 gl, int width, int height) {
 		DebugLog.d(TAG, "onSurfaceChanged");
-
+		// Double calls. fix this
+		// Also loading resources add load method to gamestate TODO
 		synchronized (stateChanged) {
 			// TODO gamestate manager
 			if (state == GLGameState.Initialized) SevenGE.stateManager.setCurrentState(new SampleGameState());

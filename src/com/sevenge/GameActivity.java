@@ -5,9 +5,7 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.view.MotionEvent;
 
-import com.engine.sevenge.R;
 import com.sevenge.utils.DebugLog;
 
 /** Class responsible for setting up and running the game engine It contains framelimited game loop and necessary handles for
@@ -27,13 +25,6 @@ public class GameActivity extends Activity {
 		glSurfaceView = (GLSurfaceView)findViewById(R.id.glSurfaceView);
 		gameEngine = new SevenGE(this, glSurfaceView);
 
-	}
-
-	/** Gather input events and recognize simple touch events */
-	@Override
-	public boolean onTouchEvent (MotionEvent event) {
-
-		return false;
 	}
 
 	/** Handles pausing the game engine */

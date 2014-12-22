@@ -16,6 +16,6 @@ public interface GestureProcessor {
 
 	public boolean onScroll (MotionEvent arg0, MotionEvent arg1, float arg2, float arg3);
 
-    public boolean onScale(ScaleGestureDetector detector);
+	public boolean onScale (ScaleGestureDetector detector);
 
 }

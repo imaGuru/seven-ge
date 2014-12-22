@@ -12,19 +12,19 @@ import com.naef.jnlua.LuaType;
 import com.naef.jnlua.NamedJavaFunction;
 import com.sevenge.IO;
 
-public class ScriptingSystem extends System {
-	private LuaState luaState;
+public class ScriptingSystem extends SubSystem {
+	private LuaState mLuaState;
 
 	public ScriptingSystem () {
 		super(16, 0);
-		luaState = new LuaState();
-		luaState.openLibs();
-		luaState.register("simplelol", new NamedJavaFunction[] {new DebugLog()}, true);
+		mLuaState = new LuaState();
+		mLuaState.openLibs();
+		mLuaState.register("simplelol", new NamedJavaFunction[] {new DebugLog()}, true);
 		try {
-			luaState.load(IO.openAsset("Scripts/main.lua"), "=main", "t");
+			mLuaState.load(IO.openAsset("Scripts/main.lua"), "=main", "t");
 
 			// Evaluate the chunk, thus defining the function
-			luaState.call(0, 0); // No arguments, no returns
+			mLuaState.call(0, 0); // No arguments, no returns
 
 		} catch (LuaSyntaxException e) {
 			Log.e("SCRIPTS", e.getMessage());
@@ -38,27 +38,21 @@ public class ScriptingSystem extends System {
 	public void process () {
 		// Prepare a function call
 		try {
-			luaState.getGlobal("wakeUpWaitingThreads"); // Push the function on the stack //
-			luaState.pushInteger(1);
-			luaState.call(1, 0); // 1 arguments, 0 return
+			mLuaState.getGlobal("wakeUpWaitingThreads"); // Push the function on the stack //
+			mLuaState.pushInteger(1);
+			mLuaState.call(1, 0); // 1 arguments, 0 return
 		} catch (LuaRuntimeException e) {
 			Log.e("SCRIPTS", e.getLocalizedMessage());
 			e.printLuaStackTrace();
 		}
 	}
 
-	@Override
-	public void handleMessage (Message m, Entity e) {
-		// TODO Auto-generated method stub
-
-	}
-
 	@SuppressWarnings("unused")
 	private void stackDump () {
 		int i;
-		int top = luaState.getTop();
+		int top = mLuaState.getTop();
 		for (i = 1; i <= top; i++) {
-			LuaType t = luaState.type(i);
+			LuaType t = mLuaState.type(i);
 			Log.d("SCRIPT", t.displayText());
 		}
 	}

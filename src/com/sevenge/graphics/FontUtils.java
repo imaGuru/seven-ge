@@ -139,21 +139,6 @@ public class FontUtils {
 		return font;
 	}
 
-	public static void draw (String text, float x, float y, Font font, SpriteBatcher sb) {
-		float chrHeight = font.cellHeight * font.scaleY; // Calculate Scaled Character Height
-		float chrWidth = font.cellWidth * font.scaleX; // Calculate Scaled Character Width
-		int len = text.length(); // Get String Length
-		x += (chrWidth / 2.0f) - (font.fontPadX * font.scaleX); // Adjust Start X
-		y += (chrHeight / 2.0f) - (font.fontPadY * font.scaleY); // Adjust Start Y
-		for (int i = 0; i < len; i++) { // FOR Each Character in String
-			int c = (int)text.charAt(i) - CHAR_START; // Calculate Character Index (Offset by First Char in Font)
-			if (c < 0 || c >= CHAR_CNT) // IF Character Not In Font
-				c = CHAR_UNKNOWN; // Set to Unknown Character Index
-			sb.addSprite(x, y, 0, font.scaleX, font.charRgn[c]); // Draw the Character
-			x += (font.charWidths[c] + font.spaceX) * font.scaleX; // Advance X Position by Scaled Character Width
-		}
-	}
-
 	public static float getLength (String text, Font font) {
 		float len = 0.0f; // Working Length
 		int strLen = text.length(); // Get String Length (Characters)

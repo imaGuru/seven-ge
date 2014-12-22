@@ -11,37 +11,37 @@ import java.nio.FloatBuffer;
 
 /** Responsible for holding vertex data and exposing it to the GPU */
 public class VertexArray {
-	private FloatBuffer floatBuffer;
+	private FloatBuffer mFloatBuffer;
 	private static final int BYTES_PER_FLOAT = 4;
-	private int actualSize = 0;
+	private int mActualSize = 0;
 
 	/** Creates new vertex array object with specified data
 	 * @param vertices */
 	public VertexArray (int size) {
-		floatBuffer = ByteBuffer.allocateDirect(size * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		mFloatBuffer = ByteBuffer.allocateDirect(size * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
 	}
 
 	public void clear () {
-		floatBuffer.rewind();
-		actualSize = 0;
+		mFloatBuffer.rewind();
+		mActualSize = 0;
 	}
 
 	/** Put data at the end of vertex array
 	 * @param vertexData */
 	public void put (float[] vertexData, int length) {
-		floatBuffer.position(actualSize);
-		floatBuffer.put(vertexData, 0, length);
-		actualSize += length;
+		mFloatBuffer.position(mActualSize);
+		mFloatBuffer.put(vertexData, 0, length);
+		mActualSize += length;
 	}
 
 	public void put (FloatBuffer fb) {
-		floatBuffer.position(actualSize);
-		floatBuffer.put(fb);
-		actualSize = floatBuffer.position();
+		mFloatBuffer.position(mActualSize);
+		mFloatBuffer.put(fb);
+		mActualSize = mFloatBuffer.position();
 	}
 
 	public int size () {
-		return actualSize;
+		return mActualSize;
 	}
 
 	/** Attribute location setting
@@ -50,8 +50,8 @@ public class VertexArray {
 	 * @param componentCount size of the single data
 	 * @param stride number of indices to skip for next part of data */
 	public void setVertexAttribPointer (int dataOffset, int attributeLocation, int componentCount, int stride) {
-		floatBuffer.position(dataOffset);
-		glVertexAttribPointer(attributeLocation, componentCount, GL_FLOAT, false, stride, floatBuffer);
+		mFloatBuffer.position(dataOffset);
+		glVertexAttribPointer(attributeLocation, componentCount, GL_FLOAT, false, stride, mFloatBuffer);
 		glEnableVertexAttribArray(attributeLocation);
 	}
 }

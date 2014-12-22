@@ -38,7 +38,7 @@ import com.sevenge.input.InputProcessor;
 
 public class SampleGameState extends GameState implements InputProcessor, GestureProcessor {
 
-	private final String TAG = "SampleGameState";
+	private static final String TAG = "SampleGameState";
 
 	private EntityManager mEM;
 	private Component[] components = new Component[10];
@@ -71,11 +71,11 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		physicsSystem = new PhysicsSystem(200);
 
 		mEM = new EntityManager(300, 10);
-		mEM.addSystem(rendererSystem);
-		mEM.addSystem(animationSystem);
-		mEM.addSystem(cameraSystem);
-		mEM.addSystem(scriptingSystem);
-		mEM.addSystem(physicsSystem);
+		mEM.registerSystem(rendererSystem);
+		mEM.registerSystem(animationSystem);
+		mEM.registerSystem(cameraSystem);
+		mEM.registerSystem(scriptingSystem);
+		mEM.registerSystem(physicsSystem);
 
 		Random rng = new Random();
 		for (int i = 0; i < 150; i++) {
@@ -176,6 +176,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		CameraComponent cc = new CameraComponent();
 		cc.height = height;
 		cc.width = width;
+		cc.scaledHeight = height;
+		cc.scaledWidth = width;
 		cc.scale = 0.7f;
 
 		PositionComponent cp = new PositionComponent();
@@ -206,6 +208,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			scriptingSystem.process();
 		}
 		counter++;
+		mEM.assignEntities();
 	}
 
 	@Override

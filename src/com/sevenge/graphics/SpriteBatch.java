@@ -14,19 +14,19 @@ import java.nio.ShortBuffer;
 public class SpriteBatch {
 
 	/** Texture with sprites */
-	public int texture;
+	public int mTexture;
 	/** VertexArray Object containing sprite locations in the world */
-	private VertexArray vertexArray;
+	private VertexArray mVertexArray;
 	/** IndexBuffer Object containing face definitions */
-	private ShortBuffer indexBuffer;
+	private ShortBuffer mIndexBuffer;
 	/** Shader program used to texture the sprites */
-	public TextureShaderProgram program;
+	public TextureShaderProgram mProgram;
 	/** Face indices data */
-	private short[] indices;
-	private float[] sprites;
+	private short[] mIndices;
+	private float[] mSprites;
 
-	private int spriteCount = 0, i = 0, size = 0;
-	private int indexOffset, vertexOffset;
+	private int mSpriteCount = 0, mSize = 0;
+	private int mIndexOffset, mVertexOffset;
 
 	private static final int POSITION_COMPONENT_COUNT = 2;
 	private static final int TEXTURE_COORDINATES_COMPONENT_COUNT = 2;
@@ -47,57 +47,60 @@ public class SpriteBatch {
 	 * @param spriteShader shader to be used
 	 * @param size hint number of sprites */
 	public SpriteBatch (int tex2D, TextureShaderProgram spriteShader, int size) {
-		texture = tex2D;
-		program = spriteShader;
-		this.size = size;
-		indices = new short[size * INDICES_PER_SPRITE];
-		sprites = new float[size * VERTICES_PER_SPRITE * (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT)];
-		vertexArray = new VertexArray(size * (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT) * VERTICES_PER_SPRITE);
+		mTexture = tex2D;
+		mProgram = spriteShader;
+		this.mSize = size;
+		mIndices = new short[size * INDICES_PER_SPRITE];
+		mSprites = new float[size * VERTICES_PER_SPRITE * (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT)];
+		mVertexArray = new VertexArray(size * (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT)
+			* VERTICES_PER_SPRITE);
 		generateIndices();
 
 	}
 
 	private void generateIndices () {
-		for (i = 0; i < size; i++) {
-			indexOffset = i * INDICES_PER_SPRITE;
-			vertexOffset = i * VERTICES_PER_SPRITE;
-			indices[indexOffset] = (short)vertexOffset;
-			indices[indexOffset + 1] = (short)(vertexOffset + 1);
-			indices[indexOffset + 2] = (short)(vertexOffset + 2);
-			indices[indexOffset + 3] = (short)(vertexOffset);
-			indices[indexOffset + 4] = (short)(vertexOffset + 2);
-			indices[indexOffset + 5] = (short)(vertexOffset + 3);
-			indexBuffer = ByteBuffer.allocateDirect(size * INDICES_PER_SPRITE * BYTES_PER_SHORT).order(ByteOrder.nativeOrder())
+		for (int i = 0; i < mSize; i++) {
+			mIndexOffset = i * INDICES_PER_SPRITE;
+			mVertexOffset = i * VERTICES_PER_SPRITE;
+			mIndices[mIndexOffset] = (short)mVertexOffset;
+			mIndices[mIndexOffset + 1] = (short)(mVertexOffset + 1);
+			mIndices[mIndexOffset + 2] = (short)(mVertexOffset + 2);
+			mIndices[mIndexOffset + 3] = (short)(mVertexOffset);
+			mIndices[mIndexOffset + 4] = (short)(mVertexOffset + 2);
+			mIndices[mIndexOffset + 5] = (short)(mVertexOffset + 3);
+			mIndexBuffer = ByteBuffer.allocateDirect(mSize * INDICES_PER_SPRITE * BYTES_PER_SHORT).order(ByteOrder.nativeOrder())
 				.asShortBuffer();
-			indexBuffer.put(indices, 0, size * INDICES_PER_SPRITE);
-			indexBuffer.position(0);
+			mIndexBuffer.put(mIndices, 0, mSize * INDICES_PER_SPRITE);
+			mIndexBuffer.position(0);
 		}
 	}
 
 	/** Add sprite opengl data
 	 * @param vertexData locations of 4 vertices with uv coordinates */
 	public void add (float[] vertexData) {
-		System.arraycopy(vertexData, 0, sprites, spriteCount * VERTICES_PER_SPRITE
+		System.arraycopy(vertexData, 0, mSprites, mSpriteCount * VERTICES_PER_SPRITE
 			* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT), vertexData.length);
-		spriteCount++;
+		mSpriteCount++;
 	}
 
 	/** Remove every sprite from the batch */
 	public void clear () {
-		vertexArray.clear();
-		spriteCount = 0;
+		mVertexArray.clear();
+		mSpriteCount = 0;
+	}
+
+	public void toNative () {
+		mVertexArray.put(mSprites, mSpriteCount * VERTICES_PER_SPRITE
+			* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT));
 	}
 
 	/** Draw this spritebatch using specified view projection matrix */
 	public void draw (float[] vpMatrix) {
-		vertexArray.put(sprites, spriteCount * VERTICES_PER_SPRITE
-			* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT));
-
-		glUseProgram(program.glID);
-		program.setUniforms(vpMatrix, texture);
-		vertexArray.setVertexAttribPointer(0, program.attributePositionLocation, POSITION_COMPONENT_COUNT, STRIDE);
-		vertexArray.setVertexAttribPointer(POSITION_COMPONENT_COUNT, program.attributeTextureCoordinatesLocation,
+		glUseProgram(mProgram.mGlID);
+		mProgram.setUniforms(vpMatrix, mTexture);
+		mVertexArray.setVertexAttribPointer(0, mProgram.mAttributePositionLocation, POSITION_COMPONENT_COUNT, STRIDE);
+		mVertexArray.setVertexAttribPointer(POSITION_COMPONENT_COUNT, mProgram.mAttributeTextureCoordinatesLocation,
 			TEXTURE_COORDINATES_COMPONENT_COUNT, STRIDE);
-		glDrawElements(GL_TRIANGLES, spriteCount * INDICES_PER_SPRITE, GL_UNSIGNED_SHORT, indexBuffer);
+		glDrawElements(GL_TRIANGLES, mSpriteCount * INDICES_PER_SPRITE, GL_UNSIGNED_SHORT, mIndexBuffer);
 	}
 }

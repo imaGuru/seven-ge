@@ -9,9 +9,7 @@ public class CameraComponent extends Component {
 	public final float[] invertedVPMatrix = new float[16];
 	public int height;
 	public int width;
-	public float x;
-	public float y;
-	public float px;
-	public float py;
+	public int scaledWidth;
+	public int scaledHeight;
 	public float scale = 1f;
 }

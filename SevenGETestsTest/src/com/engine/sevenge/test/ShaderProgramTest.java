@@ -37,7 +37,7 @@ public class ShaderProgramTest extends BaseOpenGLES20UnitTest {
 				int f = ShaderUtils.compileShader(IO.readToString(IO.openAsset("Shaders/texture_fragment_shader.glsl")),
 					GLES20.GL_FRAGMENT_SHADER);
 				TextureShaderProgram tsp = new TextureShaderProgram(v, f);
-				assertFalse(tsp.glID == 0);
+				assertFalse(tsp.mGlID == 0);
 			}
 		});
 	}
@@ -49,7 +49,7 @@ public class ShaderProgramTest extends BaseOpenGLES20UnitTest {
 				int f = ShaderUtils.compileShader(IO.readToString(IO.openAsset("Shaders/texture_fragment_shader.glsl")),
 					GLES20.GL_FRAGMENT_SHADER);
 				TextureShaderProgram tsp = new TextureShaderProgram(f, f);
-				assertFalse(ShaderUtils.validateProgram(tsp.glID));
+				assertFalse(ShaderUtils.validateProgram(tsp.mGlID));
 			}
 		});
 	}
@@ -63,7 +63,7 @@ public class ShaderProgramTest extends BaseOpenGLES20UnitTest {
 				int f = ShaderUtils.compileShader(IO.readToString(IO.openAsset("Shaders/texture_fragment_shader.glsl")),
 					GLES20.GL_FRAGMENT_SHADER);
 				TextureShaderProgram tsp = new TextureShaderProgram(v, f);
-				assertTrue(ShaderUtils.validateProgram(tsp.glID));
+				assertTrue(ShaderUtils.validateProgram(tsp.mGlID));
 			}
 		});
 	}

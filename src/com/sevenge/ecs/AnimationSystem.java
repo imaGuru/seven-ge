@@ -3,7 +3,7 @@ package com.sevenge.ecs;
 
 import com.sevenge.SevenGE;
 
-public class AnimationSystem extends System {
+public class AnimationSystem extends SubSystem {
 	private int i;
 
 	public AnimationSystem (int size) {
@@ -12,12 +12,12 @@ public class AnimationSystem extends System {
 
 	@Override
 	public void process () {
-		for (i = 0; i < entities.getCount(); i++) {
-			Entity entity = entities.get(i);
+		for (i = 0; i < mEntities.getCount(); i++) {
+			Entity entity = mEntities.get(i);
 
-			AnimationComponent ca = (AnimationComponent)entity.components[3];
+			AnimationComponent ca = (AnimationComponent)entity.mComponents[3];
 			if (ca.isPlaying) {
-				SpriteComponent cs = (SpriteComponent)entity.components[1];
+				SpriteComponent cs = (SpriteComponent)entity.mComponents[1];
 				ca.currentFrameTick++;
 				if (ca.currentFrameTick * SevenGE.FRAME_TIME > ca.durations[ca.currentFrame]) {
 					ca.currentFrame = (ca.currentFrame + 1) % ca.durations.length;
@@ -27,12 +27,6 @@ public class AnimationSystem extends System {
 			}
 
 		}
-
-	}
-
-	@Override
-	public void handleMessage (Message m, Entity e) {
-		// TODO Auto-generated method stub
 
 	}
 }

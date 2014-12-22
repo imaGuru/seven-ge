@@ -4,7 +4,7 @@ package com.sevenge.ecs;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class PhysicsSystem extends System {
+public class PhysicsSystem extends SubSystem {
 
 	static final float BOX_STEP = 1 / 30f;
 	static final int BOX_VELOCITY_ITERATIONS = 6;
@@ -23,12 +23,6 @@ public class PhysicsSystem extends System {
 
 	}
 
-	@Override
-	public void handleMessage (Message m, Entity e) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public World getWorld () {
 		return this.world;
 	}
@@ -38,10 +32,10 @@ public class PhysicsSystem extends System {
 
 		world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS);
 
-		for (int j = 0; j < entities.getCount(); j++) {
-			Entity entity = entities.get(j);
-			PositionComponent positionComponent = (PositionComponent)entity.components[0];
-			PhysicsComponent physicsComponent = (PhysicsComponent)entity.components[4];
+		for (int j = 0; j < mEntities.getCount(); j++) {
+			Entity entity = mEntities.get(j);
+			PositionComponent positionComponent = (PositionComponent)entity.mComponents[0];
+			PhysicsComponent physicsComponent = (PhysicsComponent)entity.mComponents[4];
 
 			positionComponent.x = BOX_TO_WORLD * physicsComponent.getBody().getPosition().x;
 			positionComponent.y = BOX_TO_WORLD * physicsComponent.getBody().getPosition().y;

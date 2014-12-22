@@ -92,7 +92,6 @@ public class SevenGE implements Renderer {
 		mGLSurfaceView.onPause();
 	}
 
-	// Why different from on pause, where is resuming? wtf TODO
 	public void onResume () {
 		mGLSurfaceView.onResume();
 	}

@@ -11,25 +11,25 @@ import com.sevenge.assets.Asset;
 
 public final class TextureShaderProgram extends Asset {
 
-	private final int matrixLocation;
-	private final int textureUnitLocation;
+	private final int mMatrixLocation;
+	private final int mTextureUnitLocation;
 	// Attribute locations
-	public final int attributePositionLocation;
-	public final int attributeTextureCoordinatesLocation;
+	public final int mAttributePositionLocation;
+	public final int mAttributeTextureCoordinatesLocation;
 
-	public final int glID;
+	public final int mGlID;
 
 	/** Texture shader program for drawing textured objects in OpenGL
 	 * @param vs vertex shader
 	 * @param fs fragment shader */
 	public TextureShaderProgram (int vs, int fs) {
-		glID = ShaderUtils.linkShaderProgram(vs, fs);
+		mGlID = ShaderUtils.linkShaderProgram(vs, fs);
 
-		matrixLocation = glGetUniformLocation(glID, "u_Matrix");
-		textureUnitLocation = glGetUniformLocation(glID, "u_TextureUnit");
+		mMatrixLocation = glGetUniformLocation(mGlID, "u_Matrix");
+		mTextureUnitLocation = glGetUniformLocation(mGlID, "u_TextureUnit");
 		// Retrieve attribute locations for the shader program.
-		attributePositionLocation = glGetAttribLocation(glID, "a_Position");
-		attributeTextureCoordinatesLocation = glGetAttribLocation(glID, "a_TextureCoordinates");
+		mAttributePositionLocation = glGetAttribLocation(mGlID, "a_Position");
+		mAttributeTextureCoordinatesLocation = glGetAttribLocation(mGlID, "a_TextureCoordinates");
 	}
 
 	/** Set texture and matrix to be used with the shader program
@@ -37,8 +37,8 @@ public final class TextureShaderProgram extends Asset {
 	 * @param texture */
 	public void setUniforms (float[] matrix, int texture) {
 		// Pass the matrix into the shader program.
-		glUniformMatrix4fv(matrixLocation, 1, false, matrix, 0);
+		glUniformMatrix4fv(mMatrixLocation, 1, false, matrix, 0);
 		TextureUtils.bindTexture(GL_TEXTURE0, texture);
-		glUniform1i(textureUnitLocation, 0);
+		glUniform1i(mTextureUnitLocation, 0);
 	}
 }

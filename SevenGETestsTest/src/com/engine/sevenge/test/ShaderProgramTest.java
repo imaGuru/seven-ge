@@ -23,7 +23,7 @@ public class ShaderProgramTest extends BaseOpenGLES20UnitTest {
 				int f = ShaderUtils.compileShader(IO.readToString(IO.openAsset("Shaders/simple_fragment_shader.glsl")),
 					GLES20.GL_FRAGMENT_SHADER);
 				ColorShaderProgram csp = new ColorShaderProgram(v, f);
-				assertFalse(csp.glID == 0);
+				assertFalse(csp.mGlID == 0);
 			}
 		});
 	}

@@ -15,6 +15,16 @@
 			"id":"shader2",
 			"type":"fragment",
 			"path":"Shaders/texture_fragment_shader.glsl"
+		},
+		{
+			"id":"shader3",
+			"type":"vertex",
+			"path":"Shaders/simple_vertex_shader.glsl"
+		},
+		{
+			"id":"shader4",
+			"type":"fragment",
+			"path":"Shaders/simple_fragment_shader.glsl"
 		}],
 	"program": [
 		{

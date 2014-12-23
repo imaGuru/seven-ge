@@ -7,31 +7,36 @@ import android.opengl.Matrix;
 
 import com.sevenge.SevenGE;
 import com.sevenge.assets.Font;
+import com.sevenge.assets.Shader;
 import com.sevenge.assets.TextureRegion;
 
 /** Class responsible for creating sprite batches and puting sprites in the correct batches for fast and easy drawing */
 public class SpriteBatcher {
-	private SpriteBatch[] mBatches;
+	private Drawable[] mBatches;
 	private int mUsedBatches;
 	private int mCurrentGlid = -1;
+	private float DOUBLEPI = (float)(Math.PI * 2.0f);
+	private TextureShaderProgram mTSP;
+	private ColorShaderProgram mCSP;
 
 	private float[] uvs;
 	private float[] v;
 	private float[] transform = new float[16];
 	private float[] r = new float[8], temp = new float[4], tempr = new float[4];
 	private float[] t = new float[16];
+	private int mBatchSizeHint;
 
 	/** Creates a new spriteBatcher
 	 * @param size number of batches
 	 * @param batchSizeHint hint number of sprites in a batch */
 	public SpriteBatcher (int sizeHint, int batchSizeHint) {
 		mUsedBatches = -1;
-		mBatches = new SpriteBatch[sizeHint];
-		TextureShaderProgram tsp = (TextureShaderProgram)SevenGE.assetManager.getAsset("spriteShader");
-		for (int i = 0; i < sizeHint; i++) {
-			mBatches[i] = new SpriteBatch(batchSizeHint);
-			mBatches[i].mProgram = tsp;
-		}
+		mBatches = new Drawable[sizeHint];
+		mBatchSizeHint = batchSizeHint;
+		mTSP = (TextureShaderProgram)SevenGE.assetManager.getAsset("spriteShader");
+		Shader v = (Shader)SevenGE.assetManager.getAsset("shader3");
+		Shader f = (Shader)SevenGE.assetManager.getAsset("shader4");
+		mCSP = new ColorShaderProgram(v.glID, f.glID);
 	}
 
 	/** Draw the created batches using specified view projection matrix
@@ -90,11 +95,12 @@ public class SpriteBatcher {
 		int tex = sprite.texture;
 
 		if (tex == mCurrentGlid)
-			mBatches[mUsedBatches].add(t);
+			((SpriteBatch)mBatches[mUsedBatches]).add(t);
 		else {
 			mUsedBatches++;
-			mBatches[mUsedBatches].mTexture = tex;
-			mBatches[mUsedBatches].add(t);
+			SpriteBatch sb = new SpriteBatch(tex, mTSP, mBatchSizeHint);
+			sb.add(t);
+			mBatches[mUsedBatches] = sb;
 			mCurrentGlid = tex;
 		}
 
@@ -144,11 +150,12 @@ public class SpriteBatcher {
 		int tex = sprite.texture;
 
 		if (tex == mCurrentGlid)
-			mBatches[mUsedBatches].add(t);
+			((SpriteBatch)mBatches[mUsedBatches]).add(t);
 		else {
 			mUsedBatches++;
-			mBatches[mUsedBatches].mTexture = tex;
-			mBatches[mUsedBatches].add(t);
+			SpriteBatch sb = new SpriteBatch(tex, mTSP, mBatchSizeHint);
+			sb.add(t);
+			mBatches[mUsedBatches] = sb;
 			mCurrentGlid = tex;
 		}
 	}
@@ -166,5 +173,38 @@ public class SpriteBatcher {
 			drawSprite(x, y, 0, font.scaleX, font.scaleY, font.charRgn[c]); // Draw the Character
 			x += (font.charWidths[c] + font.spaceX) * font.scaleX; // Advance X Position by Scaled Character Width
 		}
+	}
+
+	public void drawCircle (float rx, float ry, float r, float rotation, int nsegments, float color) {
+		float[] vertices = new float[nsegments * 5];
+		for (short i = 0; i < nsegments; i++) {
+			float theta = DOUBLEPI * i / nsegments;// get the current angle
+
+			float x = r * (float)Math.cos(-rotation + theta);// calculate the x component
+			float y = r * (float)Math.sin(-rotation + theta);// calculate the y component
+
+			vertices[i * 5] = x + rx;
+			vertices[i * 5 + 1] = y + ry;
+			vertices[i * 5 + 2] = color;
+			vertices[i * 5 + 3] = color;
+			vertices[i * 5 + 4] = color;
+		}
+		if (mCurrentGlid == -2)
+			((PrimitiveBatch)mBatches[mUsedBatches]).add(vertices, nsegments);
+		else {
+			mUsedBatches++;
+			PrimitiveBatch pb = new PrimitiveBatch(mCSP, mBatchSizeHint);
+			pb.add(vertices, nsegments);
+			mBatches[mUsedBatches] = pb;
+			mCurrentGlid = -2;
+		}
+	}
+
+	public void drawRectangle () {
+
+	}
+
+	public void drawPolygon () {
+
 	}
 }

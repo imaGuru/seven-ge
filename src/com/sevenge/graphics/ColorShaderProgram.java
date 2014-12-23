@@ -15,18 +15,18 @@ public final class ColorShaderProgram extends Asset {
 	public final int mAttributePositionLocation;
 	public final int mAtributeColorLocation;
 
-	public final int glID;
+	public final int mGlID;
 
 	/** Creates a shader program with specified shaders and retrives attribute locations
 	 * @param vs vertex shader object suitable for coloring
 	 * @param fs fragment shader object suitable for coloring */
 	public ColorShaderProgram (int vs, int fs) {
-		glID = ShaderUtils.linkShaderProgram(vs, fs);
+		mGlID = ShaderUtils.linkShaderProgram(vs, fs);
 		// Retrieve uniform locations for the shader program.
-		mUniformMatrixLocation = glGetUniformLocation(glID, "u_Matrix");
+		mUniformMatrixLocation = glGetUniformLocation(mGlID, "u_Matrix");
 		// Retrieve attribute locations for the shader program.
-		mAttributePositionLocation = glGetAttribLocation(glID, "a_Position");
-		mAtributeColorLocation = glGetAttribLocation(glID, "a_Color");
+		mAttributePositionLocation = glGetAttribLocation(mGlID, "a_Position");
+		mAtributeColorLocation = glGetAttribLocation(mGlID, "a_Color");
 	}
 
 	/** Set matrix uniform for shader program

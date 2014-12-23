@@ -11,7 +11,7 @@ import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
 /** Drawable batch of sprites using a single texture */
-public class SpriteBatch {
+public class SpriteBatch implements Drawable {
 
 	/** Texture with sprites */
 	public int mTexture;
@@ -25,8 +25,8 @@ public class SpriteBatch {
 	private short[] mIndices;
 	private float[] mSprites;
 
-	private int mSpriteCount = 0, mSize = 0;
-	private int mIndexOffset, mVertexOffset;
+	private int mSpriteCount = 0;
+	private int mSize = 0;
 
 	private static final int POSITION_COMPONENT_COUNT = 2;
 	private static final int TEXTURE_COORDINATES_COMPONENT_COUNT = 2;
@@ -60,8 +60,8 @@ public class SpriteBatch {
 
 	private void generateIndices () {
 		for (int i = 0; i < mSize; i++) {
-			mIndexOffset = i * INDICES_PER_SPRITE;
-			mVertexOffset = i * VERTICES_PER_SPRITE;
+			int mIndexOffset = i * INDICES_PER_SPRITE;
+			int mVertexOffset = i * VERTICES_PER_SPRITE;
 			mIndices[mIndexOffset] = (short)mVertexOffset;
 			mIndices[mIndexOffset + 1] = (short)(mVertexOffset + 1);
 			mIndices[mIndexOffset + 2] = (short)(mVertexOffset + 2);

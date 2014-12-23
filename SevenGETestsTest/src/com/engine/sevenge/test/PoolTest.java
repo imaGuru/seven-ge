@@ -1,3 +1,4 @@
+
 package com.engine.sevenge.test;
 
 import java.util.ArrayList;
@@ -10,48 +11,44 @@ import com.sevenge.utils.Pool.PoolObjectFactory;
 
 public class PoolTest extends TestCase {
 
-  PoolObjectFactory<Object> objectFactory;
-  Pool<Object> objectPool;
-  private static final int POOL_SIZE = 20;
+	PoolObjectFactory<Object> objectFactory;
+	Pool<Object> objectPool;
+	private static final int POOL_SIZE = 20;
 
-  @Override
-  protected void setUp() throws Exception {
-    objectFactory = new PoolObjectFactory<Object>() {
-      @Override
-      public Object createObject() {
-        return new Object();
-      }
-    };
+	@Override
+	protected void setUp () throws Exception {
+		objectFactory = new PoolObjectFactory<Object>() {
+			@Override
+			public Object createObject () {
+				return new Object();
+			}
+		};
 
-    objectPool = new Pool<Object>(objectFactory, POOL_SIZE);
+		objectPool = new Pool<Object>(objectFactory, POOL_SIZE);
 
-  }
+	}
 
-  public void testExceedPoolSize() {
+	public void testFreePool () {
 
-    ArrayList<Object> objects = new ArrayList<Object>();
+		ArrayList<Object> objects = new ArrayList<Object>();
 
-    for (int i = 0; i < POOL_SIZE + 2; i++) {
-      objects.add(objectPool.newObject());
-    }
+		for (int i = 0; i < POOL_SIZE; i++) {
+			objects.add(objectPool.newObject());
+		}
 
-    assertEquals(objects.size(), POOL_SIZE + 2);
+		for (Object o : objects)
+			objectPool.free(o);
 
-  }
+		for (int i = 0; i < POOL_SIZE; i++) {
+			objects.add(objectPool.newObject());
+		}
 
-  public void testFreePool() {
+		for (Object o : objects)
+			objectPool.free(o);
 
-    ArrayList<Object> objects = new ArrayList<Object>();
+		assertEquals(objects.size(), 2 * POOL_SIZE);
+		assertFalse(Arrays.asList(objects).contains(null));
 
-    for (int i = 0; i < POOL_SIZE + 2; i++) {
-      objects.add(objectPool.newObject());
-    }
-    for (Object o : objects)
-      objectPool.free(o);
-
-    assertEquals(objects.size(), POOL_SIZE + 2);
-    assertFalse(Arrays.asList(objects).contains(null));
-
-  }
+	}
 
 }

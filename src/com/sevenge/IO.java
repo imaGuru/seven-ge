@@ -16,10 +16,16 @@ import android.util.Log;
  * files */
 public class IO {
 	private static Context context = null;
+	public static String INTERNAL_PATH;
+	public static String EXTERNAL_PATH;
+	public static String CACHE_PATH;
 
 	/** Initializes IO with context of app activity. Has to be called before use */
 	public static void initialize (Context context) {
 		IO.context = context;
+		INTERNAL_PATH = context.getFilesDir().getAbsolutePath();
+		EXTERNAL_PATH = context.getExternalFilesDir(null).getAbsolutePath();
+		CACHE_PATH = context.getCacheDir().getAbsolutePath();
 	}
 
 	/** Returns android asset manager of the current app */
@@ -124,4 +130,16 @@ public class IO {
 			return null;
 		}
 	}
+
+	public static File[] getFiles (String rootPath) {
+		File f = new File(rootPath);
+		File files[] = f.listFiles();
+		return files;
+	}
+
+	public static void deleteFile (String filePath) {
+		File file = new File(filePath);
+		file.delete();
+	}
+
 }

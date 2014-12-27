@@ -3,6 +3,8 @@ package com.sevenge;
 
 import static android.opengl.GLES20.glViewport;
 
+import java.io.IOException;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -20,6 +22,8 @@ import com.sevenge.audio.Audio;
 import com.sevenge.input.Input;
 import com.sevenge.sample.SampleGameState;
 import com.sevenge.utils.DebugLog;
+
+import fi.iki.elonen.HelloServer;
 
 /** Class exposing game engine subsystems anywhere in the code. */
 public class SevenGE implements Renderer {
@@ -59,6 +63,13 @@ public class SevenGE implements Renderer {
 		SevenGE.stateManager = new GameStateManager();
 		mActivity = activity;
 		mGLSurfaceView = glSurfaceView;
+		HelloServer server = new HelloServer(activity);
+		try {
+			server.start();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
 
 		if (supportsEs2) {
 			mGLSurfaceView.setEGLContextClientVersion(2);

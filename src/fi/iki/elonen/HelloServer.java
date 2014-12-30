@@ -18,6 +18,8 @@ import com.sevenge.IO;
 public class HelloServer extends NanoHTTPD {
 
 	Context context;
+	private String commands[] = {"commands", "clear", "ls memorytype (internal, external, cache)",
+		"delete memorytype (internal, external, cache) filename"};
 
 	public HelloServer (Context context) {
 		super(8080);
@@ -42,7 +44,7 @@ public class HelloServer extends NanoHTTPD {
 
 			String command = parms.get("value");
 			if (command != null) {
-				msg += "> " + command + "<br>";
+				msg += "<span style='color:green;'>" + "> " + command + "</span>" + "<br>";
 				msg += parseCommand(command);
 			}
 
@@ -66,13 +68,17 @@ public class HelloServer extends NanoHTTPD {
 			+ "function send_command() {\r\n" + "    var xmlhttp;\r\n" + "\r\n" + "    xmlhttp = new XMLHttpRequest();\r\n" + "\r\n"
 			+ "    xmlhttp.onreadystatechange = function() {\r\n"
 			+ "        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {\r\n"
-			+ "            var div = document.createElement(\"div\");\r\n" + "            div.innerHTML = xmlhttp.responseText;\r\n"
-			+ "            document.getElementById(\"command_results\").appendChild(div);\r\n" + "        }\r\n" + "    }\r\n"
-			+ "    var newvalue = encodeURIComponent(document.getElementById(\"value\").value);\r\n"
+			+ "        	if(xmlhttp.responseText != \"<span style='color:green;'>> clear</span><br>clear\"){\r\n"
+			+ "	            var div = document.createElement(\"div\");\r\n"
+			+ "	            div.innerHTML = xmlhttp.responseText;\r\n"
+			+ "	            document.getElementById(\"command_results\").appendChild(div);\r\n" + "        	}else{\r\n"
+			+ "        		document.getElementById(\"command_results\").innerHTML = \"\";\r\n" + "        	}\r\n" + "        }\r\n"
+			+ "    }\r\n" + "    var newvalue = encodeURIComponent(document.getElementById(\"value\").value);\r\n"
 			+ "    xmlhttp.open(\"GET\", \"command?value=\" + newvalue, true);\r\n" + "    xmlhttp.send();\r\n" + "}\r\n" + "\r\n"
 			+ "</script>\r\n" + "<body>\r\n" + "	<h1>Hello, this is the seven-ge server</h1>\r\n"
-			+ "	<input type='text' id='value'>\r\n" + "	<input type='button' value='submit' onclick='send_command()'>\r\n"
-			+ "	<div id='command_results'></div>\r\n" + "\r\n" + "		<form id=\"file-form\" action=\"\" method=\"POST\">\r\n"
+			+ "	<div id='command_results' style='overflow-y: scroll; height:400px;'></div>\r\n"
+			+ "	<input type='text' id='value'>\r\n" + "	<input type='button' value='submit' onclick='send_command()'>\r\n" + "\r\n"
+			+ "		<form id=\"file-form\" action=\"\" method=\"POST\">\r\n"
 			+ "		<input type=\"file\" id=\"file-select\" name=\"files[]\" multiple/>\r\n"
 			+ "		<button type=\"submit\" id=\"upload-button\">Upload</button></form>\r\n" + "\r\n" + "</html>";
 
@@ -114,22 +120,10 @@ public class HelloServer extends NanoHTTPD {
 
 			if (cs[1].equals("internal")) {
 				IO.deleteFile(IO.INTERNAL_PATH + "/" + cs[2]);
-				for (File file : IO.getFiles(IO.INTERNAL_PATH)) {
-					response += file.getName() + " " + file.length() / 1024 + " kb" + "<br>";
-				}
-
 			} else if (cs[1].equals("external")) {
 				IO.deleteFile(IO.EXTERNAL_PATH + "/" + cs[2]);
-				for (File file : IO.getFiles(IO.EXTERNAL_PATH)) {
-					response += file.getName() + " " + file.length() / 1024 + " kb" + "<br>";
-				}
-
 			} else if (cs[1].equals("cache")) {
 				IO.deleteFile(IO.CACHE_PATH + "/" + cs[2]);
-				for (File file : IO.getFiles(IO.CACHE_PATH)) {
-					response += file.getName() + " " + file.length() / 1024 + " kb" + "<br>";
-				}
-
 			}
 
 		} else if (cs[0].equals("ls")) {
@@ -154,7 +148,15 @@ public class HelloServer extends NanoHTTPD {
 
 			}
 
+		} else if (cs[0].equals("commands")) {
+			for (String cmd : commands) {
+				response += cmd + "<br>";
+			}
+
+		} else if (cs[0].equals("clear")) {
+			response += "clear";
 		}
+
 		return response;
 	}
 }

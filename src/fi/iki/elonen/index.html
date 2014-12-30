@@ -1,0 +1,79 @@
+<html>
+<script>
+
+window.onload = function() {
+
+    var form = document.getElementById('file-form');
+    var fileSelect = document.getElementById('file-select');
+    var uploadButton = document.getElementById('upload-button');
+
+    form.onsubmit = function(event) {
+        event.preventDefault();
+
+        uploadButton.innerHTML = 'Uploading...';
+
+        var files = fileSelect.files;
+
+        var formData = new FormData();
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+
+            formData.append('files[]', file, file.name);
+        }
+
+        var filename = "";
+
+        formData.append(name, file, filename);
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', '', true);
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                uploadButton.innerHTML = 'Upload';
+            } else {
+                alert('An error occurred!');
+            }
+        };
+
+        xhr.send(formData);
+
+    }
+
+};
+
+function send_command() {
+    var xmlhttp;
+
+    xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        	if(xmlhttp.responseText != "<span style='color:green;'>> clear</span><br>clear"){
+	            var div = document.createElement("div");
+	            div.innerHTML = xmlhttp.responseText;
+	            document.getElementById("command_results").appendChild(div);
+        	}else{
+        		document.getElementById("command_results").innerHTML = "";
+        	}
+        }
+    }
+    var newvalue = encodeURIComponent(document.getElementById("value").value);
+    xmlhttp.open("GET", "command?value=" + newvalue, true);
+    xmlhttp.send();
+}
+
+</script>
+<body>
+	<h1>Hello, this is the seven-ge server</h1>
+	<div id='command_results' style='overflow-y: scroll; height:400px;'></div>
+	<input type='text' id='value'>
+	<input type='button' value='submit' onclick='send_command()'>
+
+		<form id="file-form" action="" method="POST">
+		<input type="file" id="file-select" name="files[]" multiple/>
+		<button type="submit" id="upload-button">Upload</button></form>
+
+</html>

@@ -29,13 +29,83 @@ public class HelloServer extends NanoHTTPD {
 	public Response serve (IHTTPSession session) {
 		Method method = session.getMethod();
 		String uri = session.getUri();
-
-		String msg = "<html><body><h1>Hello, this is the seven-ge server</h1>\n";
 		Map<String, String> parms = session.getParms();
+		if (uri.length() > 1) {
+			// remove the starting /
+			uri = uri.substring(1).toLowerCase();
+		} else {
+			uri = "";
+		}
 
-		msg += "<form action='?' method='get'>\n" + "  <p>Command: <input type='text' name='command'></p><button>submit</button>\n"
-			+ "</form>\n";
+		if ("command".equals(uri)) {
 
+			String msg = "";
+
+			String command = parms.get("value");
+			if (command != null) {
+				msg += "> " + command;
+				msg += parseCommand(command);
+			}
+
+			return new NanoHTTPD.Response(msg);
+		}
+
+		String msg = "<html>";
+
+		msg += "<script>";
+// msg += "function send_command()\r\n"
+// + "{\r\n"
+// + "var xmlhttp;\r\n"
+// + "\r\n"
+// + "xmlhttp = new XMLHttpRequest();\r\n"
+// + " \r\n"
+// + "xmlhttp.onreadystatechange = function(){\r\n"
+// + "	if (xmlhttp.readyState==4 && xmlhttp.status==200){\r\n"
+// +
+// "		var command = document.getElementById(\"command_results\"); command.appendChild(document.createElement(\"br\")); command.appendChild(document.createTextNode(xmlhttp.responseText));\r\n"
+// + "	}\r\n" + "}\r\n" + "xmlhttp.open(\"GET\",\"command\",true);\r\n" + "xmlhttp.send();\r\n" + "}";
+
+		msg += "window.onload = function() {\r\n" + "\r\n" + "    var form = document.getElementById('file-form');\r\n"
+			+ "    var fileSelect = document.getElementById('file-select');\r\n"
+			+ "    var uploadButton = document.getElementById('upload-button');\r\n" + "\r\n"
+			+ "    form.onsubmit = function(event) {\r\n" + "        event.preventDefault();\r\n" + "\r\n"
+			+ "        // Update button text.\r\n" + "        uploadButton.innerHTML = 'Uploading...';\r\n" + "\r\n"
+			+ "        // The rest of the code will go here...\r\n" + "\r\n"
+			+ "        // Get the selected files from the input.\r\n" + "        var files = fileSelect.files;\r\n" + "\r\n"
+			+ "        // Create a new FormData object.\r\n" + "        var formData = new FormData();\r\n" + "\r\n"
+			+ "        // Loop through each of the selected files.\r\n" + "        for (var i = 0; i < files.length; i++) {\r\n"
+			+ "            var file = files[i];\r\n" + "\r\n" + "            // Add the file to the request.\r\n"
+			+ "            formData.append('files[]', file, file.name);\r\n" + "        }\r\n" + "\r\n"
+			+ "        var filename = \"\";\r\n" + "\r\n" + "        // Files\r\n"
+			+ "        formData.append(name, file, filename);\r\n" + "\r\n" + "        // Set up the request.\r\n"
+			+ "        var xhr = new XMLHttpRequest();\r\n" + "\r\n" + "        // Open the connection.\r\n"
+			+ "        xhr.open('POST', '', true);\r\n" + "\r\n" + "        // Set up a handler for when the request finishes.\r\n"
+			+ "        xhr.onload = function() {\r\n" + "            if (xhr.status === 200) {\r\n"
+			+ "                // File(s) uploaded.\r\n" + "                uploadButton.innerHTML = 'Upload';\r\n"
+			+ "            } else {\r\n" + "                alert('An error occurred!');\r\n" + "            }\r\n"
+			+ "        };\r\n" + "\r\n" + "        // Send the Data.\r\n" + "        xhr.send(formData);\r\n" + "\r\n" + "    }\r\n"
+			+ "\r\n" + "};\r\n" + "\r\n" + "function send_command() {\r\n" + "    var xmlhttp;\r\n" + "\r\n"
+			+ "    xmlhttp = new XMLHttpRequest();\r\n" + "\r\n" + "    xmlhttp.onreadystatechange = function() {\r\n"
+			+ "        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {\r\n"
+			+ "            var div = document.createElement(\"div\");\r\n" + "            div.innerHTML = xmlhttp.responseText;\r\n"
+			+ "            document.getElementById(\"command_results\").appendChild(div);\r\n" + "        }\r\n" + "    }\r\n"
+			+ "    var newvalue = encodeURIComponent(document.getElementById(\"value\").value);\r\n"
+			+ "    xmlhttp.open(\"GET\", \"command?value=\" + newvalue, true);\r\n" + "    xmlhttp.send();\r\n" + "}";
+
+// msg += "function send_command()\r\n" + "{\r\n" + "var xmlhttp;\r\n" + "\r\n" + "xmlhttp = new XMLHttpRequest();\r\n"
+// + " \r\n" + "xmlhttp.onreadystatechange = function(){\r\n" + "	if (xmlhttp.readyState==4 && xmlhttp.status==200){\r\n"
+// + "		var div = document.createElement(\"div\");\r\n" + "		div.innerHTML = xmlhttp.responseText;\r\n"
+// + "		document.getElementById(\"command_results\").appendChild(div);\r\n" + "	}\r\n" + "}\r\n"
+// + "var newvalue = encodeURIComponent(document.getElementById(\"value\").value);\r\n"
+// + "xmlhttp.open(\"GET\",\"command?value=\"+newvalue,true);\r\n" + "xmlhttp.send();\r\n" + "}";
+		msg += "</script>";
+		msg += "<body><h1>Hello, this is the seven-ge server</h1>\n";
+
+// msg += "<form action='' method='get'>\n" + "  <p>Command: <input type='text' name='command'></p><button>submit</button>\n"
+// + "</form>\n";
+
+		msg += "<input type='text' id='value'><input type='button' value='submit' onclick='send_command()'>";
+		msg += "<div id='command_results'></div>";
 		if (Method.GET.equals(method)) {
 
 			String command = parms.get("command");
@@ -79,9 +149,9 @@ public class HelloServer extends NanoHTTPD {
 			}
 		}
 
-		msg += "<html><body><form action='?' method='post' enctype='multipart/form-data'>"
-			+ "<input type='file' name='file' multiple/><br /><input type='submit'name='submit' "
-			+ "value='Upload'/></form></body></html>";
+		msg += "<form id=\"file-form\" action=\"\" method=\"POST\">\r\n"
+			+ "  <input type=\"file\" id=\"file-select\" name=\"files[]\" multiple/>\r\n"
+			+ "  <button type=\"submit\" id=\"upload-button\">Upload</button>\r\n" + "</form>";
 
 		msg += "</body></html>\n";
 		return new NanoHTTPD.Response(msg);

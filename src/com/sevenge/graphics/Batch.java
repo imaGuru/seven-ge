@@ -1,7 +1,6 @@
 
 package com.sevenge.graphics;
 
-
 public abstract class Batch {
 
 	abstract void draw (float[] viewProjectionMatrix);
@@ -17,5 +16,7 @@ public abstract class Batch {
 	abstract void clear ();
 
 	abstract void release ();
+
+	abstract int getRemaining ();
 
 }

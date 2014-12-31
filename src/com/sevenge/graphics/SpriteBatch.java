@@ -107,4 +107,9 @@ public class SpriteBatch extends Batch {
 		mPool.release(this);
 
 	}
+
+	@Override
+	int getRemaining () {
+		return mSize - mSpriteCount;
+	}
 }

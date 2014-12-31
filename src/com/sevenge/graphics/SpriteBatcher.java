@@ -96,7 +96,7 @@ public class SpriteBatcher {
 
 		int tex = sprite.texture;
 
-		if (tex == mCurrentGlid)
+		if (tex == mCurrentGlid && mBatches[mUsedBatches].getRemaining() > 0)
 			mBatches[mUsedBatches].add(t);
 		else {
 			mUsedBatches++;
@@ -152,7 +152,7 @@ public class SpriteBatcher {
 
 		int tex = sprite.texture;
 
-		if (tex == mCurrentGlid)
+		if (tex == mCurrentGlid && mBatches[mUsedBatches].getRemaining() > 0)
 			mBatches[mUsedBatches].add(t);
 		else {
 			mUsedBatches++;
@@ -194,7 +194,7 @@ public class SpriteBatcher {
 			x = c * x - s * y;
 			y = s * t + c * y;
 		}
-		if (mCurrentGlid == -2)
+		if (mCurrentGlid == -2 && mBatches[mUsedBatches].getRemaining() >= nsegments)
 			mBatches[mUsedBatches].add(vertices, nsegments);
 		else {
 			mUsedBatches++;
@@ -210,23 +210,23 @@ public class SpriteBatcher {
 		float c = (float)Math.cos(-rotation);
 		float s = (float)Math.sin(-rotation);
 		float x = w / 2, y = h / 2;
-		vertices[0 * 5] = x * c - s * y + cx;
-		vertices[0 * 5 + 1] = s * x + c * y + cy;
+		vertices[0] = x * c - s * y + cx;
+		vertices[1] = s * x + c * y + cy;
 		x = -w / 2;
-		vertices[1 * 5] = x * c - s * y + cx;
-		vertices[1 * 5 + 1] = s * x + c * y + cy;
+		vertices[5] = x * c - s * y + cx;
+		vertices[6] = s * x + c * y + cy;
 		y = -h / 2;
-		vertices[2 * 5] = x * c - s * y + cx;
-		vertices[2 * 5 + 1] = s * x + c * y + cy;
+		vertices[10] = x * c - s * y + cx;
+		vertices[11] = s * x + c * y + cy;
 		x = w / 2;
-		vertices[3 * 5] = x * c - s * y + cx;
-		vertices[3 * 5 + 1] = s * x + c * y + cy;
+		vertices[15] = x * c - s * y + cx;
+		vertices[16] = s * x + c * y + cy;
 		for (int i = 0; i < 4; i++) {
 			vertices[i * 5 + 2] = red;
 			vertices[i * 5 + 3] = green;
 			vertices[i * 5 + 4] = blue;
 		}
-		if (mCurrentGlid == -2)
+		if (mCurrentGlid == -2 && mBatches[mUsedBatches].getRemaining() >= 4)
 			mBatches[mUsedBatches].add(vertices, 4);
 		else {
 			mUsedBatches++;

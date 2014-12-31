@@ -89,4 +89,9 @@ public class PrimitiveBatch extends Batch {
 	void release () {
 		mPool.release(this);
 	}
+
+	@Override
+	int getRemaining () {
+		return mSize - mVertexCount;
+	}
 }

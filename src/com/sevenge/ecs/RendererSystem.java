@@ -27,7 +27,7 @@ public class RendererSystem extends SubSystem {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		mSpriteBatcher = new SpriteBatcher(2, 1000);
+		mSpriteBatcher = new SpriteBatcher(5, 400);
 	}
 
 	public void setCamera (Entity camera) {
@@ -42,10 +42,10 @@ public class RendererSystem extends SubSystem {
 			PositionComponent cp = (PositionComponent)entity.mComponents[0];
 			SpriteComponent cs = (SpriteComponent)entity.mComponents[1];
 			TextureRegion sprite = cs.textureRegion;
-			// mSpriteBatcher.drawSprite(cp.x, cp.y, cp.rotation, cs.scale, cs.scale, sprite);
-			mSpriteBatcher.drawCircle(cp.x, cp.y, sprite.height / 2, (float)Math.toRadians(cp.rotation), 10, 0.7f, 0.0f, 0.0f);
-			mSpriteBatcher.drawRectangle(cp.x, cp.y, sprite.width, sprite.height, (float)Math.toRadians(cp.rotation), 0.0f, 1.0f,
-				0.0f);
+			mSpriteBatcher.drawSprite(cp.x, cp.y, cp.rotation, cs.scale, cs.scale, sprite);
+			// mSpriteBatcher.drawCircle(cp.x, cp.y, sprite.height / 2, (float)Math.toRadians(cp.rotation), 10, 0.7f, 0.0f, 0.0f);
+			// mSpriteBatcher.drawRectangle(cp.x, cp.y, sprite.width, sprite.height, (float)Math.toRadians(cp.rotation), 0.0f, 1.0f,
+			// 0.0f);
 		}
 		font.scaleX = 4;
 		font.scaleY = 4;

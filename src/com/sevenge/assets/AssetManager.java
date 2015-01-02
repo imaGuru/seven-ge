@@ -2,9 +2,11 @@
 package com.sevenge.assets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
@@ -19,14 +21,11 @@ public class AssetManager {
 	private Map<String, Asset> assets = new HashMap<String, Asset>();
 	/** Holds asset loaders using type of loaded asset as key and asset as the value */
 	private Map<String, AssetLoader> loaders = new HashMap<String, AssetLoader>();
-
+	
+	private List<String> order = new ArrayList<String>();
+	
 	public AssetManager () {
-		loaders.put("texture", new TextureLoader(this));
-		loaders.put("program", new TextureShaderProgramLoader(this));
-		loaders.put("shader", new ShaderLoader(this));
-		loaders.put("audio", new AudioLoader(this));
-		// loaders.put("animation", new AnimationLoader(this));
-		loaders.put("spriteSheet", new SpriteSheetLoader(this));
+		loaders.put("assets", new OrderLoader(this));
 	}
 
 	/** Reads the package file specified by the path and loads the specified assets
@@ -43,16 +42,14 @@ public class AssetManager {
 		try {
 			content = IO.readToString(IO.openAsset(path));
 			JSONObject pkg = new JSONObject(content);
-			AssetLoader al = loaders.get("texture");
-			al.load(pkg.getJSONArray("texture").toString());
-			al = loaders.get("spriteSheet");
-			al.load(pkg.getJSONArray("spriteSheet").toString());
-			al = loaders.get("shader");
-			al.load(pkg.getJSONArray("shader").toString());
-			al = loaders.get("program");
-			al.load(pkg.getJSONArray("program").toString());
-			al = loaders.get("audio");
-			al.load(pkg.getJSONArray("audio").toString());
+			AssetLoader al = loaders.get("assets");
+			al.load(pkg.getJSONArray("assets").toString());
+			for (String temp : order) {
+				al= loaders.get(temp);
+				al.load(pkg.getJSONArray(temp).toString());
+			}
+			
+			
 			System.gc();
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -93,4 +90,10 @@ public class AssetManager {
 			it.next().dispose();
 		assets.clear();
 	}
+	/** Add loader key to order list */
+	public void addLoaderToList(String key){
+		order.add(key);
+	}
+	
+	
 }

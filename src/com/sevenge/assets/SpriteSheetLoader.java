@@ -11,7 +11,7 @@ import com.sevenge.IO;
 
 public class SpriteSheetLoader extends AssetLoader {
 
-	protected SpriteSheetLoader (AssetManager as) {
+	public SpriteSheetLoader (AssetManager as) {
 		super(as);
 	}
 

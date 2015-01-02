@@ -16,7 +16,12 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.sevenge.GameState;
 import com.sevenge.IO;
 import com.sevenge.SevenGE;
+import com.sevenge.assets.AudioLoader;
+import com.sevenge.assets.ShaderLoader;
+import com.sevenge.assets.SpriteSheetLoader;
+import com.sevenge.assets.TextureLoader;
 import com.sevenge.assets.TextureRegion;
+import com.sevenge.assets.TextureShaderProgramLoader;
 import com.sevenge.audio.Music;
 import com.sevenge.ecs.AnimationComponent;
 import com.sevenge.ecs.AnimationSystem;
@@ -61,9 +66,18 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		SevenGE.input.addInputProcessor(this);
 		SevenGE.input.addGestureProcessor(this);
 
+		SevenGE.assetManager.addLoader("spriteSheet", new SpriteSheetLoader(SevenGE.assetManager));
+		SevenGE.assetManager.addLoader("texture", new TextureLoader(SevenGE.assetManager));
+		SevenGE.assetManager.addLoader("program", new TextureShaderProgramLoader(SevenGE.assetManager));
+		SevenGE.assetManager.addLoader("shader", new ShaderLoader(SevenGE.assetManager));
+		SevenGE.assetManager.addLoader("audio", new AudioLoader(SevenGE.assetManager));
+		
+	
 		SevenGE.assetManager.loadAssets("sample.pkg");
+		
 		SevenGE.assetManager.registerAsset("font", FontUtils.load(IO.getAssetManager(), "Fonts/OpenSansBold.ttf", 20, 2, 0));
-
+		
+		
 		rendererSystem = new RendererSystem(200);
 		animationSystem = new AnimationSystem(200);
 		cameraSystem = new CameraSystem(null);

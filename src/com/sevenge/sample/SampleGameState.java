@@ -287,4 +287,16 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		return false;
 	}
 
+	@Override
+	public void onScaleEnd (ScaleGestureDetector detector) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onScaleBegin (ScaleGestureDetector detector) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

@@ -1,12 +1,10 @@
 
 package com.sevenge.input;
 
-import android.util.Log;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.view.ScaleGestureDetector.OnScaleGestureListener;
 
 import com.sevenge.input.Input.Gesture;
 
@@ -121,6 +119,34 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 		}
 
 		return false;
+	}
+
+	@Override
+	public boolean onScaleBegin (ScaleGestureDetector detector) {
+
+		super.onScaleBegin(detector);
+
+		synchronized (input) {
+			Gesture g = new Gesture();
+			g.type = Gesture.SCALE_BEGIN;
+			g.detector = detector;
+			input.gesturesBuffer.add(g);
+		}
+
+		return true;
+	}
+
+	@Override
+	public void onScaleEnd (ScaleGestureDetector detector) {
+
+		super.onScaleEnd(detector);
+
+		synchronized (input) {
+			Gesture g = new Gesture();
+			g.type = Gesture.SCALE_END;
+			g.detector = detector;
+			input.gesturesBuffer.add(g);
+		}
 	}
 
 }

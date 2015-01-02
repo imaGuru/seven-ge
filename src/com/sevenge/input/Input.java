@@ -90,6 +90,8 @@ public class Input implements OnTouchListener {
 		static final int SCROLL = 3;
 		static final int LONGPRESS = 4;
 		static final int SCALE = 5;
+		static final int SCALE_END = 6;
+		static final int SCALE_BEGIN = 7;
 
 		int type;
 		MotionEvent motionEvent1, motionEvent2;
@@ -237,6 +239,14 @@ public class Input implements OnTouchListener {
 				case Gesture.SCALE:
 					for (GestureProcessor gp : gestureProcessors)
 						gp.onScale(g.detector);
+					break;
+				case Gesture.SCALE_END:
+					for (GestureProcessor gp : gestureProcessors)
+						gp.onScaleEnd(g.detector);
+					break;
+				case Gesture.SCALE_BEGIN:
+					for (GestureProcessor gp : gestureProcessors)
+						gp.onScaleBegin(g.detector);
 					break;
 				}
 

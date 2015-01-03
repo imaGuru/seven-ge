@@ -89,4 +89,14 @@ public class CameraSystem extends SubSystem implements GestureProcessor {
 		Matrix.invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
 		return false;
 	}
+
+	@Override
+	public void onScaleEnd (ScaleGestureDetector detector) {
+
+	}
+
+	@Override
+	public void onScaleBegin (ScaleGestureDetector detector) {
+
+	}
 }

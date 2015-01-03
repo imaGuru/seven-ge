@@ -18,4 +18,8 @@ public interface GestureProcessor {
 
 	public boolean onScale (ScaleGestureDetector detector);
 
+	public void onScaleEnd (ScaleGestureDetector detector);
+
+	public void onScaleBegin (ScaleGestureDetector detector);
+
 }

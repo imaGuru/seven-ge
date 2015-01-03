@@ -25,6 +25,16 @@
 			"id":"shader4",
 			"type":"fragment",
 			"path":"Shaders/simple_fragment_shader.glsl"
+		},
+		{
+			"id":"shader5",
+			"type":"vertex",
+			"path":"Shaders/particle_vertex_shader.glsl"
+		},
+		{
+			"id":"shader6",
+			"type":"fragment",
+			"path":"Shaders/particle_fragment_shader.glsl"
 		}],
 	"program": [
 		{
@@ -36,6 +46,10 @@
 		{ 
 			"id":"apple",
 			"path":"Textures/apple.png"
+		},
+		{ 
+			"id":"particle",
+			"path":"Textures/particle.png"
 		},
 		{
 			"id":"spaceSheet",

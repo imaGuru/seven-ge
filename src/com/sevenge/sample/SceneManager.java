@@ -3,6 +3,7 @@ package com.sevenge.sample;
 
 import com.sevenge.ecs.Entity;
 import com.sevenge.ecs.PositionComponent;
+import java.math.*;
 
 public class SceneManager {
 
@@ -24,9 +25,13 @@ public class SceneManager {
 
 			PositionComponent positionComponent = (PositionComponent)entity.mComponents[0];
 			PositionComponent parentPositionComponent = (PositionComponent)entity.parent.mComponents[0];
-
-			positionComponent.x = parentPositionComponent.x + entity.relativeX;
-			positionComponent.y = parentPositionComponent.y + entity.relativeY;
+			float rotRad = (float) Math.toRadians(parentPositionComponent.rotation);
+			
+			float x = (float) (entity.relativeX *Math.cos(rotRad) - entity.relativeY *Math.sin(rotRad));
+			float y = (float) (entity.relativeY *Math.cos(rotRad) + entity.relativeX *Math.sin(rotRad));
+			
+			positionComponent.x = parentPositionComponent.x + x;
+			positionComponent.y = parentPositionComponent.y + y;
 			positionComponent.rotation = parentPositionComponent.rotation + entity.relativeRotation;
 
 		}

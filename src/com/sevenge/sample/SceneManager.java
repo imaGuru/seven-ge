@@ -25,7 +25,7 @@ public class SceneManager {
 
 			PositionComponent positionComponent = (PositionComponent)entity.mComponents[0];
 			PositionComponent parentPositionComponent = (PositionComponent)entity.parent.mComponents[0];
-			float rotRad = (float) Math.toRadians(parentPositionComponent.rotation);
+			float rotRad = (-1)*(float) Math.toRadians(parentPositionComponent.rotation);
 			
 			float x = (float) (entity.relativeX *Math.cos(rotRad) - entity.relativeY *Math.sin(rotRad));
 			float y = (float) (entity.relativeY *Math.cos(rotRad) + entity.relativeX *Math.sin(rotRad));

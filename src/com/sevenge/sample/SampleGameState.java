@@ -83,7 +83,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		Entity tempEntity = null;
 
 		Random rng = new Random();
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 10; i++) {
 			Entity entity = mEM.createEntity(components, 0);
 
 			SpriteComponent cs = new SpriteComponent();
@@ -92,12 +92,19 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			if (i == 0) {
 				sceneManager.getRoot().addChild(entity);
 				tempEntity = entity;
-			} else {
+			} else if(i==1) {
 				entity.isRelative = true;
 				entity.relativeX = 0;
 				entity.relativeY = 100;
 				entity.relativeRotation = 50;
 				tempEntity.addChild(entity);
+			}
+			else{
+				entity.isRelative = false;
+				entity.relativeX = 0;
+				entity.relativeY = 100;
+				entity.relativeRotation = 50;
+				//tempEntity.addChild(entity);
 			}
 
 			cp.rotation = rng.nextFloat() * 360.0f;

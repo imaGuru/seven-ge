@@ -55,6 +55,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	private PhysicsSystem physicsSystem;
 
+	private SceneManager sceneManager;
+
 	private int counter = 0;
 
 	public SampleGameState () {
@@ -69,6 +71,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		cameraSystem = new CameraSystem(null);
 		scriptingSystem = new ScriptingSystem();
 		physicsSystem = new PhysicsSystem(200);
+		sceneManager = new SceneManager();
 
 		mEM = new EntityManager(300, 10);
 		mEM.registerSystem(rendererSystem);
@@ -77,11 +80,32 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		mEM.registerSystem(scriptingSystem);
 		mEM.registerSystem(physicsSystem);
 
+		Entity tempEntity = null;
+
 		Random rng = new Random();
 		for (int i = 0; i < 150; i++) {
 			Entity entity = mEM.createEntity(components, 0);
+
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
+
+			if (i == 0) {
+				sceneManager.getRoot().addChild(entity);
+				tempEntity = entity;
+			} else if (i == 1) {
+				entity.isRelative = true;
+				entity.relativeX = 0;
+				entity.relativeY = 100;
+				entity.relativeRotation = 50;
+				tempEntity.addChild(entity);
+			} else {
+				entity.isRelative = false;
+				entity.relativeX = 0;
+				entity.relativeY = 100;
+				entity.relativeRotation = 50;
+				// tempEntity.addChild(entity);
+			}
+
 			cp.rotation = rng.nextFloat() * 360.0f;
 			cp.x = rng.nextFloat() * 1400f;
 			cp.y = rng.nextFloat() * 1400f;
@@ -217,6 +241,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		}
 		counter++;
 		mEM.assignEntities();
+		sceneManager.update();
 	}
 
 	@Override

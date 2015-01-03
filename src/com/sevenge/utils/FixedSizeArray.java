@@ -166,4 +166,8 @@ public class FixedSizeArray<T> {
 		}
 	}
 
+	public void setComparator (Comparator<T> comp) {
+		mSorted = false;
+		mComparator = comp;
+	}
 }

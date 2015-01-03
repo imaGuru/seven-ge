@@ -1,8 +1,6 @@
 
 package com.sevenge.graphics;
 
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
-import static android.opengl.GLES20.glClear;
 import android.opengl.Matrix;
 
 import com.sevenge.SevenGE;
@@ -44,7 +42,6 @@ public class SpriteBatcher {
 	/** Draw the created batches using specified view projection matrix
 	 * @param vpm view projection matrix */
 	public void flush (float[] vpm) {
-		glClear(GL_COLOR_BUFFER_BIT);
 		for (int i = 0; i < mUsedBatches + 1; i++) {
 			mBatches[i].draw(vpm);
 			mBatches[i].clear();

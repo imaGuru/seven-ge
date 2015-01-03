@@ -90,11 +90,19 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			if (rnd < 0.5f) {
 				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_big1");
 				cs.scale = 1f;
-			} else if (rnd < 0.7f)
+				cp.layer = 1;
+				cp.parallaxFactor = 0.7f;
+			} else if (rnd < 0.7f) {
 				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_small2");
-			else if (rnd < 0.75f)
+				cp.layer = 2;
+				cp.parallaxFactor = 0.8f;
+			} else if (rnd < 0.75f) {
+				cp.layer = 3;
+				cp.parallaxFactor = 0.9f;
 				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("meteorBrown_tiny2");
-			else {
+			} else {
+				cp.layer = 4;
+				cp.parallaxFactor = 1f;
 				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("enemyBlack1");
 				AnimationComponent ca = new AnimationComponent();
 				PhysicsComponent physicsComponent = new PhysicsComponent();

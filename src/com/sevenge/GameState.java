@@ -6,6 +6,7 @@ package com.sevenge;
 public abstract class GameState {
 
 	public GameState () {
+		
 	}
 
 	/** Handles destruction and cleanup of the game state */
@@ -29,4 +30,6 @@ public abstract class GameState {
 	 * @param height of the glsurface */
 	public abstract void onSurfaceChange (int width, int height);
 
+	public abstract void load();
+	
 }

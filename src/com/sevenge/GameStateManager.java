@@ -23,17 +23,26 @@ public class GameStateManager {
 				this.currentState.pause();
 				this.currentState.dispose();
 			}
+			
+			currentState.load();
 			currentState.resume();
-			// currentState.update();
+			
 			this.currentState = currentState;
+			
 		}
 
 		/*
 		 * ensures that onSurfaceChange will be called at the beginning of new state and not before width and height are set at
 		 * least once
 		 */
-		if (forceOnSurfaceChange) this.currentState.onSurfaceChange(width, height);
+		if (forceOnSurfaceChange){
+			this.currentState.onSurfaceChange(width, height);
+		}
+	
 
+	}
+	public void load(){
+		this.currentState.load();
 	}
 
 	/** Invokes the update() method of the current GameState */

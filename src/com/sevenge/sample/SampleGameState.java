@@ -4,6 +4,7 @@ package com.sevenge.sample;
 import java.util.Random;
 
 import android.opengl.Matrix;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
@@ -13,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.sevenge.GameActivity;
 import com.sevenge.GameState;
 import com.sevenge.IO;
 import com.sevenge.SevenGE;
@@ -37,7 +39,7 @@ import com.sevenge.input.GestureProcessor;
 import com.sevenge.input.InputProcessor;
 
 public class SampleGameState extends GameState implements InputProcessor, GestureProcessor {
-
+	
 	private static final String TAG = "SampleGameState";
 
 	private EntityManager mEM;
@@ -56,8 +58,9 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private PhysicsSystem physicsSystem;
 
 	private int counter = 0;
-
-	public SampleGameState () {
+	
+	@Override
+	public void load() {
 		SevenGE.input.addInputProcessor(this);
 		SevenGE.input.addGestureProcessor(this);
 
@@ -76,6 +79,37 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		mEM.registerSystem(cameraSystem);
 		mEM.registerSystem(scriptingSystem);
 		mEM.registerSystem(physicsSystem);
+		
+		//camera start
+		
+		CameraComponent cc = new CameraComponent();
+		
+		int width = SevenGE.getWidth();
+		int height = SevenGE.getHeight();
+		
+		cc.height = height;
+		cc.width = width;
+		cc.scaledHeight = height;
+		cc.scaledWidth = width;
+		cc.scale = 0.7f;
+
+		PositionComponent camp = new PositionComponent();
+		camp.x = 700;
+		camp.y = 650;
+
+		Camera2D.lookAt(camp.x, camp.y, cc.viewMatrix);
+		Camera2D.setOrthoProjection(width / cc.scale, height / cc.scale, cc.projectionMatrix);
+		Camera2D.getVPM(cc.viewProjectionMatrix, cc.projectionMatrix, cc.viewMatrix);
+		Matrix.invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
+
+		Entity camera = mEM.createEntity(components, 0);
+		camera.addComponent(cc, 2);
+		camera.addComponent(camp, 0);
+
+		cameraSystem.setCamera(camera);
+		rendererSystem.setCamera(camera);
+		
+		//camera end
 
 		Random rng = new Random();
 		for (int i = 0; i < 150; i++) {
@@ -175,34 +209,18 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		music = (Music)SevenGE.assetManager.getAsset("music1");
 		music.setLooping(true);
 		music.play();
+		
+	}
+
+	public SampleGameState () {
+		
 
 	}
 
 	@Override
-	public void onSurfaceChange (int width, int height) {
+	public void onSurfaceChange (int w, int h) {
 
-		CameraComponent cc = new CameraComponent();
-		cc.height = height;
-		cc.width = width;
-		cc.scaledHeight = height;
-		cc.scaledWidth = width;
-		cc.scale = 0.7f;
 
-		PositionComponent cp = new PositionComponent();
-		cp.x = 700;
-		cp.y = 650;
-
-		Camera2D.lookAt(cp.x, cp.y, cc.viewMatrix);
-		Camera2D.setOrthoProjection(width / cc.scale, height / cc.scale, cc.projectionMatrix);
-		Camera2D.getVPM(cc.viewProjectionMatrix, cc.projectionMatrix, cc.viewMatrix);
-		Matrix.invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
-
-		Entity camera = mEM.createEntity(components, 0);
-		camera.addComponent(cc, 2);
-		camera.addComponent(cp, 0);
-
-		cameraSystem.setCamera(camera);
-		rendererSystem.setCamera(camera);
 	}
 
 	@Override
@@ -306,5 +324,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		// TODO Auto-generated method stub
 
 	}
+
+
 
 }

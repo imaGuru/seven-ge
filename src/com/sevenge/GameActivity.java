@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 
 import com.sevenge.utils.DebugLog;
 
@@ -19,7 +20,7 @@ public class GameActivity extends Activity {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		DebugLog.d(TAG, "onCreate");
 		setContentView(R.layout.activity_main);
 		glSurfaceView = (GLSurfaceView)findViewById(R.id.glSurfaceView);

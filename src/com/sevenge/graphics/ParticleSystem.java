@@ -52,7 +52,7 @@ public class ParticleSystem {
 		particles[currentOffset++] = direction.y;
 		particles[currentOffset++] = direction.z;
 		particles[currentOffset++] = particleStartTime;
-		vertexArray.put(particles, TOTAL_COMPONENT_COUNT, particleOffset);
+		vertexArray.put(particles, particleOffset, TOTAL_COMPONENT_COUNT);
 	}
 
 	public void draw (float[] vpMatrix, float time, int textureId) {

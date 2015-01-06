@@ -10,6 +10,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
+import android.opengl.Matrix;
+
+import com.sevenge.assets.TextureRegion;
+
 /** Drawable batch of sprites using a single texture */
 public class SpriteBatch extends Batch {
 
@@ -21,9 +25,9 @@ public class SpriteBatch extends Batch {
 	private ShortBuffer mIndexBuffer;
 	/** Shader program used to texture the sprites */
 	public TextureShaderProgram mProgram;
-	/** Face indices data */
-	private short[] mIndices;
+
 	private float[] mSprites;
+	private float[] temp, tempr, vdata, transform;
 
 	private int mSpriteCount = 0;
 	private int mSize = 0;
@@ -43,29 +47,51 @@ public class SpriteBatch extends Batch {
 	 * @param tex2D texture to be used
 	 * @param spriteShader shader to be used
 	 * @param size hint number of sprites */
-	public SpriteBatch (int tex2D, TextureShaderProgram spriteShader, int size, SpriteBatchPool pool) {
-		mPool = pool;
-		mTexture = tex2D;
+	public SpriteBatch (TextureShaderProgram spriteShader, int maxSpriteCount) {
 		mProgram = spriteShader;
-		mSize = size;
-		mIndices = new short[size * INDICES_PER_SPRITE];
-		mSprites = new float[size * VERTICES_PER_SPRITE * (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT)];
-		mVertexArray = new VertexArray(size * (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT)
+		mSize = maxSpriteCount;
+		temp = new float[4];
+		tempr = new float[4];
+		vdata = new float[16];
+		short[] indices = new short[maxSpriteCount * INDICES_PER_SPRITE];
+		mSprites = new float[maxSpriteCount * VERTICES_PER_SPRITE
+			* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT)];
+		mVertexArray = new VertexArray(maxSpriteCount * (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT)
 			* VERTICES_PER_SPRITE);
-		for (int i = 0; i < mSize; i++) {
+		for (int i = 0; i < maxSpriteCount; i++) {
 			int mIndexOffset = i * INDICES_PER_SPRITE;
 			int mVertexOffset = i * VERTICES_PER_SPRITE;
-			mIndices[mIndexOffset] = (short)mVertexOffset;
-			mIndices[mIndexOffset + 1] = (short)(mVertexOffset + 1);
-			mIndices[mIndexOffset + 2] = (short)(mVertexOffset + 2);
-			mIndices[mIndexOffset + 3] = (short)(mVertexOffset);
-			mIndices[mIndexOffset + 4] = (short)(mVertexOffset + 2);
-			mIndices[mIndexOffset + 5] = (short)(mVertexOffset + 3);
+			indices[mIndexOffset] = (short)mVertexOffset;
+			indices[mIndexOffset + 1] = (short)(mVertexOffset + 1);
+			indices[mIndexOffset + 2] = (short)(mVertexOffset + 2);
+			indices[mIndexOffset + 3] = (short)(mVertexOffset);
+			indices[mIndexOffset + 4] = (short)(mVertexOffset + 2);
+			indices[mIndexOffset + 5] = (short)(mVertexOffset + 3);
 			mIndexBuffer = ByteBuffer.allocateDirect(mSize * INDICES_PER_SPRITE * BYTES_PER_SHORT).order(ByteOrder.nativeOrder())
-				.asShortBuffer();
-			mIndexBuffer.put(mIndices, 0, mSize * INDICES_PER_SPRITE);
+				.asShortBuffer().put(indices, 0, mSize * INDICES_PER_SPRITE);
 			mIndexBuffer.position(0);
 		}
+	}
+
+	public void addSprite (float x, float y, float rotation, float scaleX, float scaleY, TextureRegion sprite) {
+		float[] uvs = sprite.UVs;
+		float[] v = sprite.vertices;
+		Matrix.setIdentityM(transform, 0);
+		Matrix.translateM(transform, 0, x, y, 0f);
+		Matrix.rotateM(transform, 0, rotation, 0f, 0f, -1.0f);
+		Matrix.scaleM(transform, 0, scaleX, scaleY, 1);
+		for (int i = 0; i < 4; i++) {
+			temp[0] = v[i * 2];
+			temp[1] = v[i * 2 + 1];
+			temp[2] = 0;
+			temp[3] = 1;
+			Matrix.multiplyMV(tempr, 0, transform, 0, temp, 0);
+			vdata[i * 4] = tempr[0];
+			vdata[i * 4 + 1] = tempr[1];
+			vdata[i * 4 + 2] = uvs[i * 2];
+			vdata[i * 4 + 3] = uvs[i * 2 + 1];
+		}
+		add(vdata);
 	}
 
 	/** Add sprite opengl data
@@ -103,13 +129,7 @@ public class SpriteBatch extends Batch {
 	}
 
 	@Override
-	void release () {
-		mPool.release(this);
-
-	}
-
-	@Override
-	int getRemaining () {
+	public int getRemaining () {
 		return mSize - mSpriteCount;
 	}
 }

@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.sevenge.IO;
 import com.sevenge.graphics.TextureUtils;
 
@@ -25,6 +27,7 @@ public class TextureLoader extends AssetLoader {
 				JSONObject jTexture = jarr.getJSONObject(i);
 				assetManager.registerAsset(jTexture.getString("id"),
 					TextureUtils.createTexture(IO.openAsset(jTexture.getString("path"))));
+				Log.d("assets",jTexture.getString("id")+" "+jTexture.getString("path") );
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

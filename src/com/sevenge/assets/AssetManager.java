@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.sevenge.IO;
+import com.sevenge.utils.DebugLog;
 
 public class AssetManager {
 	private final String TAG = "AssetManager";
@@ -41,11 +42,17 @@ public class AssetManager {
 		String content;
 		try {
 			content = IO.readToString(IO.openAsset(path));
+			
 			JSONObject pkg = new JSONObject(content);
+			
 			AssetLoader al = loaders.get("assets");
+			
 			al.load(pkg.getJSONArray("assets").toString());
+		
 			for (String temp : order) {
+				
 				al= loaders.get(temp);
+				
 				al.load(pkg.getJSONArray(temp).toString());
 			}
 			

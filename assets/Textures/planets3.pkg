@@ -1,0 +1,22 @@
+{textureID:"planets3",
+"frames": [
+
+{
+	"filename": "Ice Giant.png",
+	"frame": {"x":2,"y":2,"w":520,"h":519},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":520,"h":519},
+	"sourceSize": {"w":520,"h":519},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "planets3.png",
+	"format": "RGBA8888",
+	"size": {"w":1024,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:25d479f58c1ce63fdb88fa7f30eaf7bd:dd6585278d4f0150fd43c70ec5534ce6:a77d6025369ef5156b6564fb9c8acb95$"
+}
+}

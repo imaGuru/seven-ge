@@ -1,0 +1,128 @@
+{
+	"assets": [
+		{
+			"key" ="shader"
+		},
+		{
+			"key" ="program"
+		},
+		
+		{
+			"key" ="texture"
+		},
+		{
+			"key" ="spriteSheet"
+		},
+		
+		
+		
+		{
+			"key" ="audio"
+		}
+		],
+	"audio": [
+		{
+			"id":"music1",
+			"type":"music",
+			"path":"Music/intro.mp3"
+		}],
+	"shader": [
+		{
+			"id":"shader1",
+			"type":"vertex",
+			"path":"Shaders/texture_vertex_shader.glsl"
+		},
+		{
+			"id":"shader2",
+			"type":"fragment",
+			"path":"Shaders/texture_fragment_shader.glsl"
+		},
+		{
+			"id":"shader3",
+			"type":"vertex",
+			"path":"Shaders/simple_vertex_shader.glsl"
+		},
+		{
+			"id":"shader4",
+			"type":"fragment",
+			"path":"Shaders/simple_fragment_shader.glsl"
+		}],
+	"program": [
+		{
+			"id":"spriteShader",
+			"vertexShader":"shader1",
+			"fragmentShader":"shader2"
+		}],
+	"texture": [
+		{ 
+			"id":"dust0",
+			"path":"Textures/dust0.png"
+		},
+		{
+			"id":"dust1",
+			"path":"Textures/dust1.png"
+		},
+		{ 
+			"id":"dust2",
+			"path":"Textures/dust2.png"
+		},
+		{ 
+			"id":"dust3",
+			"path":"Textures/dust3.png"
+		},
+		{ 
+			"id":"planets0",
+			"path":"Textures/planets0.png"
+		},
+		{ 
+			"id":"planets1",
+			"path":"Textures/planets1.png"
+		},
+		{ 
+			"id":"planets2",
+			"path":"Textures/planets2.png"
+		},
+		{ 
+			"id":"planets3",
+			"path":"Textures/planets3.png"
+		}
+
+
+		],
+	"spriteSheet" : [
+		{
+			"id":"dust0.pkg",
+			"path":"Textures/dust0.pkg"
+		},
+		{
+			"id":"dust1",
+			"path":"Textures/dust1.pkg"
+		},
+		{ 
+			"id":"dust2",
+			"path":"Textures/dust2.pkg"
+		},
+		{ 
+			"id":"dust3",
+			"path":"Textures/dust3.pkg"
+		},
+		{ 
+			"id":"planets0",
+			"path":"Textures/planets0.pkg"
+		},
+		{ 
+			"id":"planets1",
+			"path":"Textures/planets1.pkg"
+		},
+		{ 
+			"id":"planets2",
+			"path":"Textures/planets2.pkg"
+		},
+		{ 
+			"id":"planets3",
+			"path":"Textures/planets3.pkg"
+		}
+
+
+		]
+}

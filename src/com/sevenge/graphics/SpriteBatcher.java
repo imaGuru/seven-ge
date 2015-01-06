@@ -31,9 +31,9 @@ public class SpriteBatcher {
 	public SpriteBatcher (int sizeHint, int batchSizeHint) {
 		mUsedBatches = -1;
 		mBatches = new Batch[sizeHint];
-		mTSP = (TextureShaderProgram)SevenGE.assetManager.getAsset("spriteShader");
-		Shader v = (Shader)SevenGE.assetManager.getAsset("shader3");
-		Shader f = (Shader)SevenGE.assetManager.getAsset("shader4");
+		mTSP = (TextureShaderProgram)SevenGE.getAssetManager().getAsset("spriteShader");
+		Shader v = (Shader)SevenGE.getAssetManager().getAsset("shader3");
+		Shader f = (Shader)SevenGE.getAssetManager().getAsset("shader4");
 		mCSP = new ColorShaderProgram(v.glID, f.glID);
 		spriteBatchPool = new SpriteBatchPool(sizeHint, mTSP, batchSizeHint);
 		primitiveBatchPool = new PrimitiveBatchPool(sizeHint, mCSP, batchSizeHint * 2);

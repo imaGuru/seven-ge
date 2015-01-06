@@ -19,12 +19,10 @@ public class GameActivity extends Activity {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		DebugLog.d(TAG, "onCreate");
 		setContentView(R.layout.activity_main);
 		glSurfaceView = (GLSurfaceView)findViewById(R.id.glSurfaceView);
 		gameEngine = new SevenGE(this, glSurfaceView);
-
 	}
 
 	/** Handles pausing the game engine */
@@ -39,10 +37,8 @@ public class GameActivity extends Activity {
 	protected void onResume () {
 		super.onResume();
 		gameEngine.onResume();
-
 	}
 
-	/** ??? */
 	@Override
 	public void onConfigurationChanged (Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);

@@ -36,21 +36,7 @@ public class RendererSystem extends SubSystem {
 
 	public RendererSystem (int size) {
 		super(SpriteComponent.MASK | PositionComponent.MASK, size);
-
-		globalStartTime = System.nanoTime();
-		t = (Texture)SevenGE.assetManager.getAsset("particle");
-		Shader vs = (Shader)SevenGE.assetManager.getAsset("shader5");
-		Shader fs = (Shader)SevenGE.assetManager.getAsset("shader6");
-		ParticleShaderProgram particleProgram = new ParticleShaderProgram(vs.glID, fs.glID);
-		particleSystem = new ParticleSystem(1000, particleProgram);
-		globalStartTime = System.nanoTime();
-		final Vector particleDirection = new Vector(0.0f, 100.0f, 0f);
-		redParticleShooter = new ParticleShooter(new Vector(600.0f, 100f, 0f), particleDirection, Color.rgb(255, 50, 5), 5.0f, 2.0f);
-
-		font = (Font)SevenGE.assetManager.getAsset("font");
-		glEnable(GL_BLEND);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		mSpriteBatcher = new SpriteBatcher(5, 400);
 		mEntities.setComparator(Entity.SortByLayerAndTexture);
 	}
 
@@ -82,8 +68,5 @@ public class RendererSystem extends SubSystem {
 			mSpriteBatcher.drawSprite(cp.x, cp.y, cp.rotation, cs.scale, cs.scale, sprite);
 		}
 		mSpriteBatcher.flush(mCameraCC.viewProjectionMatrix);
-		float currentTime = (System.nanoTime() - globalStartTime) / 1000000000f;
-		redParticleShooter.addParticles(particleSystem, currentTime, 5);
-		particleSystem.draw(mCameraCC.viewProjectionMatrix, currentTime, t.glID);
 	}
 }

@@ -136,6 +136,7 @@ public class FontUtils {
 				y += font.cellHeight; // Move to Next Row (Cell)
 			}
 		}
+		font.texture = tex.glID;
 		return font;
 	}
 

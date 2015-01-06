@@ -335,22 +335,20 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	}
 
 	@Override
-	public boolean onScale (ScaleGestureDetector detector) {
-		float scale = lastScale * firstSpan / detector.getCurrentSpan();
+	public boolean onScale (float currentSpan) {
+		float scale = lastScale * firstSpan / currentSpan;
 		camera.setZoom(scale);
-		Log.d("WTF", "scale" + scale + " " + firstSpan + " " + detector.getCurrentSpan());
 		return true;
 	}
 
 	@Override
-	public void onScaleEnd (ScaleGestureDetector detector) {
-		Log.d("WTF", "end" + lastScale);
+	public void onScaleEnd (float currentSpan) {
 	}
 
 	@Override
-	public void onScaleBegin (ScaleGestureDetector detector) {
+	public void onScaleBegin (float currentSpan) {
 		lastScale = camera.getZoom();
-		firstSpan = detector.getCurrentSpan();
+		firstSpan = currentSpan;
 	}
 
 }

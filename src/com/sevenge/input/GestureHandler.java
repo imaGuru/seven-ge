@@ -115,7 +115,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 		synchronized (input) {
 			Gesture g = new Gesture();
 			g.type = Gesture.SCALE;
-			g.detector = detector;
+			g.currentSpan = detector.getCurrentSpan();
 			input.gesturesBuffer.add(g);
 			Log.d("WTFOMFG", "scale" + detector.getCurrentSpan());
 		}
@@ -130,7 +130,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 		synchronized (input) {
 			Gesture g = new Gesture();
 			g.type = Gesture.SCALE_BEGIN;
-			g.detector = detector;
+			g.currentSpan = detector.getCurrentSpan();
 			input.gesturesBuffer.add(g);
 		}
 
@@ -145,7 +145,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 		synchronized (input) {
 			Gesture g = new Gesture();
 			g.type = Gesture.SCALE_END;
-			g.detector = detector;
+			g.currentSpan = detector.getCurrentSpan();
 			input.gesturesBuffer.add(g);
 		}
 	}

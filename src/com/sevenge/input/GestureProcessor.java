@@ -16,10 +16,10 @@ public interface GestureProcessor {
 
 	public boolean onScroll (MotionEvent arg0, MotionEvent arg1, float arg2, float arg3);
 
-	public boolean onScale (ScaleGestureDetector detector);
+	public boolean onScale (float currentSpan);
 
-	public void onScaleEnd (ScaleGestureDetector detector);
+	public void onScaleEnd (float currentSpan);
 
-	public void onScaleBegin (ScaleGestureDetector detector);
+	public void onScaleBegin (float currentSpan);
 
 }

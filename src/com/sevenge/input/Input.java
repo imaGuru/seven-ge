@@ -97,7 +97,7 @@ public class Input implements OnTouchListener {
 		MotionEvent motionEvent1, motionEvent2;
 		float distX, distY;
 		float velX, velY;
-		ScaleGestureDetector detector;
+		float currentSpan;
 
 	}
 
@@ -238,15 +238,15 @@ public class Input implements OnTouchListener {
 					break;
 				case Gesture.SCALE:
 					for (GestureProcessor gp : gestureProcessors)
-						gp.onScale(g.detector);
+						gp.onScale(g.currentSpan);
 					break;
 				case Gesture.SCALE_END:
 					for (GestureProcessor gp : gestureProcessors)
-						gp.onScaleEnd(g.detector);
+						gp.onScaleEnd(g.currentSpan);
 					break;
 				case Gesture.SCALE_BEGIN:
 					for (GestureProcessor gp : gestureProcessors)
-						gp.onScaleBegin(g.detector);
+						gp.onScaleBegin(g.currentSpan);
 					break;
 				}
 

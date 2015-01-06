@@ -1,6 +1,8 @@
 
 package com.sevenge;
 
+import static android.opengl.GLES20.GL_CULL_FACE;
+import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glViewport;
 
 import java.io.IOException;
@@ -28,25 +30,25 @@ import fi.iki.elonen.HelloServer;
 /** Class exposing game engine subsystems anywhere in the code. */
 public class SevenGE implements Renderer {
 	private static final String TAG = "GameEngine";
-	public static Input input;
-	public static Audio audio;
-	public static AssetManager assetManager;
-	public static GameStateManager stateManager;
+	public static final long FRAME_TIME = 33;
 
 	enum GLGameState {
 		Initialized, Running, Paused, Finished, Idle
 	}
 
+	private GLGameState state;
+	private Object stateChanged = new Object();
+
+	private static Input input;
+	private static Audio audio;
+	private static AssetManager assetManager;
+	private static GameStateManager stateManager;
+	private GLSurfaceView mGLSurfaceView;
+	private Activity mActivity;
+
 	private long mStartTime = 0;
 	private long mLastTime = 0;
 	private long mAccum = 0;
-	public static final long FRAME_TIME = 33;
-
-	private GLSurfaceView mGLSurfaceView;
-	private Activity mActivity;
-	/** Current state the game engine is in */
-	private GLGameState state;
-	private Object stateChanged = new Object();
 
 	public SevenGE (Activity activity, GLSurfaceView glSurfaceView) {
 		final ActivityManager activityManager = (ActivityManager)activity.getSystemService(Context.ACTIVITY_SERVICE);
@@ -67,7 +69,6 @@ public class SevenGE implements Renderer {
 		try {
 			server.start();
 		} catch (IOException e) {
-
 			e.printStackTrace();
 		}
 
@@ -172,7 +173,23 @@ public class SevenGE implements Renderer {
 	@Override
 	public void onSurfaceCreated (GL10 gl, EGLConfig config) {
 		DebugLog.d(TAG, "onSurfaceCreated");
+		glEnable(GL_CULL_FACE);
+	}
 
+	public static AssetManager getAssetManager () {
+		return assetManager;
+	}
+
+	public static Audio getAudio () {
+		return audio;
+	}
+
+	public static Input getInput () {
+		return input;
+	}
+
+	public static GameStateManager getStateManager () {
+		return stateManager;
 	}
 
 }

@@ -22,7 +22,7 @@ import com.sevenge.utils.DebugLog;
 
 /** Class creating opengl shader and holding reference to opengl object */
 public class ShaderUtils {
-	private static final String TAG = "Shader";
+	private static final String TAG = "ShaderUtils";
 
 	/** Creates shader of specified type (vertex, fragment)
 	 * @param shaderCode string with shader code to compile

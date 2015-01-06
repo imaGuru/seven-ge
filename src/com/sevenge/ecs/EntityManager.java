@@ -15,8 +15,8 @@ public class EntityManager {
 	 * @param size maximum number of entities
 	 * @param systemsSize maximum number of systems */
 	public EntityManager (int size, int systemsSize) {
-		mEntities = new FixedSizeArray<Entity>(size, new EntityComparator());
-		mSystemArrays = new FixedSizeArray<SubSystem>(systemsSize, new SystemComparator());
+		mEntities = new FixedSizeArray<Entity>(size, Entity.SortByID);
+		mSystemArrays = new FixedSizeArray<SubSystem>(systemsSize, SubSystem.SortByMASK);
 	}
 
 	/** Creates new entity with specified component array and mask

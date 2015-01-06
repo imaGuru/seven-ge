@@ -1,8 +1,8 @@
 
 package com.sevenge.ecs;
 
-import java.util.Comparator;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Entity {
@@ -64,5 +64,12 @@ public class Entity {
 				return cs1.textureRegion.texture - cs2.textureRegion.texture;
 		}
 
+	};
+
+	public static Comparator<Entity> SortByID = new Comparator<Entity>() {
+		@Override
+		public int compare (Entity lhs, Entity rhs) {
+			return lhs.mId - rhs.mId;
+		}
 	};
 }

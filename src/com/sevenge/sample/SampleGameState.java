@@ -258,7 +258,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void dispose () {
-
+		input.removeInputProcessor(this);
+		input.removeGestureProcessor(this);
 	}
 
 	@Override
@@ -293,7 +294,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void onLongPress (MotionEvent arg0) {
-		// Log.d(TAG, "onLongPress");
+		SevenGE.getStateManager().setCurrentState(new SampleGameState());
 
 	}
 

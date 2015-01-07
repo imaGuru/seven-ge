@@ -268,6 +268,14 @@ public class Input implements OnTouchListener {
 
 	public void addInputProcessor (InputProcessor inputProcessor) {
 		this.inputProcessors.add(inputProcessor);
-
 	}
+	
+	public void removeGestureProcessor (GestureProcessor gestureProcessor){
+		this.gestureProcessors.remove(gestureProcessor);
+	}
+	
+	public void removeInputProcessor (InputProcessor inputProcessor){
+		this.inputProcessors.remove(inputProcessor);
+	}
+	
 }

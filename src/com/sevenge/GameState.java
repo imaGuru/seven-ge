@@ -29,4 +29,6 @@ public abstract class GameState {
 	 * @param height of the glsurface */
 	public abstract void onSurfaceChange (int width, int height);
 
+	public abstract void load();
+
 }

@@ -4,8 +4,6 @@ package com.sevenge;
 public class GameStateManager {
 
 	private GameState currentState = null;
-	private int width;
-	private int height;
 
 	/** Sets the current game state
 	 * @param currentState the GameState instance which will be set */
@@ -14,26 +12,22 @@ public class GameStateManager {
 			throw new NullPointerException("Cannot set a null State");
 		}
 
-		boolean forceOnSurfaceChange = false;
-
-		if (this.currentState != null) forceOnSurfaceChange = true;
-
 		if (this.currentState != currentState) {
 			if (this.currentState != null) {
 				this.currentState.pause();
 				this.currentState.dispose();
 			}
+			
+			currentState.load();
 			currentState.resume();
-			// currentState.update();
+			
 			this.currentState = currentState;
+			
 		}
 
-		/*
-		 * ensures that onSurfaceChange will be called at the beginning of new state and not before width and height are set at
-		 * least once
-		 */
-		if (forceOnSurfaceChange) this.currentState.onSurfaceChange(width, height);
-
+	}
+	public void load(){
+		this.currentState.load();
 	}
 
 	/** Invokes the update() method of the current GameState */
@@ -60,12 +54,4 @@ public class GameStateManager {
 	public void dispose () {
 		this.currentState.dispose();
 	}
-
-	/** Invokes the onSurfaceChange() method of the current GameState */
-	public void onSurfaceChange (int width, int height) {
-		this.currentState.onSurfaceChange(width, height);
-		this.width = width;
-		this.height = height;
-	}
-
 }

@@ -56,7 +56,9 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private AssetManager assetManager;
 	private Input input;
 
-	public SampleGameState () {
+
+	@Override
+	public void load() {
 		input = SevenGE.getInput();
 		input.addInputProcessor(this);
 		input.addGestureProcessor(this);
@@ -74,6 +76,16 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		mEM.registerSystem(animationSystem);
 		mEM.registerSystem(scriptingSystem);
 		mEM.registerSystem(physicsSystem);
+		
+		mWidth = SevenGE.getWidth();
+		mHeight = SevenGE.getHeight();
+		
+		camera = new Camera(mWidth, mHeight);
+		camera.setPostion(0.0f, 0.0f);
+		camera.setRotation(0.0f);
+		camera.setZoom(1.0f);
+
+		rendererSystem.setCamera(camera);
 
 		Random rng = new Random();
 		for (int i = 0; i < 150; i++) {
@@ -221,20 +233,13 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		music = (Music)assetManager.getAsset("music1");
 		music.setLooping(true);
 		music.play();
-
+		
 	}
-
+	
 	@Override
 	public void onSurfaceChange (int width, int height) {
 
-		camera = new Camera(width, height);
-		camera.setPostion(0.0f, 0.0f);
-		camera.setRotation(0.0f);
-		camera.setZoom(1.0f);
-
-		mWidth = width;
-		mHeight = height;
-		rendererSystem.setCamera(camera);
+	
 	}
 
 	@Override

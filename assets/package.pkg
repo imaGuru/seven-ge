@@ -85,8 +85,15 @@
 		{ 
 			"id":"planets3",
 			"path":"Textures/planets3.png"
+		},
+		{ 
+			"id":"ships",
+			"path":"Textures/ships.png"
+		},
+		{ 
+			"id":"asteroids",
+			"path":"Textures/asteroids.png"
 		}
-
 
 		],
 	"spriteSheet" : [
@@ -121,8 +128,15 @@
 		{ 
 			"id":"planets3",
 			"path":"Textures/planets3.pkg"
+		},
+		{ 
+			"id":"ships",
+			"path":"Textures/ships.pkg"
+		},
+		{ 
+			"id":"asteroids",
+			"path":"Textures/asteroids.pkg"
 		}
-
 
 		]
 }

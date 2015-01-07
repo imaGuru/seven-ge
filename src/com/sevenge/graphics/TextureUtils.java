@@ -6,7 +6,6 @@ import static android.opengl.GLES20.GL_LINEAR_MIPMAP_LINEAR;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.GL_TEXTURE_MAG_FILTER;
 import static android.opengl.GLES20.GL_TEXTURE_MIN_FILTER;
-import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glDeleteTextures;
 import static android.opengl.GLES20.glGenTextures;
@@ -50,13 +49,6 @@ public class TextureUtils {
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		return new Texture(textureID[0], bitmap.getWidth(), bitmap.getHeight());
-	}
-
-	/** Bind this texture to use it for drawing
-	 * @param textureUnit texture unit to use */
-	public static void bindTexture (int textureUnit, int glID) {
-		glActiveTexture(textureUnit);
-		glBindTexture(GL_TEXTURE_2D, glID);
 	}
 
 	public static Texture createTexture (Bitmap bitmap) {

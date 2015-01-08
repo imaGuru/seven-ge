@@ -21,14 +21,16 @@ public class Pool<T> {
 
 	public T newObject () {
 		T object = null;
-		if (freeObjects.isEmpty())
+		if (freeObjects.isEmpty()) {
 			object = factory.createObject();
-		else
+		} else {
 			object = freeObjects.remove(freeObjects.size() - 1);
+		}
 		return object;
 	}
 
 	public void free (T object) {
+
 		if (freeObjects.size() < maxSize) freeObjects.add(object);
 	}
 

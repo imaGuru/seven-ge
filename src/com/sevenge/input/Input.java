@@ -10,6 +10,9 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+import com.sevenge.utils.Pool;
+import com.sevenge.utils.Pool.PoolObjectFactory;
+
 public class Input implements OnTouchListener {
 
 	private static final int POOL_SIZE = 100;
@@ -17,8 +20,8 @@ public class Input implements OnTouchListener {
 	public static final int NUM_TOUCHPOINTS = 5;
 	public static final int INVALID_POINTER_ID = -1;
 
-	private ArrayList<InputProcessor> inputProcessors = new ArrayList<InputProcessor>();
-	private ArrayList<GestureProcessor> gestureProcessors = new ArrayList<GestureProcessor>();
+	private ArrayList<InputProcessor> inputProcessors = new ArrayList<InputProcessor>(10);
+	private ArrayList<GestureProcessor> gestureProcessors = new ArrayList<GestureProcessor>(10);
 
 	private long currentEventTimeStamp = System.nanoTime();
 	TouchHandler touchDetector = new TouchHandler();
@@ -42,29 +45,29 @@ public class Input implements OnTouchListener {
 	ArrayList<TouchEvent> touchEventsBuffer = new ArrayList<TouchEvent>();
 	ArrayList<Gesture> gesturesBuffer = new ArrayList<Gesture>();
 
-// Pool<TouchEvent> touchEventPool;
-// Pool<Gesture> gesturePool;
+	Pool<TouchEvent> touchEventPool;
+	Pool<Gesture> gesturePool;
 
 	public Input (Activity activity) {
 		gestureDetector = new GestureDetectorCompat(activity, gestureHandler);
 		SGD = new ScaleGestureDetector(activity, gestureHandler);
 
-// PoolObjectFactory<TouchEvent> touchEventFactory = new PoolObjectFactory<TouchEvent>() {
-// @Override
-// public TouchEvent createObject() {
-// return new TouchEvent();
-// }
-// };
-//
-// PoolObjectFactory<Gesture> gestureFactory = new PoolObjectFactory<Gesture>() {
-// @Override
-// public Gesture createObject() {
-// return new Gesture();
-// }
-// };
+		PoolObjectFactory<TouchEvent> touchEventFactory = new PoolObjectFactory<TouchEvent>() {
+			@Override
+			public TouchEvent createObject () {
+				return new TouchEvent();
+			}
+		};
 
-// touchEventPool = new Pool<TouchEvent>(touchEventFactory, POOL_SIZE);
-// gesturePool = new Pool<Gesture>(gestureFactory, POOL_SIZE);
+		PoolObjectFactory<Gesture> gestureFactory = new PoolObjectFactory<Gesture>() {
+			@Override
+			public Gesture createObject () {
+				return new Gesture();
+			}
+		};
+
+		touchEventPool = new Pool<TouchEvent>(touchEventFactory, POOL_SIZE);
+		gesturePool = new Pool<Gesture>(gestureFactory, POOL_SIZE);
 	}
 
 	static class TouchEvent {
@@ -150,18 +153,14 @@ public class Input implements OnTouchListener {
 
 		synchronized (this) {
 
-			// for (int i = 0; i < touchEventsBuffer.size(); i++) {
-			// touchEventPool.free(touchEventsBuffer.get(i));
-			// }
-			//
-			// for (int i = 0; i < gesturesBuffer.size(); i++) {
-			// gesturePool.free(gesturesBuffer.get(i));
-			// }
-
 			touchEvents.clear();
 			gestures.clear();
-			touchEvents.addAll(touchEventsBuffer);
-			gestures.addAll(gesturesBuffer);
+			for (int i = 0; i < touchEventsBuffer.size(); i++) {
+				touchEvents.add(touchEventsBuffer.get(i));
+			}
+			for (int i = 0; i < gesturesBuffer.size(); i++) {
+				gestures.add(gesturesBuffer.get(i));
+			}
 			touchEventsBuffer.clear();
 			gesturesBuffer.clear();
 
@@ -169,6 +168,16 @@ public class Input implements OnTouchListener {
 
 		processTouchEvents();
 		processGestures();
+
+		synchronized (this) {
+			for (int i = 0; i < touchEvents.size(); i++) {
+				touchEventPool.free(touchEvents.get(i));
+			}
+
+			for (int i = 0; i < gestures.size(); i++) {
+				gesturePool.free(gestures.get(i));
+			}
+		}
 
 	}
 
@@ -182,17 +191,16 @@ public class Input implements OnTouchListener {
 				currentEventTimeStamp = e.timeStamp;
 				switch (e.type) {
 				case TouchEvent.TOUCH_DOWN:
-					for (InputProcessor ip : inputProcessors)
-						ip.touchDown(e.x, e.y, e.pointer, e.button);
+					for (int j = 0; j < inputProcessors.size(); j++)
+						inputProcessors.get(j).touchDown(e.x, e.y, e.pointer, e.button);
 					break;
 				case TouchEvent.TOUCH_UP:
-					for (InputProcessor ip : inputProcessors)
-						ip.touchUp(e.x, e.y, e.pointer, e.button);
+					for (int j = 0; j < inputProcessors.size(); j++)
+						inputProcessors.get(j).touchUp(e.x, e.y, e.pointer, e.button);
 					break;
 				case TouchEvent.TOUCH_MOVED:
-
-					for (InputProcessor ip : inputProcessors)
-						ip.touchMove(e.x, e.y, e.pointer);
+					for (int j = 0; j < inputProcessors.size(); j++)
+						inputProcessors.get(j).touchMove(e.x, e.y, e.pointer);
 					break;
 				}
 			}
@@ -204,7 +212,6 @@ public class Input implements OnTouchListener {
 				deltaY[0] = 0;
 			}
 		}
-
 	}
 
 	private void processGestures () {
@@ -217,39 +224,38 @@ public class Input implements OnTouchListener {
 
 				switch (g.type) {
 				case Gesture.DOUBLETAP:
-					for (GestureProcessor gp : gestureProcessors)
-						gp.onDoubleTap(g.motionEvent1);
+					for (int j = 0; j < gestureProcessors.size(); j++)
+						gestureProcessors.get(j).onDoubleTap(g.motionEvent1);
 					break;
 				case Gesture.FLING:
-					for (GestureProcessor gp : gestureProcessors)
-						gp.onFling(g.motionEvent1, g.motionEvent2, g.velX, g.velY);
+					for (int j = 0; j < gestureProcessors.size(); j++)
+						gestureProcessors.get(j).onFling(g.motionEvent1, g.motionEvent2, g.velX, g.velY);
 					break;
 				case Gesture.LONGPRESS:
-					for (GestureProcessor gp : gestureProcessors)
-						gp.onLongPress(g.motionEvent1);
+					for (int j = 0; j < gestureProcessors.size(); j++)
+						gestureProcessors.get(j).onLongPress(g.motionEvent1);
 					break;
 				case Gesture.SCROLL:
-					for (GestureProcessor gp : gestureProcessors)
-						gp.onScroll(g.motionEvent1, g.motionEvent2, g.distX, g.distY);
+					for (int j = 0; j < gestureProcessors.size(); j++)
+						gestureProcessors.get(j).onScroll(g.motionEvent1, g.motionEvent2, g.distX, g.distY);
 					break;
 				case Gesture.TAP:
-					for (GestureProcessor gp : gestureProcessors)
-						gp.onSingleTapConfirmed(g.motionEvent1);
+					for (int j = 0; j < gestureProcessors.size(); j++)
+						gestureProcessors.get(j).onSingleTapConfirmed(g.motionEvent1);
 					break;
 				case Gesture.SCALE:
-					for (GestureProcessor gp : gestureProcessors)
-						gp.onScale(g.currentSpan);
+					for (int j = 0; j < gestureProcessors.size(); j++)
+						gestureProcessors.get(j).onScale(g.currentSpan);
 					break;
 				case Gesture.SCALE_END:
-					for (GestureProcessor gp : gestureProcessors)
-						gp.onScaleEnd(g.currentSpan);
+					for (int j = 0; j < gestureProcessors.size(); j++)
+						gestureProcessors.get(j).onScaleEnd(g.currentSpan);
 					break;
 				case Gesture.SCALE_BEGIN:
-					for (GestureProcessor gp : gestureProcessors)
-						gp.onScaleBegin(g.currentSpan);
+					for (int j = 0; j < gestureProcessors.size(); j++)
+						gestureProcessors.get(j).onScaleBegin(g.currentSpan);
 					break;
 				}
-
 			}
 		}
 
@@ -269,13 +275,13 @@ public class Input implements OnTouchListener {
 	public void addInputProcessor (InputProcessor inputProcessor) {
 		this.inputProcessors.add(inputProcessor);
 	}
-	
-	public void removeGestureProcessor (GestureProcessor gestureProcessor){
+
+	public void removeGestureProcessor (GestureProcessor gestureProcessor) {
 		this.gestureProcessors.remove(gestureProcessor);
 	}
-	
-	public void removeInputProcessor (InputProcessor inputProcessor){
+
+	public void removeInputProcessor (InputProcessor inputProcessor) {
 		this.inputProcessors.remove(inputProcessor);
 	}
-	
+
 }

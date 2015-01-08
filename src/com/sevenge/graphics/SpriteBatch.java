@@ -3,9 +3,13 @@ package com.sevenge.graphics;
 
 import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
+import static android.opengl.GLES20.GL_TEXTURE0;
+import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
+import static android.opengl.GLES20.glActiveTexture;
+import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glBlendFunc;
 import static android.opengl.GLES20.glDisable;
 import static android.opengl.GLES20.glDisableVertexAttribArray;
@@ -16,8 +20,6 @@ import static android.opengl.GLES20.glUseProgram;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
-
-import android.opengl.Matrix;
 
 import com.sevenge.assets.Font;
 import com.sevenge.assets.TextureRegion;
@@ -35,7 +37,7 @@ public class SpriteBatch {
 	public TextureShaderProgram mProgram;
 
 	private float[] mSprites;
-	private float[] temp, tempr, vdata, transform;
+	private float[] vdata;
 
 	private int mSpriteCount = 0;
 	private int mSize = 0;
@@ -63,10 +65,8 @@ public class SpriteBatch {
 			ShaderUtils.compileShader(ShaderUtils.textureFragmentShader, GL_FRAGMENT_SHADER));
 		mSize = maxSpriteCount;
 
-		temp = new float[4];
-		tempr = new float[4];
 		vdata = new float[16];
-		transform = new float[16];
+		matrix = new float[16];
 
 		short[] indices = new short[maxSpriteCount * INDICES_PER_SPRITE];
 		mSprites = new float[maxSpriteCount * VERTICES_PER_SPRITE
@@ -91,6 +91,7 @@ public class SpriteBatch {
 
 	public void begin () {
 		glUseProgram(mProgram.mGlID);
+		mProgram.setTextureUniform(mTexture);
 		mVertexArray.setVertexAttribPointer(0, mProgram.mAttributePositionLocation, POSITION_COMPONENT_COUNT, STRIDE);
 		mVertexArray.setVertexAttribPointer(POSITION_COMPONENT_COUNT, mProgram.mAttributeTextureCoordinatesLocation,
 			TEXTURE_COORDINATES_COMPONENT_COUNT, STRIDE);
@@ -109,7 +110,8 @@ public class SpriteBatch {
 			blendingChanged = false;
 		}
 		mProgram.setMatrixUniform(matrix);
-		mProgram.setTextureUniform(mTexture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, mTexture);
 		glDrawElements(GL_TRIANGLES, mSpriteCount * INDICES_PER_SPRITE, GL_UNSIGNED_SHORT, mIndexBuffer);
 		if (spriteCountPeak < mSpriteCount) spriteCountPeak = mSpriteCount;
 		mSpriteCount = 0;
@@ -120,6 +122,7 @@ public class SpriteBatch {
 		if (mSpriteCount > 0) flush();
 		glDisableVertexAttribArray(mProgram.mAttributePositionLocation);
 		glDisableVertexAttribArray(mProgram.mAttributeTextureCoordinatesLocation);
+		glUseProgram(0);
 	}
 
 	public void enableBlending () {
@@ -143,7 +146,7 @@ public class SpriteBatch {
 
 	public void setProjection (float[] matrix) {
 		if (mSpriteCount > 0) flush();
-		this.matrix = matrix;
+		System.arraycopy(matrix, 0, this.matrix, 0, 16);
 	}
 
 	public void drawSprite (float x, float y, float rotation, float scaleX, float scaleY, TextureRegion sprite) {
@@ -156,27 +159,35 @@ public class SpriteBatch {
 		}
 		float[] uvs = sprite.UVs;
 		float[] v = sprite.vertices;
-		Matrix.setIdentityM(transform, 0);
-		Matrix.translateM(transform, 0, x, y, 0f);
-		Matrix.rotateM(transform, 0, rotation, 0f, 0f, -1.0f);
-		Matrix.scaleM(transform, 0, scaleX, scaleY, 1);
-		for (int i = 0; i < 4; i++) {
-			temp[0] = v[i * 2];
-			temp[1] = v[i * 2 + 1];
-			temp[2] = 0;
-			temp[3] = 1;
-			Matrix.multiplyMV(tempr, 0, transform, 0, temp, 0);
-			vdata[i * 4] = tempr[0];
-			vdata[i * 4 + 1] = tempr[1];
-			vdata[i * 4 + 2] = uvs[i * 2];
-			vdata[i * 4 + 3] = uvs[i * 2 + 1];
+		if (rotation != 0) {
+			rotation = (float)Math.toRadians(-rotation);
+			float cos = (float)Math.cos(rotation);
+			float sin = (float)Math.sin(rotation);
+			for (int i = 0; i < 4; i++) {
+				float vx = v[i * 2] * scaleX;
+				float vy = v[i * 2 + 1] * scaleY;
+				vdata[i * 4] = vx * cos - vy * sin + x;
+				vdata[i * 4 + 1] = vx * sin + vy * cos + y;
+				vdata[i * 4 + 2] = uvs[i * 2];
+				vdata[i * 4 + 3] = uvs[i * 2 + 1];
+			}
+		} else {
+			for (int i = 0; i < 4; i++) {
+				float vx = v[i * 2] * scaleX;
+				float vy = v[i * 2 + 1] * scaleY;
+				vdata[i * 4] = vx + x;
+				vdata[i * 4 + 1] = vy + y;
+				vdata[i * 4 + 2] = uvs[i * 2];
+				vdata[i * 4 + 3] = uvs[i * 2 + 1];
+			}
 		}
+
 		System.arraycopy(vdata, 0, mSprites, mSpriteCount * VERTICES_PER_SPRITE
 			* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT), vdata.length);
 		mSpriteCount++;
 	}
 
-	public int drawText (String text, float x, float y, Font font) {
+	public void drawText (String text, float x, float y, Font font) {
 		float chrHeight = font.cellHeight * font.scaleY; // Calculate Scaled Character Height
 		float chrWidth = font.cellWidth * font.scaleX; // Calculate Scaled Character Width
 		int len = text.length(); // Get String Length
@@ -189,6 +200,5 @@ public class SpriteBatch {
 			drawSprite(x, y, 0, font.scaleX, font.scaleY, font.charRgn[c]); // Draw the Character
 			x += (font.charWidths[c] + font.spaceX) * font.scaleX; // Advance X Position by Scaled Character Width
 		}
-		return text.length();
 	}
 }

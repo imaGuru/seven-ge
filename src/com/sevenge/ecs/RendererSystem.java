@@ -8,7 +8,6 @@ import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 
 import com.sevenge.IO;
-import com.sevenge.SevenGE;
 import com.sevenge.assets.Font;
 import com.sevenge.assets.TextureRegion;
 import com.sevenge.graphics.Camera;
@@ -20,6 +19,7 @@ public class RendererSystem extends SubSystem {
 	private Camera mCamera;
 	private SpriteBatch mSpriteBatch;
 	private Font font;
+	private float[] matrix = new float[16];
 
 	public RendererSystem (int size) {
 		super(SpriteComponent.MASK | PositionComponent.MASK, size);
@@ -39,7 +39,7 @@ public class RendererSystem extends SubSystem {
 		mSpriteBatch.enableBlending();
 		mSpriteBatch.setBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		mEntities.sort(false);
-		mSpriteBatch.setProjection(mCamera.getCameraMatrix(1.0f));
+		mSpriteBatch.setProjection(mCamera.getCameraMatrix(0.7f, matrix));
 		for (int j = 0; j < mEntities.getCount(); j++) {
 			Entity entity = mEntities.get(j);
 			PositionComponent cp = (PositionComponent)entity.mComponents[0];
@@ -47,7 +47,8 @@ public class RendererSystem extends SubSystem {
 			TextureRegion sprite = cs.textureRegion;
 			mSpriteBatch.drawSprite(cp.x, cp.y, cp.rotation, cs.scale, cs.scale, sprite);
 		}
-		mSpriteBatch.drawText("This is a test of the new SpriteBatch API FPS:" + SevenGE.fps, 500, 500, font);
+		mSpriteBatch.setProjection(mCamera.getCameraMatrix(1.0f, matrix));
+		mSpriteBatch.drawText("This is a test of the new SpriteBatch API FPS:", 500, 500, font);
 		mSpriteBatch.end();
 	}
 }

@@ -302,10 +302,10 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		float me2x = me2.getX();
 		float me2y = me2.getY();
 
-		float[] coords = camera.unproject((int)(me2x + distX), (int)(me2y + distY), mWidth, mHeight);
+		float[] coords = camera.unproject((int)(me2x + distX), (int)(me2y + distY), mWidth, mHeight, camera.getCameraMatrix());
 		float x1 = coords[0];
 		float y1 = coords[1];
-		coords = camera.unproject((int)me2x, (int)me2y, mWidth, mHeight);
+		coords = camera.unproject((int)me2x, (int)me2y, mWidth, mHeight, camera.getCameraMatrix());
 		float x2 = coords[0];
 		float y2 = coords[1];
 

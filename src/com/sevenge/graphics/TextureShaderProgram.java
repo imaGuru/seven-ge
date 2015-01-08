@@ -1,10 +1,6 @@
 
 package com.sevenge.graphics;
 
-import static android.opengl.GLES20.GL_TEXTURE0;
-import static android.opengl.GLES20.GL_TEXTURE_2D;
-import static android.opengl.GLES20.glActiveTexture;
-import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniform1i;
@@ -44,8 +40,6 @@ public final class TextureShaderProgram extends Asset {
 	}
 
 	public void setTextureUniform (int texture) {
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
 		glUniform1i(mTextureUnitLocation, 0);
 	}
 }

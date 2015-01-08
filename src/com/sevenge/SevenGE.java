@@ -44,6 +44,7 @@ public class SevenGE implements Renderer {
 	private static Audio audio;
 	private static AssetManager assetManager;
 	private static GameStateManager stateManager;
+	public static float fps;
 	private GLSurfaceView mGLSurfaceView;
 	private Activity mActivity;
 
@@ -128,6 +129,7 @@ public class SevenGE implements Renderer {
 
 			mStartTime = SystemClock.uptimeMillis();
 			long deltaTime = mStartTime - mLastTime;
+			fps = 1.0f / deltaTime * 1000;
 			mLastTime = mStartTime;
 			if (deltaTime > 250) deltaTime = 250;
 

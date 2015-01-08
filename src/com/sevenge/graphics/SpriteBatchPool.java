@@ -9,7 +9,7 @@ public class SpriteBatchPool {
 	public SpriteBatchPool (int maxSize, TextureShaderProgram tsp, int batchSize) {
 		mFreeObjects = new FixedSizeArray<SpriteBatch>(maxSize, null);
 		for (int i = 0; i < maxSize; i++)
-			mFreeObjects.add(new SpriteBatch(0, tsp, batchSize, this));
+			mFreeObjects.add(new SpriteBatch(0));
 	}
 
 	public SpriteBatch get () {

@@ -3,9 +3,7 @@ package com.sevenge.sample;
 
 import java.util.Random;
 
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -56,9 +54,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private AssetManager assetManager;
 	private Input input;
 
-
 	@Override
-	public void load() {
+	public void load () {
 		input = SevenGE.getInput();
 		input.addInputProcessor(this);
 		input.addGestureProcessor(this);
@@ -76,10 +73,10 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		mEM.registerSystem(animationSystem);
 		mEM.registerSystem(scriptingSystem);
 		mEM.registerSystem(physicsSystem);
-		
+
 		mWidth = SevenGE.getWidth();
 		mHeight = SevenGE.getHeight();
-		
+
 		camera = new Camera(mWidth, mHeight);
 		camera.setPostion(0.0f, 0.0f);
 		camera.setRotation(0.0f);
@@ -233,13 +230,12 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		music = (Music)assetManager.getAsset("music1");
 		music.setLooping(true);
 		music.play();
-		
+
 	}
-	
+
 	@Override
 	public void onSurfaceChange (int width, int height) {
 
-	
 	}
 
 	@Override
@@ -308,10 +304,10 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		float me2x = me2.getX();
 		float me2y = me2.getY();
 
-		float[] coords = camera.unproject((int)(me2x + distX), (int)(me2y + distY), mWidth, mHeight);
+		float[] coords = camera.unproject((int)(me2x + distX), (int)(me2y + distY), mWidth, mHeight, camera.getCameraMatrix());
 		float x1 = coords[0];
 		float y1 = coords[1];
-		coords = camera.unproject((int)me2x, (int)me2y, mWidth, mHeight);
+		coords = camera.unproject((int)me2x, (int)me2y, mWidth, mHeight, camera.getCameraMatrix());
 		float x2 = coords[0];
 		float y2 = coords[1];
 
@@ -343,7 +339,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	@Override
 	public boolean onScale (float currentSpan) {
 		float scale = lastScale * firstSpan / currentSpan;
-		camera.setZoom(scale);
+		camera.setZoom(Math.min(5.0f, Math.max(0.1f, scale)));
 		return true;
 	}
 

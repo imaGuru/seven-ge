@@ -9,10 +9,10 @@ import static android.opengl.GLES20.glClearColor;
 
 import com.sevenge.IO;
 import com.sevenge.assets.Font;
-import com.sevenge.assets.TextureRegion;
 import com.sevenge.graphics.Camera;
 import com.sevenge.graphics.FontUtils;
 import com.sevenge.graphics.SpriteBatch;
+import com.sevenge.graphics.TextureRegion;
 
 public class RendererSystem extends SubSystem {
 

@@ -1,5 +1,8 @@
 
-package com.sevenge.assets;
+package com.sevenge.graphics;
+
+import com.sevenge.assets.Asset;
+import com.sevenge.assets.Texture;
 
 /** Responsible for creating vertex and uv data for some region of the specified texture */
 public class TextureRegion extends Asset {

@@ -22,7 +22,6 @@ import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
 import com.sevenge.assets.Font;
-import com.sevenge.assets.TextureRegion;
 
 /** Drawable batch of sprites using a single texture */
 public class SpriteBatch {
@@ -126,18 +125,21 @@ public class SpriteBatch {
 	}
 
 	public void enableBlending () {
+		if (blendingEnabled) return;
 		if (mSpriteCount > 0) flush();
 		blendingEnabled = true;
 		blendingChanged = true;
 	}
 
 	public void disableBlending () {
+		if (!blendingEnabled) return;
 		if (mSpriteCount > 0) flush();
 		blendingEnabled = false;
 		blendingChanged = true;
 	}
 
 	public void setBlendFunc (int sfactor, int dfactor) {
+		if (sfactor == this.sfactor && dfactor == this.dfactor) return;
 		if (mSpriteCount > 0) flush();
 		this.sfactor = sfactor;
 		this.dfactor = dfactor;

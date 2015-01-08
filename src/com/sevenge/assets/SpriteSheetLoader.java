@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.sevenge.IO;
+import com.sevenge.graphics.TextureRegion;
 
 public class SpriteSheetLoader extends AssetLoader {
 

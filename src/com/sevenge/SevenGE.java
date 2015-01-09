@@ -62,10 +62,6 @@ public class SevenGE implements Renderer {
 				|| Build.FINGERPRINT.startsWith("unknown") || Build.MODEL.contains("google_sdk") || Build.MODEL.contains("Emulator") || Build.MODEL
 					.contains("Android SDK built for x86")));
 
-// DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
-// SevenGE.width = metrics.widthPixels;
-// SevenGE.height = metrics.heightPixels;
-
 		IO.initialize(activity);
 		SevenGE.input = new Input(activity);
 		SevenGE.audio = new Audio(activity);

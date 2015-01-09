@@ -52,12 +52,5 @@ public class RendererSystem extends SubSystem {
 		}
 
 		mSpriteBatch.end();
-		mPrimitiveRenderer.begin();
-		mPrimitiveRenderer.setProjection(mCamera.getCameraMatrix(1.0f, matrix));
-		mPrimitiveRenderer.drawCircle(0, 0, 300, 1, 50, 1.0f, 0.2f, 0.0f);
-		mPrimitiveRenderer.drawCircle(500, 500, 200, 1, 100, 1.0f, 0.2f, 1.0f);
-		mPrimitiveRenderer.drawRectangle(50, 50, 100, 100, 0, 1.0f, 0.0f, 0.5f);
-		mPrimitiveRenderer.drawRectangle(50, 150, 100, 100, 1, 1.0f, 1.0f, 0.5f);
-		mPrimitiveRenderer.end();
 	}
 }

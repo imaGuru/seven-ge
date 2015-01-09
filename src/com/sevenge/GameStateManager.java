@@ -6,6 +6,7 @@ public class GameStateManager {
 	private GameState currentState = null;
 
 	/** Sets the current game state
+	 * 
 	 * @param currentState the GameState instance which will be set */
 	public void setCurrentState (GameState currentState) {
 		if (currentState == null) {
@@ -17,16 +18,17 @@ public class GameStateManager {
 				this.currentState.pause();
 				this.currentState.dispose();
 			}
-			
+
 			currentState.load();
 			currentState.resume();
-			
+
 			this.currentState = currentState;
-			
+
 		}
 
 	}
-	public void load(){
+
+	public void load () {
 		this.currentState.load();
 	}
 
@@ -54,4 +56,5 @@ public class GameStateManager {
 	public void dispose () {
 		this.currentState.dispose();
 	}
+
 }

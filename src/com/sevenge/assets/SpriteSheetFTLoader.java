@@ -9,10 +9,11 @@ import org.json.JSONObject;
 
 import com.sevenge.IO;
 import com.sevenge.graphics.TextureRegion;
+import com.sevenge.utils.DebugLog;
 
-public class SpriteSheetLoader extends AssetLoader {
+public class SpriteSheetFTLoader extends AssetLoader {
 
-	public SpriteSheetLoader (AssetManager as) {
+	public SpriteSheetFTLoader (AssetManager as) {
 		super(as);
 	}
 
@@ -25,12 +26,14 @@ public class SpriteSheetLoader extends AssetLoader {
 				String spriteSheetData = IO.readToString(IO.openAsset(jSpriteSheet.getString("path")));
 				JSONObject jSpriteSheetData = new JSONObject(spriteSheetData);
 				String textureId = jSpriteSheetData.getString("textureID");
-				JSONArray jTextureRegions = jSpriteSheetData.getJSONArray("textureRegions");
-				for (int j = 0; j < jTextureRegions.length(); j++) {
-					JSONObject jRegion = jTextureRegions.getJSONObject(j);
-					assetManager.registerAsset(jRegion.getString("id"),
-						new TextureRegion(jRegion.getInt("width"), jRegion.getInt("height"), jRegion.getInt("x"), jRegion.getInt("y"),
-							(Texture)assetManager.getAsset(textureId)));
+				JSONArray jFrames = jSpriteSheetData.getJSONArray("frames");
+				for (int j = 0; j < jFrames.length(); j++) {
+					JSONObject jRegion = jFrames.getJSONObject(j);
+					JSONObject prop = jRegion.getJSONObject("frame");
+					assetManager.registerAsset(jRegion.getString("filename"), new TextureRegion(prop.getInt("w"), prop.getInt("h"),
+						prop.getInt("x"), prop.getInt("y"), (Texture)assetManager.getAsset(textureId)));
+					DebugLog.d("assets", jRegion.getString("filename") + " loaded ");
+
 				}
 			}
 

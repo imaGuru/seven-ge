@@ -1,7 +1,6 @@
 
 package com.sevenge.input;
 
-import android.util.Log;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
@@ -117,7 +116,6 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 			g.type = Gesture.SCALE;
 			g.currentSpan = detector.getCurrentSpan();
 			input.gesturesBuffer.add(g);
-			Log.d("WTFOMFG", "scale" + detector.getCurrentSpan());
 		}
 		return false;
 	}

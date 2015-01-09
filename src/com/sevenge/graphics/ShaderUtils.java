@@ -23,12 +23,37 @@ import com.sevenge.utils.DebugLog;
 /** Class creating opengl shader and holding reference to opengl object */
 public class ShaderUtils {
 	private static final String TAG = "ShaderUtils";
-	public static final String textureVertexShader = "uniform mat4 u_Matrix;" + "attribute vec4 a_Position;"
-		+ "attribute vec2 a_TextureCoordinates;" + "varying vec2 v_TextureCoordinates;" + "void main()" + "{"
-		+ "	v_TextureCoordinates = a_TextureCoordinates;" + "	gl_Position = u_Matrix * a_Position;" + "}";
-	public static final String textureFragmentShader = "precision mediump float;" + "uniform sampler2D u_TextureUnit;"
-		+ "varying vec2 v_TextureCoordinates;" + "void main()" + "{"
-		+ "        gl_FragColor = texture2D(u_TextureUnit, v_TextureCoordinates);" + "}";
+	public static final String textureVertexShader = "uniform mat4 u_Matrix;"//
+		+ "attribute vec4 a_Position;" //
+		+ "attribute vec2 a_TextureCoordinates;" + "varying vec2 v_TextureCoordinates;"//
+		+ "void main()"//
+		+ "{"//
+		+ "	v_TextureCoordinates = a_TextureCoordinates;"//
+		+ "	gl_Position = u_Matrix * a_Position;"//
+		+ "}";//
+	public static final String textureFragmentShader = "precision mediump float;"//
+		+ "uniform sampler2D u_TextureUnit;"//
+		+ "varying vec2 v_TextureCoordinates;" + "void main()"//
+		+ "{"//
+		+ "        gl_FragColor = texture2D(u_TextureUnit, v_TextureCoordinates);"//
+		+ "}";//
+
+	public static final String colorVertexShader = "uniform mat4 u_Matrix;"//
+		+ "attribute vec4 a_Position;"//
+		+ "attribute vec4 a_Color;"//
+		+ "varying vec4 v_Color;"//
+		+ "void main()"//
+		+ "{"//
+		+ "	v_Color = a_Color;"//
+		+ "	gl_Position = u_Matrix * a_Position;"//
+		+ "	gl_PointSize = 30.0;"//
+		+ "}";
+	public static final String colorFragmentShader = "precision mediump float;"//
+		+ "varying vec4 v_Color;"//
+		+ "void main()"//
+		+ "{"//
+		+ "	gl_FragColor = v_Color;"//
+		+ "}";
 
 	/** Creates shader of specified type (vertex, fragment)
 	 * @param shaderCode string with shader code to compile

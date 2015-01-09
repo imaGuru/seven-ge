@@ -8,6 +8,8 @@ import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glUseProgram;
 import android.graphics.Color;
 
+import com.sevenge.utils.Vector3;
+
 public class ParticleSystem {
 	private static final int POSITION_COMPONENT_COUNT = 3;
 	private static final int COLOR_COMPONENT_COUNT = 3;
@@ -32,7 +34,7 @@ public class ParticleSystem {
 		mProgram = psp;
 	}
 
-	public void addParticle (Vector position, int color, Vector direction, float particleStartTime) {
+	public void addParticle (Vector3 position, int color, Vector3 direction, float particleStartTime) {
 		final int particleOffset = nextParticle * TOTAL_COMPONENT_COUNT;
 		int currentOffset = particleOffset;
 		nextParticle++;

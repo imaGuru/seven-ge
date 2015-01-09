@@ -5,8 +5,10 @@ import java.util.Random;
 
 import android.opengl.Matrix;
 
+import com.sevenge.utils.Vector3;
+
 public class ParticleShooter {
-	private final Vector position;
+	private final Vector3 position;
 	private final int color;
 
 	private final float angleVariance;
@@ -16,7 +18,7 @@ public class ParticleShooter {
 	private float[] directionVector = new float[4];
 	private float[] resultVector = new float[4];
 
-	public ParticleShooter (Vector position, Vector direction, int color, float angleVarianceInDegrees, float speedVariance) {
+	public ParticleShooter (Vector3 position, Vector3 direction, int color, float angleVarianceInDegrees, float speedVariance) {
 		this.position = position;
 		this.color = color;
 		this.angleVariance = angleVarianceInDegrees;
@@ -36,7 +38,7 @@ public class ParticleShooter {
 
 			float speedAdjustment = 1f + random.nextFloat() * speedVariance;
 
-			Vector thisDirection = new Vector(resultVector[0] * speedAdjustment, resultVector[1] * speedAdjustment, 0.0f);
+			Vector3 thisDirection = new Vector3(resultVector[0] * speedAdjustment, resultVector[1] * speedAdjustment, 0.0f);
 			particleSystem.addParticle(position, color, thisDirection, currentTime);
 		}
 	}

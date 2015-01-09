@@ -12,13 +12,13 @@ import com.sevenge.assets.Font;
 import com.sevenge.graphics.Camera;
 import com.sevenge.graphics.FontUtils;
 import com.sevenge.graphics.PrimitiveRenderer;
-import com.sevenge.graphics.SpriteBatch;
+import com.sevenge.graphics.SpriteBatcher;
 import com.sevenge.graphics.TextureRegion;
 
 public class RendererSystem extends SubSystem {
 
 	private Camera mCamera;
-	private SpriteBatch mSpriteBatch;
+	private SpriteBatcher mSpriteBatch;
 	private Font font;
 	private float[] matrix = new float[16];
 	private PrimitiveRenderer mPrimitiveRenderer;
@@ -27,7 +27,7 @@ public class RendererSystem extends SubSystem {
 		super(SpriteComponent.MASK | PositionComponent.MASK, size);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		mEntities.setComparator(Entity.SortByLayerAndTexture);
-		mSpriteBatch = new SpriteBatch(300);
+		mSpriteBatch = new SpriteBatcher(300);
 		mPrimitiveRenderer = new PrimitiveRenderer(1000);
 		font = FontUtils.load(IO.getAssetManager(), "Fonts/OpenSansBold.ttf", 20, 2, 0);
 	}

@@ -16,7 +16,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 public class VertexBuffer {
-	private final int bufferId;
+	public final int bufferId;
 	private FloatBuffer mFloatBuffer;
 	private static final int BYTES_PER_FLOAT = 4;
 	private int mActualSize = 0;
@@ -48,13 +48,6 @@ public class VertexBuffer {
 		mFloatBuffer.position(mActualSize);
 		mFloatBuffer.put(vertexData, 0, length);
 		mActualSize += length;
-	}
-
-	public void put (float[] vertexData, int start, int length) {
-		mFloatBuffer.position(start);
-		mFloatBuffer.put(vertexData, start, length);
-		int size = start + length;
-		if (size > mActualSize) mActualSize = size;
 	}
 
 	public void upload (int start) {

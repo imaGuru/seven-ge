@@ -7,7 +7,7 @@ import android.opengl.Matrix;
 
 import com.sevenge.utils.Vector3;
 
-public class ParticleShooter {
+public class Emitter {
 	private final Vector3 position;
 	private final int color;
 
@@ -18,7 +18,7 @@ public class ParticleShooter {
 	private float[] directionVector = new float[4];
 	private float[] resultVector = new float[4];
 
-	public ParticleShooter (Vector3 position, Vector3 direction, int color, float angleVarianceInDegrees, float speedVariance) {
+	public Emitter (Vector3 position, Vector3 direction, int color, float angleVarianceInDegrees, float speedVariance) {
 		this.position = position;
 		this.color = color;
 		this.angleVariance = angleVarianceInDegrees;

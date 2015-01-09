@@ -50,9 +50,15 @@ public class VertexBuffer {
 		mActualSize += length;
 	}
 
+	public void put (float[] vertexData, int start, int length) {
+		mFloatBuffer.position(mActualSize);
+		mFloatBuffer.put(vertexData, start, length);
+		mActualSize += length;
+	}
+
 	public void upload (int start) {
 		glBindBuffer(GL_ARRAY_BUFFER, bufferId);
-		glBufferSubData(GL_ARRAY_BUFFER, start, mActualSize * BYTES_PER_FLOAT, mFloatBuffer);
+		glBufferSubData(GL_ARRAY_BUFFER, start * BYTES_PER_FLOAT, mActualSize * BYTES_PER_FLOAT, mFloatBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		mFloatBuffer.position(0);
 		mActualSize = 0;

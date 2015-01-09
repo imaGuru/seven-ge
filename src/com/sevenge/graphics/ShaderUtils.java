@@ -2,8 +2,10 @@
 package com.sevenge.graphics;
 
 import static android.opengl.GLES20.GL_COMPILE_STATUS;
+import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_LINK_STATUS;
 import static android.opengl.GLES20.GL_VALIDATE_STATUS;
+import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glAttachShader;
 import static android.opengl.GLES20.glCompileShader;
 import static android.opengl.GLES20.glCreateProgram;
@@ -23,7 +25,7 @@ import com.sevenge.utils.DebugLog;
 /** Class creating opengl shader and holding reference to opengl object */
 public class ShaderUtils {
 	private static final String TAG = "ShaderUtils";
-	public static final String textureVertexShader = "uniform mat4 u_Matrix;"//
+	public static final String TEXTURE_VERTEX_SHADER = "uniform mat4 u_Matrix;"//
 		+ "attribute vec4 a_Position;" //
 		+ "attribute vec2 a_TextureCoordinates;" + "varying vec2 v_TextureCoordinates;"//
 		+ "void main()"//
@@ -31,14 +33,14 @@ public class ShaderUtils {
 		+ "	v_TextureCoordinates = a_TextureCoordinates;"//
 		+ "	gl_Position = u_Matrix * a_Position;"//
 		+ "}";//
-	public static final String textureFragmentShader = "precision mediump float;"//
+	public static final String TEXTURE_FRAGMENT_SHADER = "precision mediump float;"//
 		+ "uniform sampler2D u_TextureUnit;"//
 		+ "varying vec2 v_TextureCoordinates;" + "void main()"//
 		+ "{"//
 		+ "        gl_FragColor = texture2D(u_TextureUnit, v_TextureCoordinates);"//
 		+ "}";//
 
-	public static final String colorVertexShader = "uniform mat4 u_Matrix;"//
+	public static final String COLOR_VERTEX_SHADER = "uniform mat4 u_Matrix;"//
 		+ "attribute vec4 a_Position;"//
 		+ "attribute vec4 a_Color;"//
 		+ "varying vec4 v_Color;"//
@@ -48,12 +50,24 @@ public class ShaderUtils {
 		+ "	gl_Position = u_Matrix * a_Position;"//
 		+ "	gl_PointSize = 30.0;"//
 		+ "}";
-	public static final String colorFragmentShader = "precision mediump float;"//
+	public static final String COLOR_FRAGMENT_SHADER = "precision mediump float;"//
 		+ "varying vec4 v_Color;"//
 		+ "void main()"//
 		+ "{"//
 		+ "	gl_FragColor = v_Color;"//
 		+ "}";
+
+	public static final ColorShaderProgram COLOR_SHADER = new ColorShaderProgram(ShaderUtils.compileShader(
+		ShaderUtils.COLOR_VERTEX_SHADER, GL_VERTEX_SHADER), ShaderUtils.compileShader(ShaderUtils.COLOR_FRAGMENT_SHADER,
+		GL_FRAGMENT_SHADER));
+
+	public static final TextureShaderProgram TEXTURE_SHADER = new TextureShaderProgram(ShaderUtils.compileShader(
+		ShaderUtils.TEXTURE_VERTEX_SHADER, GL_VERTEX_SHADER), ShaderUtils.compileShader(ShaderUtils.TEXTURE_FRAGMENT_SHADER,
+		GL_FRAGMENT_SHADER));
+
+	public static final ParticleShaderProgram PARTICLE_SHADER = new ParticleShaderProgram(ShaderUtils.compileShader(
+		ShaderUtils.COLOR_VERTEX_SHADER, GL_VERTEX_SHADER), ShaderUtils.compileShader(ShaderUtils.COLOR_FRAGMENT_SHADER,
+		GL_FRAGMENT_SHADER));
 
 	/** Creates shader of specified type (vertex, fragment)
 	 * @param shaderCode string with shader code to compile

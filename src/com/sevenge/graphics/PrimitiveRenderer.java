@@ -1,11 +1,9 @@
 
 package com.sevenge.graphics;
 
-import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_LINES;
 import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
-import static android.opengl.GLES20.GL_VERTEX_SHADER;
 import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glDrawElements;
 import static android.opengl.GLES20.glUseProgram;
@@ -21,16 +19,16 @@ public class PrimitiveRenderer {
 	/** IndexBuffer Object containing face definitions */
 	private final ShortBuffer mIndexBuffer;
 	/** Shader program used to texture the sprites */
-	public final ColorShaderProgram mProgram;
+	public final ColorShaderProgram shader;
 	/** Face indices data */
 	private final short[] mIndices;
 	private final float[] mPrimitives;
-	private final float[] matrix;
+	private final float[] mProjectionMatrix;
 
 	private int mPrimitiveCount = 0;
 	private final int mSize;
-	private int vertexCountPeak;
-	private boolean fillEnabled = false;
+	private int mVertexCountPeak;
+	private boolean mFillEnabled = false;
 	private static final int POSITION_COMPONENT_COUNT = 2;
 	private static final int COLOR_COMPONENT_COUNT = 3;
 	private static final int BYTES_PER_FLOAT = 4;
@@ -43,51 +41,49 @@ public class PrimitiveRenderer {
 	public PrimitiveRenderer (int size) {
 		mSize = size;
 		mIndices = new short[mSize * 2];
-		matrix = new float[16];
-		mProgram = new ColorShaderProgram(ShaderUtils.compileShader(ShaderUtils.colorVertexShader, GL_VERTEX_SHADER),
-			ShaderUtils.compileShader(ShaderUtils.colorFragmentShader, GL_FRAGMENT_SHADER));
+		mProjectionMatrix = new float[16];
+		shader = ShaderUtils.COLOR_SHADER;
 		mPrimitives = new float[mSize * (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT)];
 		mVertexArray = new VertexArray(mSize * (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT));
 		mIndexBuffer = ByteBuffer.allocateDirect(mSize * 2 * BYTES_PER_SHORT).order(ByteOrder.nativeOrder()).asShortBuffer();
 	}
 
 	public void begin () {
-		glUseProgram(mProgram.mGlID);
-		mVertexArray.setVertexAttribPointer(0, mProgram.mAttributePositionLocation, POSITION_COMPONENT_COUNT, STRIDE);
-		mVertexArray.setVertexAttribPointer(POSITION_COMPONENT_COUNT, mProgram.mAtributeColorLocation, COLOR_COMPONENT_COUNT,
-			STRIDE);
+		glUseProgram(shader.glID);
+		mVertexArray.setVertexAttribPointer(0, shader.attributePositionLocation, POSITION_COMPONENT_COUNT, STRIDE);
+		mVertexArray.setVertexAttribPointer(POSITION_COMPONENT_COUNT, shader.atributeColorLocation, COLOR_COMPONENT_COUNT, STRIDE);
 	}
 
 	public void end () {
 		if (mPrimitiveCount > 0) flush();
-		glDisableVertexAttribArray(mProgram.mAttributePositionLocation);
-		glDisableVertexAttribArray(mProgram.mAtributeColorLocation);
+		glDisableVertexAttribArray(shader.attributePositionLocation);
+		glDisableVertexAttribArray(shader.atributeColorLocation);
 		glUseProgram(0);
 	}
 
 	public void setProjection (float[] matrix) {
 		if (mPrimitiveCount > 0) flush();
-		System.arraycopy(matrix, 0, this.matrix, 0, 16);
+		System.arraycopy(matrix, 0, this.mProjectionMatrix, 0, 16);
 	}
 
 	public void enableFill () {
-		if (fillEnabled) return;
+		if (mFillEnabled) return;
 		if (mPrimitiveCount > 0) flush();
-		fillEnabled = true;
+		mFillEnabled = true;
 	}
 
 	public void disableFill () {
-		if (!fillEnabled) return;
+		if (!mFillEnabled) return;
 		if (mPrimitiveCount > 0) flush();
-		fillEnabled = false;
+		mFillEnabled = false;
 	}
 
 	/** Draw the created batches using specified view projection matrix
 	 * @param vpm view projection matrix */
 	public void flush () {
-		mProgram.setUniforms(matrix);
+		shader.setUniforms(mProjectionMatrix);
 		mVertexArray.put(mPrimitives, mPrimitiveCount * (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT));
-		if (fillEnabled) {
+		if (mFillEnabled) {
 			mIndexBuffer.put(mIndices, 0, mPrimitiveCount * 3);
 			mIndexBuffer.position(0);
 			glDrawElements(GL_TRIANGLES, mPrimitiveCount * 3, GL_UNSIGNED_SHORT, mIndexBuffer);
@@ -96,7 +92,7 @@ public class PrimitiveRenderer {
 			mIndexBuffer.position(0);
 			glDrawElements(GL_LINES, mPrimitiveCount * 2, GL_UNSIGNED_SHORT, mIndexBuffer);
 		}
-		if (vertexCountPeak < mPrimitiveCount) vertexCountPeak = mPrimitiveCount;
+		if (mVertexCountPeak < mPrimitiveCount) mVertexCountPeak = mPrimitiveCount;
 		mPrimitiveCount = 0;
 		mVertexArray.clear();
 	}

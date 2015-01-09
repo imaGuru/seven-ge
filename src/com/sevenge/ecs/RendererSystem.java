@@ -4,21 +4,26 @@ package com.sevenge.ecs;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_ONE;
 import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
+import static android.opengl.GLES20.GL_STREAM_DRAW;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 
 import com.sevenge.IO;
+import com.sevenge.SevenGE;
 import com.sevenge.assets.Font;
 import com.sevenge.graphics.Camera;
 import com.sevenge.graphics.FontUtils;
 import com.sevenge.graphics.PrimitiveRenderer;
+import com.sevenge.graphics.Sprite;
+import com.sevenge.graphics.SpriteBatch;
 import com.sevenge.graphics.SpriteBatcher;
 import com.sevenge.graphics.TextureRegion;
 
 public class RendererSystem extends SubSystem {
 
 	private Camera mCamera;
-	private SpriteBatcher mSpriteBatch;
+	private SpriteBatcher mSpriteBatcher;
+	private SpriteBatch mSpriteBatch;
 	private Font font;
 	private float[] matrix = new float[16];
 	private PrimitiveRenderer mPrimitiveRenderer;
@@ -27,9 +32,24 @@ public class RendererSystem extends SubSystem {
 		super(SpriteComponent.MASK | PositionComponent.MASK, size);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		mEntities.setComparator(Entity.SortByLayerAndTexture);
-		mSpriteBatch = new SpriteBatcher(300);
+		mSpriteBatcher = new SpriteBatcher(300);
 		mPrimitiveRenderer = new PrimitiveRenderer(1000);
 		font = FontUtils.load(IO.getAssetManager(), "Fonts/OpenSansBold.ttf", 20, 2, 0);
+		TextureRegion tex = (TextureRegion)SevenGE.getAssetManager().getAsset("enemyBlack1");
+		mSpriteBatch = new SpriteBatch(200, tex.texture, GL_STREAM_DRAW);
+		Sprite sprite = new Sprite(tex);
+		sprite.setCenter(100, 100);
+		mSpriteBatch.addSprite(sprite);
+		sprite.setCenter(200, 100);
+		mSpriteBatch.addSprite(sprite);
+		sprite.setCenter(300, 100);
+		mSpriteBatch.addSprite(sprite);
+		sprite.setCenter(400, 100);
+		mSpriteBatch.addSprite(sprite);
+		sprite.setCenter(500, 100);
+		mSpriteBatch.addSprite(sprite);
+		sprite.setCenter(600, 100);
+		mSpriteBatch.addSprite(sprite);
 	}
 
 	public void setCamera (Camera camera) {
@@ -39,20 +59,20 @@ public class RendererSystem extends SubSystem {
 	public void process (float interpolationAlpha) {
 		glClear(GL_COLOR_BUFFER_BIT);
 		mEntities.sort(false);
-		mSpriteBatch.begin();
-		mSpriteBatch.enableBlending();
-		mSpriteBatch.setBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-		mSpriteBatch.setProjection(mCamera.getCameraMatrix(0.7f, matrix));
+		mSpriteBatcher.begin();
+		mSpriteBatcher.enableBlending();
+		mSpriteBatcher.setBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		mSpriteBatcher.setProjection(mCamera.getCameraMatrix(0.7f, matrix));
 		for (int j = 0; j < mEntities.getCount(); j++) {
 			Entity entity = mEntities.get(j);
 			PositionComponent cp = (PositionComponent)entity.mComponents[0];
 			SpriteComponent cs = (SpriteComponent)entity.mComponents[1];
 			TextureRegion sprite = cs.textureRegion;
-			mSpriteBatch.drawSprite(cp.x, cp.y, cp.rotation, cs.scale, cs.scale, sprite);
+			mSpriteBatcher.drawSprite(cp.x, cp.y, cp.rotation, cs.scale, cs.scale, sprite);
 		}
-		mSpriteBatch.setProjection(mCamera.getCameraMatrix(1.0f, matrix));
-		mSpriteBatch.drawText("This is a test of the new SpriteBatch API FPS:", 500, 500, font);
-		mSpriteBatch.end();
+		mSpriteBatcher.setProjection(mCamera.getCameraMatrix(1.0f, matrix));
+		mSpriteBatcher.drawText("This is a test of the new SpriteBatch API FPS:", 500, 500, font);
+		mSpriteBatcher.end();
 		mPrimitiveRenderer.begin();
 		mPrimitiveRenderer.setProjection(mCamera.getCameraMatrix(1.0f, matrix));
 		mPrimitiveRenderer.drawCircle(0, 0, 300, 1, 50, 1.0f, 0.2f, 0.0f);
@@ -60,5 +80,7 @@ public class RendererSystem extends SubSystem {
 		mPrimitiveRenderer.drawRectangle(50, 50, 100, 100, 0, 1.0f, 0.0f, 0.5f);
 		mPrimitiveRenderer.drawRectangle(50, 150, 100, 100, 1, 1.0f, 1.0f, 0.5f);
 		mPrimitiveRenderer.end();
+		mSpriteBatch.setProjection(mCamera.getCameraMatrix(1.0f, matrix));
+		mSpriteBatch.draw();
 	}
 }

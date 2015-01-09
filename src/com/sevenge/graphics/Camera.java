@@ -24,6 +24,7 @@ public class Camera {
 	private final Vector3 up = new Vector3(0, 1, 0);
 	private float rotation;
 	private float zoom = 1f;
+	private float[] projectionMatrixParallax = new float[16];
 
 	public Camera (int w, int h) {
 		height = h;
@@ -73,12 +74,19 @@ public class Camera {
 	public float[] getCameraMatrix (float parallax, float[] outMatrix) {
 		float hw = width / 2 * (1 + (zoom - 1) * parallax);
 		float hh = height / 2 * (1 + (zoom - 1) * parallax);
-		orthoM(projectionMatrix, 0, -hw, hw, -hh, hh, -1f, 1f);
+		orthoM(projectionMatrixParallax, 0, -hw, hw, -hh, hh, -1f, 1f);
 		float x = position.x * parallax;
 		float y = position.y * parallax;
 		setLookAtM(viewMatrix, 0, x, y, 1f, x, y, 0f, up.x, up.y, up.z);
-		multiplyMM(outMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+		multiplyMM(outMatrix, 0, projectionMatrixParallax, 0, viewMatrix, 0);
 		return outMatrix;
+	}
+
+	public float[] getProjectionMatrix () {
+		float hw = width / 2;
+		float hh = height / 2;
+		orthoM(projectionMatrix, 0, -hw, hw, -hh, hh, -1f, 1f);
+		return projectionMatrix;
 	}
 
 	/** Unprojects x y screen coordinates into world coordinates

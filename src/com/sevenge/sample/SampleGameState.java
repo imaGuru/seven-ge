@@ -1,6 +1,8 @@
 
 package com.sevenge.sample;
 
+import static android.opengl.Matrix.orthoM;
+
 import java.util.Random;
 
 import android.view.MotionEvent;
@@ -12,8 +14,10 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.sevenge.GameState;
+import com.sevenge.IO;
 import com.sevenge.SevenGE;
 import com.sevenge.assets.AssetManager;
+import com.sevenge.assets.Font;
 import com.sevenge.assets.Texture;
 import com.sevenge.audio.Music;
 import com.sevenge.ecs.AnimationComponent;
@@ -27,6 +31,8 @@ import com.sevenge.ecs.RendererSystem;
 import com.sevenge.ecs.ScriptingSystem;
 import com.sevenge.ecs.SpriteComponent;
 import com.sevenge.graphics.Camera;
+import com.sevenge.graphics.FontUtils;
+import com.sevenge.graphics.SpriteBatcher;
 import com.sevenge.graphics.TextureRegion;
 import com.sevenge.input.GestureProcessor;
 import com.sevenge.input.Input;
@@ -53,6 +59,12 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private float firstSpan;
 	private AssetManager assetManager;
 	private Input input;
+
+	SpriteBatcher mSpriteBatch = new SpriteBatcher(300);
+
+	private float[] projectionMatrix = new float[16];
+
+	private Font font;
 
 	@Override
 	public void load () {
@@ -83,6 +95,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		camera.setZoom(1.0f);
 
 		rendererSystem.setCamera(camera);
+
+		font = FontUtils.load(IO.getAssetManager(), "Fonts/OpenSansBold.ttf", 20, 2, 0);
 
 		Random rng = new Random();
 		for (int i = 0; i < 150; i++) {
@@ -254,7 +268,15 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void draw (float interpolationAlpha) {
+
+		float aspect = 1.0f * SevenGE.getWidth() / SevenGE.getHeight();
+
+		orthoM(projectionMatrix, 0, 0, SevenGE.getWidth(), 0, SevenGE.getHeight(), -1f, 1f);
 		rendererSystem.process(interpolationAlpha);
+		mSpriteBatch.begin();
+		mSpriteBatch.setProjection(projectionMatrix);
+		mSpriteBatch.drawText("This is a test of the new SpriteBatch API FPS:", 0, 0, font);
+		mSpriteBatch.end();
 	}
 
 	@Override

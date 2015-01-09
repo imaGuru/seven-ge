@@ -50,8 +50,7 @@ public class RendererSystem extends SubSystem {
 			TextureRegion sprite = cs.textureRegion;
 			mSpriteBatch.drawSprite(cp.x, cp.y, cp.rotation, cs.scale, cs.scale, sprite);
 		}
-		mSpriteBatch.setProjection(mCamera.getCameraMatrix(1.0f, matrix));
-		mSpriteBatch.drawText("This is a test of the new SpriteBatch API FPS:", 500, 500, font);
+
 		mSpriteBatch.end();
 		mPrimitiveRenderer.begin();
 		mPrimitiveRenderer.setProjection(mCamera.getCameraMatrix(1.0f, matrix));

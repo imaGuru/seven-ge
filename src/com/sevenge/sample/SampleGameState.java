@@ -1,8 +1,7 @@
 
 package com.sevenge.sample;
 
-import java.util.Random;
-
+import com.sevenge.ecs.Entity
 import android.view.MotionEvent;
 
 import com.sevenge.GameState;
@@ -17,10 +16,13 @@ import com.sevenge.audio.Music;
 import com.sevenge.ecs.AnimationSystem;
 import com.sevenge.ecs.EntityManager;
 import com.sevenge.ecs.PhysicsSystem;
+import com.sevenge.ecs.PositionComponent;
 import com.sevenge.ecs.RendererSystem;
 import com.sevenge.ecs.ScriptingSystem;
+import com.sevenge.ecs.SpriteComponent;
 import com.sevenge.graphics.Camera;
 import com.sevenge.graphics.SpriteBatcher;
+import com.sevenge.graphics.TextureRegion;
 import com.sevenge.input.GestureProcessor;
 import com.sevenge.input.Input;
 import com.sevenge.input.InputProcessor;
@@ -40,8 +42,6 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	private int counter = 0;
 	private Camera camera;
-	private int mWidth;
-	private int mHeight;
 	private float lastScale = 1;
 	private float firstSpan;
 	private AssetManager assetManager;
@@ -53,10 +53,55 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void load () {
+
+		assetManager = SevenGE.getAssetManager();
+		registerInput();
+		createSystems();
+		createLoaders();
+		createCamera();
+		loadAssets();
+
+		mEM.assignEntities();
+
+	}
+
+	private void loadAssets () {
+		music = (Music)assetManager.getAsset("music1");
+
+		music.setLooping(true);
+	}
+
+	private void loadControls(){
+		
+		Entity eFireButton = mEM.createEntity(10);
+		SpriteComponent spriteComponent = new SpriteComponent();
+		PositionComponent positionComponent = new PositionComponent();
+	   spriteComponent.textureRegion = (TextureRegion)assetManager.getAsset("shadedLight41.png");
+	   spriteComponent.scale = 1.0f;
+	   eFireButton.addComponent(positionComponent, 0);
+	   eFireButton.addComponent(spriteComponent, 1);
+		
+	}
+
+	private void registerInput () {
+
 		input = SevenGE.getInput();
 		input.addInputProcessor(this);
 		input.addGestureProcessor(this);
-		assetManager = SevenGE.getAssetManager();
+	}
+
+	private void createLoaders () {
+
+		assetManager.addLoader("spriteSheet", new SpriteSheetFTLoader(assetManager));
+		assetManager.addLoader("texture", new TextureLoader(assetManager));
+		assetManager.addLoader("program", new TextureShaderProgramLoader(assetManager));
+		assetManager.addLoader("shader", new ShaderLoader(assetManager));
+		assetManager.addLoader("audio", new AudioLoader(assetManager));
+		assetManager.loadAssets("package.pkg");
+
+	}
+
+	private void createSystems () {
 
 		rendererSystem = new RendererSystem(200);
 		animationSystem = new AnimationSystem(200);
@@ -64,40 +109,21 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		physicsSystem = new PhysicsSystem(200);
 		sceneManager = new SceneManager();
 
-		assetManager.addLoader("spriteSheet", new SpriteSheetFTLoader(assetManager));
-		assetManager.addLoader("texture", new TextureLoader(assetManager));
-		assetManager.addLoader("program", new TextureShaderProgramLoader(assetManager));
-		assetManager.addLoader("shader", new ShaderLoader(assetManager));
-		assetManager.addLoader("audio", new AudioLoader(assetManager));
-
-		assetManager.loadAssets("package.pkg");
-
 		mEM = new EntityManager(300, 10);
 		mEM.registerSystem(rendererSystem);
 		mEM.registerSystem(animationSystem);
 		mEM.registerSystem(scriptingSystem);
 		mEM.registerSystem(physicsSystem);
 
-		mWidth = SevenGE.getWidth();
-		mHeight = SevenGE.getHeight();
+	}
 
-		camera = new Camera(mWidth, mHeight);
+	private void createCamera () {
+
+		camera = new Camera(SevenGE.getWidth(), SevenGE.getHeight());
 		camera.setPostion(0.0f, 0.0f);
 		camera.setRotation(0.0f);
 		camera.setZoom(1.0f);
-
 		rendererSystem.setCamera(camera);
-
-		Random rng = new Random();
-		for (int i = 0; i < 150; i++) {
-
-		}
-
-		mEM.assignEntities();
-
-		music = (Music)assetManager.getAsset("music1");
-		music.setLooping(true);
-		music.play();
 
 	}
 
@@ -169,10 +195,11 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		float me2x = me2.getX();
 		float me2y = me2.getY();
 
-		float[] coords = camera.unproject((int)(me2x + distX), (int)(me2y + distY), mWidth, mHeight, camera.getCameraMatrix());
+		float[] coords = camera.unproject((int)(me2x + distX), (int)(me2y + distY), SevenGE.getWidth(), SevenGE.getHeight(),
+			camera.getCameraMatrix());
 		float x1 = coords[0];
 		float y1 = coords[1];
-		coords = camera.unproject((int)me2x, (int)me2y, mWidth, mHeight, camera.getCameraMatrix());
+		coords = camera.unproject((int)me2x, (int)me2y, SevenGE.getWidth(), SevenGE.getHeight(), camera.getCameraMatrix());
 		float x2 = coords[0];
 		float y2 = coords[1];
 

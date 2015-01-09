@@ -12,7 +12,7 @@ public class PhysicsSystem extends SubSystem {
 	public static final float WORLD_TO_BOX = 1 / 30f;
 	public static final float BOX_TO_WORLD = 1 / WORLD_TO_BOX;
 
-	private static final Vector2 gravityVector = new Vector2(0, -10);
+	private static final Vector2 gravityVector = new Vector2(0, 0);
 
 	private World world;
 

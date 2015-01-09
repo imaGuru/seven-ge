@@ -38,11 +38,9 @@ public class SceneManager {
 
 		}
 
-		for (Entity e : entity.children) {
-
-			traverse(e);
+		for(int i = 0; i < entity.children.size(); i++){
+			traverse(entity.children.get(i));
 		}
 
 	}
-
 }

@@ -20,7 +20,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 	@Override
 	public boolean onDoubleTap (MotionEvent me) {
 		synchronized (input) {
-			Gesture g = new Gesture();
+			Gesture g = input.gesturePool.newObject();
 			g.type = Gesture.DOUBLETAP;
 			g.motionEvent1 = me;
 
@@ -38,7 +38,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 	@Override
 	public boolean onSingleTapConfirmed (MotionEvent me) {
 		synchronized (input) {
-			Gesture g = new Gesture();
+			Gesture g = input.gesturePool.newObject();
 			g.type = Gesture.TAP;
 			g.motionEvent1 = me;
 
@@ -57,7 +57,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 	@Override
 	public boolean onFling (MotionEvent me1, MotionEvent me2, float vx, float vy) {
 		synchronized (input) {
-			Gesture g = new Gesture();
+			Gesture g = input.gesturePool.newObject();
 			g.type = Gesture.FLING;
 			g.motionEvent1 = me1;
 			g.motionEvent1 = me2;
@@ -73,7 +73,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 	@Override
 	public void onLongPress (MotionEvent me1) {
 		synchronized (input) {
-			Gesture g = new Gesture();
+			Gesture g = input.gesturePool.newObject();
 			g.type = Gesture.LONGPRESS;
 			g.motionEvent1 = me1;
 
@@ -85,7 +85,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 	@Override
 	public boolean onScroll (MotionEvent me1, MotionEvent me2, float dx, float dy) {
 		synchronized (input) {
-			Gesture g = new Gesture();
+			Gesture g = input.gesturePool.newObject();
 			g.type = Gesture.SCROLL;
 			g.motionEvent1 = me1;
 			g.motionEvent2 = me2;
@@ -112,7 +112,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 	public boolean onScale (ScaleGestureDetector detector) {
 
 		synchronized (input) {
-			Gesture g = new Gesture();
+			Gesture g = input.gesturePool.newObject();
 			g.type = Gesture.SCALE;
 			g.currentSpan = detector.getCurrentSpan();
 			input.gesturesBuffer.add(g);
@@ -126,7 +126,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 		super.onScaleBegin(detector);
 
 		synchronized (input) {
-			Gesture g = new Gesture();
+			Gesture g = input.gesturePool.newObject();
 			g.type = Gesture.SCALE_BEGIN;
 			g.currentSpan = detector.getCurrentSpan();
 			input.gesturesBuffer.add(g);
@@ -141,7 +141,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 		super.onScaleEnd(detector);
 
 		synchronized (input) {
-			Gesture g = new Gesture();
+			Gesture g = input.gesturePool.newObject();
 			g.type = Gesture.SCALE_END;
 			g.currentSpan = detector.getCurrentSpan();
 			input.gesturesBuffer.add(g);

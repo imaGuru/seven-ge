@@ -1,7 +1,11 @@
 
 package com.sevenge;
 
+import static android.opengl.GLES20.GL_CULL_FACE;
+import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glViewport;
+
+import java.io.IOException;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -14,6 +18,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Build;
 import android.os.SystemClock;
+import android.util.DisplayMetrics;
 
 import com.sevenge.assets.AssetManager;
 import com.sevenge.audio.Audio;
@@ -21,29 +26,35 @@ import com.sevenge.input.Input;
 import com.sevenge.sample.SampleGameState;
 import com.sevenge.utils.DebugLog;
 
+import fi.iki.elonen.HelloServer;
+
 /** Class exposing game engine subsystems anywhere in the code. */
 public class SevenGE implements Renderer {
 	private static final String TAG = "GameEngine";
-	public static Input input;
-	public static Audio audio;
-	public static AssetManager assetManager;
-	public static GameStateManager stateManager;
+	public static final long FRAME_TIME = 33;
 
 	enum GLGameState {
 		Initialized, Running, Paused, Finished, Idle
 	}
 
-	private long mStartTime = 0;
-	private long mLastTime = 0;
-	private long mAccum = 0;
-	public static final long FRAME_TIME = 33;
-
-	private GLSurfaceView mGLSurfaceView;
-	private Activity mActivity;
-	/** Current state the game engine is in */
 	private GLGameState state;
 	private Object stateChanged = new Object();
 
+	private static Input input;
+	private static Audio audio;
+	private static AssetManager assetManager;
+	private static GameStateManager stateManager;
+	public static float fps;
+	private GLSurfaceView mGLSurfaceView;
+	private Activity mActivity;
+
+	private long mStartTime = 0;
+	private long mLastTime = 0;
+	private long mAccum = 0;
+
+	private static int width;
+	private static int height;
+	
 	public SevenGE (Activity activity, GLSurfaceView glSurfaceView) {
 		final ActivityManager activityManager = (ActivityManager)activity.getSystemService(Context.ACTIVITY_SERVICE);
 		final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
@@ -52,6 +63,10 @@ public class SevenGE implements Renderer {
 				|| Build.FINGERPRINT.startsWith("unknown") || Build.MODEL.contains("google_sdk") || Build.MODEL.contains("Emulator") || Build.MODEL
 					.contains("Android SDK built for x86")));
 
+		DisplayMetrics metrics =  activity.getResources().getDisplayMetrics();
+		SevenGE.width = metrics.widthPixels;
+		SevenGE.height = metrics.heightPixels;
+		
 		IO.initialize(activity);
 		SevenGE.input = new Input(activity);
 		SevenGE.audio = new Audio(activity);
@@ -59,6 +74,12 @@ public class SevenGE implements Renderer {
 		SevenGE.stateManager = new GameStateManager();
 		mActivity = activity;
 		mGLSurfaceView = glSurfaceView;
+		HelloServer server = new HelloServer(activity);
+		try {
+			server.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		if (supportsEs2) {
 			mGLSurfaceView.setEGLContextClientVersion(2);
@@ -108,6 +129,7 @@ public class SevenGE implements Renderer {
 
 			mStartTime = SystemClock.uptimeMillis();
 			long deltaTime = mStartTime - mLastTime;
+			fps = 1.0f / deltaTime * 1000;
 			mLastTime = mStartTime;
 			if (deltaTime > 250) deltaTime = 250;
 
@@ -152,7 +174,6 @@ public class SevenGE implements Renderer {
 			DebugLog.d(TAG, "Running");
 			SevenGE.stateManager.resume();
 		}
-		SevenGE.stateManager.onSurfaceChange(width, height);
 		glViewport(0, 0, width, height);
 
 	}
@@ -161,7 +182,31 @@ public class SevenGE implements Renderer {
 	@Override
 	public void onSurfaceCreated (GL10 gl, EGLConfig config) {
 		DebugLog.d(TAG, "onSurfaceCreated");
+		glEnable(GL_CULL_FACE);
+	}
 
+	public static AssetManager getAssetManager () {
+		return assetManager;
+	}
+
+	public static Audio getAudio () {
+		return audio;
+	}
+
+	public static Input getInput () {
+		return input;
+	}
+
+	public static GameStateManager getStateManager () {
+		return stateManager;
+	}
+	
+	public static int getWidth(){
+		return width;
+	}
+	
+	public static int getHeight(){
+		return height;
 	}
 
 }

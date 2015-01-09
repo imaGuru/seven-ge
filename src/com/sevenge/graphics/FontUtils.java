@@ -9,7 +9,6 @@ import android.graphics.Typeface;
 
 import com.sevenge.assets.Font;
 import com.sevenge.assets.Texture;
-import com.sevenge.assets.TextureRegion;
 
 public class FontUtils {
 	public final static int CHAR_START = 32; // First Character (ASCII Code)
@@ -136,6 +135,7 @@ public class FontUtils {
 				y += font.cellHeight; // Move to Next Row (Cell)
 			}
 		}
+		font.texture = tex.glID;
 		return font;
 	}
 

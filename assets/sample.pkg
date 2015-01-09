@@ -44,6 +44,16 @@
 			"id":"shader4",
 			"type":"fragment",
 			"path":"Shaders/simple_fragment_shader.glsl"
+		},
+		{
+			"id":"shader5",
+			"type":"vertex",
+			"path":"Shaders/particle_vertex_shader.glsl"
+		},
+		{
+			"id":"shader6",
+			"type":"fragment",
+			"path":"Shaders/particle_fragment_shader.glsl"
 		}],
 	"program": [
 		{
@@ -56,9 +66,29 @@
 			"id":"apple",
 			"path":"Textures/apple.png"
 		},
+		{ 
+			"id":"particle",
+			"path":"Textures/particle.png"
+		},
 		{
 			"id":"spaceSheet",
 			"path":"Textures/SpaceSheet.png"
+		},
+		{
+			"id":"star3-0-0",
+			"path":"demoAssets/star3split/stars3-0-0.png"
+		},
+		{
+			"id":"star3-0-1",
+			"path":"demoAssets/star3split/stars3-0-1.png"
+		},
+		{
+			"id":"star3-1-0",
+			"path":"demoAssets/star3split/stars3-1-0.png"
+		},
+		{
+			"id":"star3-1-1",
+			"path":"demoAssets/star3split/stars3-1-1.png"
 		}],
 	"spriteSheet" : [
 		{

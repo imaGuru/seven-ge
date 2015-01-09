@@ -34,10 +34,11 @@ public class VertexArray {
 		mActualSize += length;
 	}
 
-	public void put (FloatBuffer fb) {
-		mFloatBuffer.position(mActualSize);
-		mFloatBuffer.put(fb);
-		mActualSize = mFloatBuffer.position();
+	public void put (float[] vertexData, int start, int length) {
+		mFloatBuffer.position(start);
+		mFloatBuffer.put(vertexData, start, length);
+		int size = start + length;
+		if (size > mActualSize) mActualSize = size;
 	}
 
 	public int size () {

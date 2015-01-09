@@ -24,9 +24,6 @@ public abstract class GameState {
 	/** Handles resuming of the game state */
 	public abstract void resume ();
 
-	/** Informs the the game state of glsurface size
-	 * @param width of the glsurface
-	 * @param height of the glsurface */
-	public abstract void onSurfaceChange (int width, int height);
+	public abstract void load ();
 
 }

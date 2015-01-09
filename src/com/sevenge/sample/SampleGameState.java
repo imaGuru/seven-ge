@@ -3,9 +3,7 @@ package com.sevenge.sample;
 
 import java.util.Random;
 
-import android.opengl.Matrix;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -16,19 +14,16 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.sevenge.GameState;
 import com.sevenge.IO;
 import com.sevenge.SevenGE;
+import com.sevenge.assets.AssetManager;
 import com.sevenge.assets.AudioLoader;
 import com.sevenge.assets.ShaderLoader;
 import com.sevenge.assets.SpriteSheetFTLoader;
-import com.sevenge.assets.SpriteSheetLoader;
+import com.sevenge.assets.Texture;
 import com.sevenge.assets.TextureLoader;
-import com.sevenge.assets.TextureRegion;
 import com.sevenge.assets.TextureShaderProgramLoader;
 import com.sevenge.audio.Music;
 import com.sevenge.ecs.AnimationComponent;
 import com.sevenge.ecs.AnimationSystem;
-import com.sevenge.ecs.CameraComponent;
-import com.sevenge.ecs.CameraSystem;
-import com.sevenge.ecs.Component;
 import com.sevenge.ecs.Entity;
 import com.sevenge.ecs.EntityManager;
 import com.sevenge.ecs.PhysicsComponent;
@@ -37,9 +32,11 @@ import com.sevenge.ecs.PositionComponent;
 import com.sevenge.ecs.RendererSystem;
 import com.sevenge.ecs.ScriptingSystem;
 import com.sevenge.ecs.SpriteComponent;
-import com.sevenge.graphics.Camera2D;
+import com.sevenge.graphics.Camera;
 import com.sevenge.graphics.FontUtils;
+import com.sevenge.graphics.TextureRegion;
 import com.sevenge.input.GestureProcessor;
+import com.sevenge.input.Input;
 import com.sevenge.input.InputProcessor;
 
 public class SampleGameState extends GameState implements InputProcessor, GestureProcessor {
@@ -47,54 +44,66 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private static final String TAG = "SampleGameState";
 
 	private EntityManager mEM;
-	private Component[] components = new Component[10];
-
 	private Music music;
 
 	private RendererSystem rendererSystem;
-
 	private AnimationSystem animationSystem;
-
-	private CameraSystem cameraSystem;
-
 	private ScriptingSystem scriptingSystem;
-
 	private PhysicsSystem physicsSystem;
+	private SceneManager sceneManager;
 
 	private int counter = 0;
+	private Camera camera;
+	private int mWidth;
+	private int mHeight;
+	private float lastScale = 1;
+	private float firstSpan;
+	private AssetManager assetManager;
+	private Input input;
 
-	public SampleGameState () {
-		SevenGE.input.addInputProcessor(this);
-		SevenGE.input.addGestureProcessor(this);
+	@Override
+	public void load () {
+		input = SevenGE.getInput();
+		input.addInputProcessor(this);
+		input.addGestureProcessor(this);
+		assetManager = SevenGE.getAssetManager();
+// assetManager.loadAssets("sample.pkg");
 
-		SevenGE.assetManager.addLoader("spriteSheet", new SpriteSheetFTLoader(SevenGE.assetManager));
-		SevenGE.assetManager.addLoader("texture", new TextureLoader(SevenGE.assetManager));
-		SevenGE.assetManager.addLoader("program", new TextureShaderProgramLoader(SevenGE.assetManager));
-		SevenGE.assetManager.addLoader("shader", new ShaderLoader(SevenGE.assetManager));
-		SevenGE.assetManager.addLoader("audio", new AudioLoader(SevenGE.assetManager));
-		
-	
-		SevenGE.assetManager.loadAssets("package.pkg");
-		
-		SevenGE.assetManager.registerAsset("font", FontUtils.load(IO.getAssetManager(), "Fonts/OpenSansBold.ttf", 20, 2, 0));
-		
-		
 		rendererSystem = new RendererSystem(200);
 		animationSystem = new AnimationSystem(200);
-		cameraSystem = new CameraSystem(null);
 		scriptingSystem = new ScriptingSystem();
 		physicsSystem = new PhysicsSystem(200);
+		sceneManager = new SceneManager();
+
+		assetManager.addLoader("spriteSheet", new SpriteSheetFTLoader(assetManager));
+		assetManager.addLoader("texture", new TextureLoader(assetManager));
+		assetManager.addLoader("program", new TextureShaderProgramLoader(assetManager));
+		assetManager.addLoader("shader", new ShaderLoader(assetManager));
+		assetManager.addLoader("audio", new AudioLoader(assetManager));
+
+		assetManager.loadAssets("package.pkg");
+
+		assetManager.registerAsset("font", FontUtils.load(IO.getAssetManager(), "Fonts/OpenSansBold.ttf", 20, 2, 0));
 
 		mEM = new EntityManager(300, 10);
 		mEM.registerSystem(rendererSystem);
 		mEM.registerSystem(animationSystem);
-		mEM.registerSystem(cameraSystem);
 		mEM.registerSystem(scriptingSystem);
 		mEM.registerSystem(physicsSystem);
 
+		mWidth = SevenGE.getWidth();
+		mHeight = SevenGE.getHeight();
+
+		camera = new Camera(mWidth, mHeight);
+		camera.setPostion(0.0f, 0.0f);
+		camera.setRotation(0.0f);
+		camera.setZoom(1.0f);
+
+		rendererSystem.setCamera(camera);
+
 		Random rng = new Random();
 		for (int i = 0; i < 150; i++) {
-			Entity entity = mEM.createEntity(components, 0);
+			Entity entity = mEM.createEntity(10);
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
 			cp.rotation = rng.nextFloat() * 360.0f;
@@ -103,18 +112,19 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			cs.scale = 1.0f;
 			float rnd = rng.nextFloat();
 			if (rnd < 0.5f) {
-				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("Exoplanet2.png");
+				cs.textureRegion = (TextureRegion)assetManager.getAsset("Exoplanet2.png");
 				cs.scale = 1f;
 			} else if (rnd < 0.7f)
-				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("Exoplanet2.png");
+				cs.textureRegion = (TextureRegion)assetManager.getAsset("Exoplanet2.png");
 			else if (rnd < 0.75f)
-				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("Exoplanet2.png");
+				cs.textureRegion = (TextureRegion)assetManager.getAsset("Exoplanet2.png");
 			else {
-				cs.textureRegion = (TextureRegion)SevenGE.assetManager.getAsset("Exoplanet2.png");
+				cp.layer = 4;
+				cp.parallaxFactor = 1f;
+				cs.textureRegion = (TextureRegion)assetManager.getAsset("Exoplanet2.png");
+
 				AnimationComponent ca = new AnimationComponent();
 				PhysicsComponent physicsComponent = new PhysicsComponent();
-
-				//
 
 				BodyDef bodyDef = new BodyDef();
 				bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -130,13 +140,14 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 				body.createFixture(fixtureDef);
 				physicsComponent.setBody(body);
 
-				//
+				ca.frameList = new TextureRegion[] {(TextureRegion)assetManager.getAsset("Exoplanet.png"),
+					(TextureRegion)assetManager.getAsset("Exoplanet.png"), (TextureRegion)assetManager.getAsset("Exoplanet.png"),
+					(TextureRegion)assetManager.getAsset("Exoplanet.png"), (TextureRegion)assetManager.getAsset("Exoplanet.png")};
 
-				ca.frameList = new TextureRegion[] {(TextureRegion)SevenGE.assetManager.getAsset("Exoplanet.png"),
-					(TextureRegion)SevenGE.assetManager.getAsset("Exoplanet.png"),
-					(TextureRegion)SevenGE.assetManager.getAsset("Exoplanet.png"),
-					(TextureRegion)SevenGE.assetManager.getAsset("Exoplanet.png"),
-					(TextureRegion)SevenGE.assetManager.getAsset("Exoplanet.png")};
+// ca.frameList = new TextureRegion[] {(TextureRegion)assetManager.getAsset("enemyBlack1"),
+// (TextureRegion)assetManager.getAsset("enemyBlack2"), (TextureRegion)assetManager.getAsset("enemyBlack3"),
+// (TextureRegion)assetManager.getAsset("enemyBlack4"), (TextureRegion)assetManager.getAsset("enemyBlack5")};
+
 				ca.durations = new int[] {500, 1000, 2000, 234, 666};
 				ca.isPlaying = true;
 				entity.addComponent(ca, 3);
@@ -147,7 +158,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			entity.addComponent(cs, 1);
 
 		}
-		Entity e = mEM.createEntity(components, 0);
+		Entity e = mEM.createEntity(10);
 		PhysicsComponent physicsComponent = new PhysicsComponent();
 		PositionComponent positionComponent = new PositionComponent();
 
@@ -174,49 +185,75 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		physicsComponent.setBody(groundBody);
 
 		e.addComponent(positionComponent, 0);
-		// e.addComponent(spriteComponent, 1);
 		e.addComponent(physicsComponent, 4);
+
+		SpriteComponent cs;
+		PositionComponent cp;
+
+		e = mEM.createEntity(10);
+		cs = new SpriteComponent();
+		cp = new PositionComponent();
+		cp.layer = -1;
+		cp.parallaxFactor = 0.1f;
+		cp.rotation = 0;
+		cp.x = 0;
+		cp.y = 512;
+		cs.scale = 1.0f;
+		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("dust1"));
+		e.addComponent(cp, 0);
+		e.addComponent(cs, 1);
+
+		e = mEM.createEntity(10);
+		cs = new SpriteComponent();
+		cp = new PositionComponent();
+		cp.layer = -1;
+		cp.parallaxFactor = 0.1f;
+		cp.rotation = 0;
+		cp.x = 0;
+		cp.y = 0;
+		cs.scale = 1.0f;
+		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("dust1"));
+		e.addComponent(cp, 0);
+		e.addComponent(cs, 1);
+
+		e = mEM.createEntity(10);
+		cs = new SpriteComponent();
+		cp = new PositionComponent();
+		cp.layer = -1;
+		cp.parallaxFactor = 0.1f;
+		cp.rotation = 0;
+		cp.x = 512;
+		cp.y = 512;
+		cs.scale = 1.0f;
+		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("dust1"));
+		e.addComponent(cp, 0);
+		e.addComponent(cs, 1);
+
+		e = mEM.createEntity(10);
+		cs = new SpriteComponent();
+		cp = new PositionComponent();
+		cp.layer = -1;
+		cp.parallaxFactor = 0.1f;
+		cp.rotation = 0;
+		cp.x = 512;
+		cp.y = 0;
+		cs.scale = 1.0f;
+		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("dust1"));
+		e.addComponent(cp, 0);
+		e.addComponent(cs, 1);
 
 		mEM.assignEntities();
 
-		music = (Music)SevenGE.assetManager.getAsset("music1");
+		music = (Music)assetManager.getAsset("music1");
 		music.setLooping(true);
 		music.play();
 
 	}
 
 	@Override
-	public void onSurfaceChange (int width, int height) {
-
-		CameraComponent cc = new CameraComponent();
-		cc.height = height;
-		cc.width = width;
-		cc.scaledHeight = height;
-		cc.scaledWidth = width;
-		cc.scale = 0.7f;
-
-		PositionComponent cp = new PositionComponent();
-		cp.x = 700;
-		cp.y = 650;
-
-		Camera2D.lookAt(cp.x, cp.y, cc.viewMatrix);
-		Camera2D.setOrthoProjection(width / cc.scale, height / cc.scale, cc.projectionMatrix);
-		Camera2D.getVPM(cc.viewProjectionMatrix, cc.projectionMatrix, cc.viewMatrix);
-		Matrix.invertM(cc.invertedVPMatrix, 0, cc.viewProjectionMatrix, 0);
-
-		Entity camera = mEM.createEntity(components, 0);
-		camera.addComponent(cc, 2);
-		camera.addComponent(cp, 0);
-
-		cameraSystem.setCamera(camera);
-		rendererSystem.setCamera(camera);
-	}
-
-	@Override
 	public void update () {
 		physicsSystem.process();
-		cameraSystem.process();
-		SevenGE.input.process();
+		input.process();
 		animationSystem.process();
 		if (counter == 33) {
 			counter = 0;
@@ -224,6 +261,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		}
 		counter++;
 		mEM.assignEntities();
+		sceneManager.update();
 	}
 
 	@Override
@@ -233,7 +271,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void dispose () {
-
+		input.removeInputProcessor(this);
+		input.removeGestureProcessor(this);
 	}
 
 	@Override
@@ -268,13 +307,26 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void onLongPress (MotionEvent arg0) {
-		// Log.d(TAG, "onLongPress");
+		SevenGE.getStateManager().setCurrentState(new SampleGameState());
 
 	}
 
 	@Override
-	public boolean onScroll (MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
-		// Log.d(TAG, "onScroll");
+	public boolean onScroll (MotionEvent me1, MotionEvent me2, float distX, float distY) {
+		float me2x = me2.getX();
+		float me2y = me2.getY();
+
+		float[] coords = camera.unproject((int)(me2x + distX), (int)(me2y + distY), mWidth, mHeight, camera.getCameraMatrix());
+		float x1 = coords[0];
+		float y1 = coords[1];
+		coords = camera.unproject((int)me2x, (int)me2y, mWidth, mHeight, camera.getCameraMatrix());
+		float x2 = coords[0];
+		float y2 = coords[1];
+
+		com.sevenge.utils.Vector2 camPos = camera.getPosition();
+		camPos.x -= x2 - x1;
+		camPos.y -= y2 - y1;
+		camera.setPostion(camPos.x, camPos.y);
 		return false;
 	}
 
@@ -297,9 +349,20 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	}
 
 	@Override
-	public boolean onScale (ScaleGestureDetector detector) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean onScale (float currentSpan) {
+		float scale = lastScale * firstSpan / currentSpan;
+		camera.setZoom(Math.min(5.0f, Math.max(0.1f, scale)));
+		return true;
+	}
+
+	@Override
+	public void onScaleEnd (float currentSpan) {
+	}
+
+	@Override
+	public void onScaleBegin (float currentSpan) {
+		lastScale = camera.getZoom();
+		firstSpan = currentSpan;
 	}
 
 }

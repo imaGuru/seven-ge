@@ -1,9 +1,10 @@
 
 package com.sevenge.assets;
 
+import com.sevenge.graphics.TextureRegion;
+
 /** Class holding information about font for drawing text in OpenGL */
 public class Font extends Asset {
-
 	public int fontPadX;
 	public int fontPadY;
 	public int cellWidth;
@@ -13,4 +14,5 @@ public class Font extends Asset {
 	public TextureRegion[] charRgn;
 	public float[] charWidths;
 	public float spaceX = 0;
+	public int texture;
 }

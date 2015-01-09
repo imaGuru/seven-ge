@@ -8,6 +8,8 @@ public class PositionComponent extends Component {
 	public float px;
 	public float py;
 	public float rotation;
+	public int layer;
+	public float parallaxFactor;
 	public float[] scaleMatrix = new float[16];
 	public float[] transform = new float[16];
 }

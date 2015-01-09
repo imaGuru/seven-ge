@@ -7,7 +7,7 @@ import junit.framework.Assert;
 
 import com.sevenge.IO;
 import com.sevenge.assets.Texture;
-import com.sevenge.assets.TextureRegion;
+import com.sevenge.graphics.TextureRegion;
 import com.sevenge.graphics.TextureUtils;
 
 public class TextureTest extends BaseOpenGLES20UnitTest {

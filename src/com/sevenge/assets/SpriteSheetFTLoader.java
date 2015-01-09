@@ -1,3 +1,4 @@
+
 package com.sevenge.assets;
 
 import java.io.IOException;
@@ -6,9 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 import com.sevenge.IO;
+import com.sevenge.graphics.TextureRegion;
 import com.sevenge.utils.DebugLog;
 
 public class SpriteSheetFTLoader extends AssetLoader {
@@ -30,11 +30,10 @@ public class SpriteSheetFTLoader extends AssetLoader {
 				for (int j = 0; j < jFrames.length(); j++) {
 					JSONObject jRegion = jFrames.getJSONObject(j);
 					JSONObject prop = jRegion.getJSONObject("frame");
-					assetManager.registerAsset(jRegion.getString("filename"),
-						new TextureRegion(prop.getInt("w"),prop.getInt("h"),prop.getInt("x"), prop.getInt("y"),
-							(Texture)assetManager.getAsset(textureId)));
-					DebugLog.d("assets",jRegion.getString("filename")+" loaded ");
-					
+					assetManager.registerAsset(jRegion.getString("filename"), new TextureRegion(prop.getInt("w"), prop.getInt("h"),
+						prop.getInt("x"), prop.getInt("y"), (Texture)assetManager.getAsset(textureId)));
+					DebugLog.d("assets", jRegion.getString("filename") + " loaded ");
+
 				}
 			}
 

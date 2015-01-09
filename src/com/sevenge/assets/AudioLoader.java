@@ -19,7 +19,7 @@ public class AudioLoader extends AssetLoader {
 			JSONArray jarr = new JSONArray(content);
 			for (int i = 0; i < jarr.length(); i++) {
 				JSONObject jMusic = jarr.getJSONObject(i);
-				assetManager.registerAsset(jMusic.getString("id"), SevenGE.audio.getMusic(jMusic.getString("path")));
+				assetManager.registerAsset(jMusic.getString("id"), SevenGE.getAudio().getMusic(jMusic.getString("path")));
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

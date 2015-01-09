@@ -1,167 +1,243 @@
 
 package com.sevenge.graphics;
 
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
-import static android.opengl.GLES20.glClear;
-import android.opengl.Matrix;
+import static android.opengl.GLES20.GL_BLEND;
+import static android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER;
+import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
+import static android.opengl.GLES20.GL_TEXTURE0;
+import static android.opengl.GLES20.GL_TEXTURE_2D;
+import static android.opengl.GLES20.GL_TRIANGLES;
+import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
+import static android.opengl.GLES20.GL_VERTEX_SHADER;
+import static android.opengl.GLES20.glActiveTexture;
+import static android.opengl.GLES20.glBindBuffer;
+import static android.opengl.GLES20.glBindTexture;
+import static android.opengl.GLES20.glBlendFunc;
+import static android.opengl.GLES20.glDisable;
+import static android.opengl.GLES20.glDisableVertexAttribArray;
+import static android.opengl.GLES20.glDrawElements;
+import static android.opengl.GLES20.glEnable;
+import static android.opengl.GLES20.glUseProgram;
 
-import com.sevenge.SevenGE;
 import com.sevenge.assets.Font;
-import com.sevenge.assets.Shader;
-import com.sevenge.assets.TextureRegion;
 
-/** Class responsible for creating sprite batches and puting sprites in the correct batches for fast and easy drawing */
+/** Drawable batch of sprites using a single texture */
 public class SpriteBatcher {
-	private Batch[] mBatches;
-	private int mUsedBatches;
-	private int mCurrentGlid = -1;
-	private float DOUBLEPI = (float)(Math.PI * 2.0f);
-	private TextureShaderProgram mTSP;
-	private ColorShaderProgram mCSP;
-	private SpriteBatchPool spriteBatchPool;
-	private PrimitiveBatchPool primitiveBatchPool;
 
-	private float[] uvs;
-	private float[] v;
-	private float[] transform = new float[16];
-	private float[] r = new float[8], temp = new float[4], tempr = new float[4];
-	private float[] t = new float[16];
+	/** Texture with sprites */
+	public int mTexture = 0;
+	/** VertexArray Object containing sprite locations in the world */
+	private final VertexArray mVertexArray;
+	/** IndexBuffer Object containing face definitions */
+	private final IndexBuffer indexBuffer;
+	/** Shader program used to texture the sprites */
+	public final TextureShaderProgram mProgram;
 
-	/** Creates a new spriteBatcher
-	 * @param size number of batches
-	 * @param batchSizeHint hint number of sprites in a batch */
-	public SpriteBatcher (int sizeHint, int batchSizeHint) {
-		mUsedBatches = -1;
-		mBatches = new Batch[sizeHint];
-		mTSP = (TextureShaderProgram)SevenGE.assetManager.getAsset("spriteShader");
-		Shader v = (Shader)SevenGE.assetManager.getAsset("shader3");
-		Shader f = (Shader)SevenGE.assetManager.getAsset("shader4");
-		mCSP = new ColorShaderProgram(v.glID, f.glID);
-		spriteBatchPool = new SpriteBatchPool(sizeHint, mTSP, batchSizeHint);
-		primitiveBatchPool = new PrimitiveBatchPool(sizeHint, mCSP, batchSizeHint * 2);
+	private final float[] mSprites;
+	private final float[] vdata;
+
+	private final int mSize;
+	private final float[] matrix;
+	private int mSpriteCount = 0;
+	public int spriteCountPeak = 0;
+
+	private boolean blendingChanged;
+	private boolean blendingEnabled;
+	private int sfactor;
+	private int dfactor;
+
+	private static final int POSITION_COMPONENT_COUNT = 2;
+	private static final int TEXTURE_COORDINATES_COMPONENT_COUNT = 2;
+	private static final int BYTES_PER_FLOAT = 4;
+	private static final int STRIDE = (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT) * BYTES_PER_FLOAT;
+	private static final short INDICES_PER_SPRITE = 6;
+	private static final int VERTICES_PER_SPRITE = 4;
+
+	/** Creates a new sprite batch
+	 * @param tex2D texture to be used
+	 * @param spriteShader shader to be used
+	 * @param size hint number of sprites */
+	public SpriteBatcher (int maxSpriteCount) {
+		mProgram = new TextureShaderProgram(ShaderUtils.compileShader(ShaderUtils.textureVertexShader, GL_VERTEX_SHADER),
+			ShaderUtils.compileShader(ShaderUtils.textureFragmentShader, GL_FRAGMENT_SHADER));
+		mSize = maxSpriteCount;
+
+		vdata = new float[16];
+		matrix = new float[16];
+
+		short[] indices = new short[maxSpriteCount * INDICES_PER_SPRITE];
+		mSprites = new float[maxSpriteCount * VERTICES_PER_SPRITE
+			* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT)];
+		mVertexArray = new VertexArray(maxSpriteCount * (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT)
+			* VERTICES_PER_SPRITE);
+
+		for (int i = 0; i < maxSpriteCount; i++) {
+			int mIndexOffset = i * INDICES_PER_SPRITE;
+			int mVertexOffset = i * VERTICES_PER_SPRITE;
+			indices[mIndexOffset] = (short)mVertexOffset;
+			indices[mIndexOffset + 1] = (short)(mVertexOffset + 1);
+			indices[mIndexOffset + 2] = (short)(mVertexOffset + 2);
+			indices[mIndexOffset + 3] = (short)(mVertexOffset);
+			indices[mIndexOffset + 4] = (short)(mVertexOffset + 2);
+			indices[mIndexOffset + 5] = (short)(mVertexOffset + 3);
+		}
+		indexBuffer = new IndexBuffer(indices);
 	}
 
-	/** Draw the created batches using specified view projection matrix
-	 * @param vpm view projection matrix */
-	public void flush (float[] vpm) {
-		glClear(GL_COLOR_BUFFER_BIT);
-		for (int i = 0; i < mUsedBatches + 1; i++) {
-			mBatches[i].draw(vpm);
-			mBatches[i].clear();
-			mBatches[i].release();
-		}
-		mUsedBatches = -1;
-		mCurrentGlid = -1;
+	public void begin () {
+		glUseProgram(mProgram.mGlID);
+		mProgram.setTextureUniform(mTexture);
+		mVertexArray.setVertexAttribPointer(0, mProgram.mAttributePositionLocation, POSITION_COMPONENT_COUNT, STRIDE);
+		mVertexArray.setVertexAttribPointer(POSITION_COMPONENT_COUNT, mProgram.mAttributeTextureCoordinatesLocation,
+			TEXTURE_COORDINATES_COMPONENT_COUNT, STRIDE);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer.bufferId);
 	}
 
-	/** Removes content of all batches */
-	public void clear () {
-		for (int i = 0; i < mUsedBatches + 1; i++) {
-			mBatches[i].clear();
+	public void flush () {
+		mVertexArray.put(mSprites, mSpriteCount * VERTICES_PER_SPRITE
+			* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT));
+		if (blendingChanged) {
+			if (blendingEnabled) {
+				glEnable(GL_BLEND);
+				glBlendFunc(sfactor, dfactor);
+			} else {
+				glDisable(GL_BLEND);
+			}
+			blendingChanged = false;
 		}
-		mUsedBatches = -1;
-		mCurrentGlid = -1;
+		mProgram.setMatrixUniform(matrix);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, mTexture);
+		glDrawElements(GL_TRIANGLES, mSpriteCount * INDICES_PER_SPRITE, GL_UNSIGNED_SHORT, 0);
+		if (spriteCountPeak < mSpriteCount) spriteCountPeak = mSpriteCount;
+		mSpriteCount = 0;
+		mVertexArray.clear();
 	}
 
-	public void drawSprite (float[] transform, TextureRegion sprite) {
-		uvs = sprite.UVs;
-		v = sprite.vertices;
-
-		for (int i = 0; i < 4; i++) {
-			temp[0] = v[i * 2];
-			temp[1] = v[i * 2 + 1];
-			temp[2] = 0;
-			temp[3] = 1;
-			Matrix.multiplyMV(tempr, 0, transform, 0, temp, 0);
-			r[i * 2] = tempr[0];
-			r[i * 2 + 1] = tempr[1];
-		}
-
-		t[0] = r[0];
-		t[1] = r[1];
-		t[2] = uvs[0];
-		t[3] = uvs[1];
-		t[4] = r[2];
-		t[5] = r[3];
-		t[6] = uvs[2];
-		t[7] = uvs[3];
-		t[8] = r[4];
-		t[9] = r[5];
-		t[10] = uvs[4];
-		t[11] = uvs[5];
-		t[12] = r[6];
-		t[13] = r[7];
-		t[14] = uvs[6];
-		t[15] = uvs[7];
-
-		int tex = sprite.texture;
-
-		if (tex == mCurrentGlid && mBatches[mUsedBatches].getRemaining() > 0)
-			mBatches[mUsedBatches].add(t);
-		else {
-			mUsedBatches++;
-			SpriteBatch sb = spriteBatchPool.get();
-			sb.mTexture = tex;
-			sb.add(t);
-			mBatches[mUsedBatches] = sb;
-			mCurrentGlid = tex;
-		}
-
+	public void end () {
+		if (mSpriteCount > 0) flush();
+		glDisableVertexAttribArray(mProgram.mAttributePositionLocation);
+		glDisableVertexAttribArray(mProgram.mAttributeTextureCoordinatesLocation);
+		glUseProgram(0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	/** Adds the sprite in the specified world x, y location and with specified rotation and scale
-	 * @param x world coordinate
-	 * @param y world coordinate
-	 * @param rotation of the sprite
-	 * @param scale of the sprite
-	 * @param sprite to draw */
+	public void enableBlending () {
+		if (blendingEnabled) return;
+		if (mSpriteCount > 0) flush();
+		blendingEnabled = true;
+		blendingChanged = true;
+	}
+
+	public void disableBlending () {
+		if (!blendingEnabled) return;
+		if (mSpriteCount > 0) flush();
+		blendingEnabled = false;
+		blendingChanged = true;
+	}
+
+	public void setBlendFunc (int sfactor, int dfactor) {
+		if (sfactor == this.sfactor && dfactor == this.dfactor) return;
+		if (mSpriteCount > 0) flush();
+		this.sfactor = sfactor;
+		this.dfactor = dfactor;
+		blendingChanged = true;
+	}
+
+	public void setProjection (float[] matrix) {
+		if (mSpriteCount > 0) flush();
+		System.arraycopy(matrix, 0, this.matrix, 0, 16);
+	}
+
 	public void drawSprite (float x, float y, float rotation, float scaleX, float scaleY, TextureRegion sprite) {
-		uvs = sprite.UVs;
-		v = sprite.vertices;
+		if (mSpriteCount == mSize) flush();
+		if (mTexture == 0)
+			mTexture = sprite.texture;
+		else if (mTexture != sprite.texture) {
+			flush();
+			mTexture = sprite.texture;
+		}
+		float[] uvs = sprite.UVs;
+		float hw = sprite.width / 2;
+		float hh = sprite.height / 2;
+		if (rotation != 0) {
+			rotation = (float)Math.toRadians(-rotation);
+			float cos = (float)Math.cos(rotation);
+			float sin = (float)Math.sin(rotation);
+			float vx = hw * scaleX;
+			float vy = hh * scaleY;
+			vdata[0] = vx * cos - vy * sin + x;
+			vdata[1] = vx * sin + vy * cos + y;
+			vdata[2] = uvs[0];
+			vdata[3] = uvs[1];
 
-		Matrix.setIdentityM(transform, 0);
-		Matrix.translateM(transform, 0, x, y, 0f);
-		Matrix.rotateM(transform, 0, rotation, 0f, 0f, -1.0f);
-		Matrix.scaleM(transform, 0, scaleX, scaleY, 1);
-		for (int i = 0; i < 4; i++) {
-			temp[0] = v[i * 2];
-			temp[1] = v[i * 2 + 1];
-			temp[2] = 0;
-			temp[3] = 1;
-			Matrix.multiplyMV(tempr, 0, transform, 0, temp, 0);
-			r[i * 2] = tempr[0];
-			r[i * 2 + 1] = tempr[1];
+			vx = -hw;
+			vy = hh * scaleY;
+			vdata[4] = vx * cos - vy * sin + x;
+			vdata[5] = vx * sin + vy * cos + y;
+			vdata[6] = uvs[2];
+			vdata[7] = uvs[3];
+
+			vx = -hw;
+			vy = -hh;
+			vdata[8] = vx * cos - vy * sin + x;
+			vdata[9] = vx * sin + vy * cos + y;
+			vdata[10] = uvs[4];
+			vdata[11] = uvs[5];
+
+			vx = hw * scaleX;
+			vy = -hh;
+			vdata[12] = vx * cos - vy * sin + x;
+			vdata[13] = vx * sin + vy * cos + y;
+			vdata[14] = uvs[6];
+			vdata[15] = uvs[7];
+		} else {
+			float vx = hw * scaleX;
+			float vy = hh * scaleY;
+			vdata[0] = vx + x;
+			vdata[1] = vy + y;
+			vdata[2] = uvs[0];
+			vdata[3] = uvs[1];
+
+			vx = -hw;
+			vy = hh * scaleY;
+			vdata[4] = vx + x;
+			vdata[5] = vy + y;
+			vdata[6] = uvs[2];
+			vdata[7] = uvs[3];
+
+			vx = -hw;
+			vy = -hh;
+			vdata[8] = vx + x;
+			vdata[9] = vy + y;
+			vdata[10] = uvs[4];
+			vdata[11] = uvs[5];
+
+			vx = hw * scaleX;
+			vy = -hh;
+			vdata[12] = vx + x;
+			vdata[13] = vy + y;
+			vdata[14] = uvs[6];
+			vdata[15] = uvs[7];
 		}
 
-		t[0] = r[0];
-		t[1] = r[1];
-		t[2] = uvs[0];
-		t[3] = uvs[1];
-		t[4] = r[2];
-		t[5] = r[3];
-		t[6] = uvs[2];
-		t[7] = uvs[3];
-		t[8] = r[4];
-		t[9] = r[5];
-		t[10] = uvs[4];
-		t[11] = uvs[5];
-		t[12] = r[6];
-		t[13] = r[7];
-		t[14] = uvs[6];
-		t[15] = uvs[7];
+		System.arraycopy(vdata, 0, mSprites, mSpriteCount * VERTICES_PER_SPRITE
+			* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT), vdata.length);
+		mSpriteCount++;
+	}
 
-		int tex = sprite.texture;
-
-		if (tex == mCurrentGlid && mBatches[mUsedBatches].getRemaining() > 0)
-			mBatches[mUsedBatches].add(t);
-		else {
-			mUsedBatches++;
-			SpriteBatch sb = spriteBatchPool.get();
-			sb.mTexture = tex;
-			sb.add(t);
-			mBatches[mUsedBatches] = sb;
-			mCurrentGlid = tex;
+	public void drawSprite (Sprite sprite) {
+		if (mSpriteCount == mSize) flush();
+		if (mTexture == 0)
+			mTexture = sprite.texture;
+		else if (mTexture != sprite.texture) {
+			flush();
+			mTexture = sprite.texture;
 		}
+		System.arraycopy(sprite.getVertices(), 0, mSprites, mSpriteCount * VERTICES_PER_SPRITE
+			* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT), vdata.length);
+		mSpriteCount++;
 	}
 
 	public void drawText (String text, float x, float y, Font font) {
@@ -176,64 +252,6 @@ public class SpriteBatcher {
 				c = FontUtils.CHAR_UNKNOWN; // Set to Unknown Character Index
 			drawSprite(x, y, 0, font.scaleX, font.scaleY, font.charRgn[c]); // Draw the Character
 			x += (font.charWidths[c] + font.spaceX) * font.scaleX; // Advance X Position by Scaled Character Width
-		}
-	}
-
-	public void drawCircle (float cx, float cy, float r, float rotation, int nsegments, float red, float green, float blue) {
-		float[] vertices = new float[nsegments * 5];
-		float t, x = (float)Math.cos(-rotation) * r, y = (float)Math.sin(-rotation) * r;
-		float c = (float)Math.cos(DOUBLEPI / nsegments);
-		float s = (float)Math.sin(DOUBLEPI / nsegments);
-		for (short i = 0; i < nsegments; i++) {
-			vertices[i * 5] = x + cx;
-			vertices[i * 5 + 1] = y + cy;
-			vertices[i * 5 + 2] = red;
-			vertices[i * 5 + 3] = green;
-			vertices[i * 5 + 4] = blue;
-			t = x;
-			x = c * x - s * y;
-			y = s * t + c * y;
-		}
-		if (mCurrentGlid == -2 && mBatches[mUsedBatches].getRemaining() >= nsegments)
-			mBatches[mUsedBatches].add(vertices, nsegments);
-		else {
-			mUsedBatches++;
-			PrimitiveBatch pb = primitiveBatchPool.get();
-			pb.add(vertices, nsegments);
-			mBatches[mUsedBatches] = pb;
-			mCurrentGlid = -2;
-		}
-	}
-
-	public void drawRectangle (float cx, float cy, float w, float h, float rotation, float red, float green, float blue) {
-		float[] vertices = new float[20];
-		float c = (float)Math.cos(-rotation);
-		float s = (float)Math.sin(-rotation);
-		float x = w / 2, y = h / 2;
-		vertices[0] = x * c - s * y + cx;
-		vertices[1] = s * x + c * y + cy;
-		x = -w / 2;
-		vertices[5] = x * c - s * y + cx;
-		vertices[6] = s * x + c * y + cy;
-		y = -h / 2;
-		vertices[10] = x * c - s * y + cx;
-		vertices[11] = s * x + c * y + cy;
-		x = w / 2;
-		vertices[15] = x * c - s * y + cx;
-		vertices[16] = s * x + c * y + cy;
-		for (int i = 0; i < 4; i++) {
-			vertices[i * 5 + 2] = red;
-			vertices[i * 5 + 3] = green;
-			vertices[i * 5 + 4] = blue;
-		}
-		if (mCurrentGlid == -2 && mBatches[mUsedBatches].getRemaining() >= 4)
-			mBatches[mUsedBatches].add(vertices, 4);
-		else {
-			mUsedBatches++;
-			PrimitiveBatch pb = primitiveBatchPool.get();
-			pb.add(vertices, 4);
-			mBatches[mUsedBatches] = pb;
-			mCurrentGlid = -2;
 		}
 	}
 }

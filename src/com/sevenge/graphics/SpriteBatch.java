@@ -10,6 +10,7 @@ import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glBindTexture;
+import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glDrawElements;
 import static android.opengl.GLES20.glUseProgram;
 
@@ -27,14 +28,15 @@ public class SpriteBatch {
 	public final TextureShaderProgram shader;
 	private final int mTextureID;
 	private int mSpriteCount = 0, mUploadedSprites = 0;
-	private float[] mProjectionMatrix;
-	private float[] mSpriteData;
+	private final float[] mProjectionMatrix;
+	private final float[] mSpriteData;
 
 	public SpriteBatch (int size, int texture, int type) {
 		mTextureID = texture;
 		mVertexBuffer = new VertexBuffer(size, type);
 		shader = ShaderUtils.TEXTURE_SHADER;
 		mSpriteData = new float[size * VERTICES_PER_SPRITE];
+		mProjectionMatrix = new float[16];
 		short[] indices = new short[size * INDICES_PER_SPRITE];
 		for (int i = 0; i < size; i++) {
 			int mIndexOffset = i * INDICES_PER_SPRITE;
@@ -207,9 +209,10 @@ public class SpriteBatch {
 
 	public void draw () {
 		if (mUploadedSprites != mSpriteCount) {
-			if (mUploadedSprites == 0)
+			if (mUploadedSprites == 0) {
+				mVertexBuffer.put(mSpriteData, mSpriteCount * 16);
 				mVertexBuffer.upload();
-			else {
+			} else {
 				mVertexBuffer.put(mSpriteData, mUploadedSprites * 16, mSpriteCount * 16);
 				mVertexBuffer.upload(mUploadedSprites * 16);
 			}
@@ -226,6 +229,8 @@ public class SpriteBatch {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 		glDrawElements(GL_TRIANGLES, mSpriteCount * INDICES_PER_SPRITE, GL_UNSIGNED_SHORT, 0);
+		glDisableVertexAttribArray(shader.mAttributePositionLocation);
+		glDisableVertexAttribArray(shader.mAttributeTextureCoordinatesLocation);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}

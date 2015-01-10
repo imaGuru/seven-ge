@@ -57,21 +57,18 @@ public class VertexBuffer {
 	}
 
 	public void upload (int start) {
+		mFloatBuffer.position(0);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferId);
 		glBufferSubData(GL_ARRAY_BUFFER, start * BYTES_PER_FLOAT, mActualSize * BYTES_PER_FLOAT, mFloatBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		mFloatBuffer.position(0);
 		mActualSize = 0;
 	}
 
 	public void upload () {
-		// Bind to the buffer.
-		glBindBuffer(GL_ARRAY_BUFFER, bufferId);
-		// Transfer data from native memory to the GPU buffer.
-		glBufferData(GL_ARRAY_BUFFER, mActualSize * BYTES_PER_FLOAT, mFloatBuffer, mType);
-		// IMPORTANT: Unbind from the buffer when we're done with it.
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		mFloatBuffer.position(0);
+		glBindBuffer(GL_ARRAY_BUFFER, bufferId);
+		glBufferData(GL_ARRAY_BUFFER, mActualSize * BYTES_PER_FLOAT, mFloatBuffer, mType);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		mActualSize = 0;
 	}
 
@@ -85,7 +82,7 @@ public class VertexBuffer {
 	 * @param componentCount size of the single data
 	 * @param stride number of indices to skip for next part of data */
 	public void setVertexAttribPointer (int dataOffset, int attributeLocation, int componentCount, int stride) {
-		glVertexAttribPointer(attributeLocation, componentCount, GL_FLOAT, false, stride, dataOffset);
+		glVertexAttribPointer(attributeLocation, componentCount, GL_FLOAT, false, stride, dataOffset * BYTES_PER_FLOAT);
 		glEnableVertexAttribArray(attributeLocation);
 	}
 }

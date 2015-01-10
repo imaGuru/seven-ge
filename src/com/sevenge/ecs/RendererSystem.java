@@ -25,8 +25,10 @@ public class RendererSystem extends SubSystem {
 	private SpriteBatcher mSpriteBatcher;
 	private SpriteBatch mSpriteBatch;
 	private Font font;
+	private TextureRegion tex;
 	private float[] matrix = new float[16];
 	private PrimitiveRenderer mPrimitiveRenderer;
+	private Sprite sprite;
 
 	public RendererSystem (int size) {
 		super(SpriteComponent.MASK | PositionComponent.MASK, size);
@@ -35,21 +37,24 @@ public class RendererSystem extends SubSystem {
 		mSpriteBatcher = new SpriteBatcher(300);
 		mPrimitiveRenderer = new PrimitiveRenderer(1000);
 		font = FontUtils.load(IO.getAssetManager(), "Fonts/OpenSansBold.ttf", 20, 2, 0);
-		TextureRegion tex = (TextureRegion)SevenGE.getAssetManager().getAsset("enemyBlack1");
+		tex = (TextureRegion)SevenGE.getAssetManager().getAsset("enemyBlack1");
 		mSpriteBatch = new SpriteBatch(200, tex.texture, GL_STREAM_DRAW);
-		Sprite sprite = new Sprite(tex);
+		sprite = new Sprite(tex);
+		sprite.setScale(1, 1);
 		sprite.setCenter(100, 100);
 		mSpriteBatch.addSprite(sprite);
-		sprite.setCenter(200, 100);
+		sprite.setCenter(100, 200);
 		mSpriteBatch.addSprite(sprite);
-		sprite.setCenter(300, 100);
+		sprite.setCenter(100, 300);
 		mSpriteBatch.addSprite(sprite);
-		sprite.setCenter(400, 100);
+		sprite.setCenter(100, 400);
 		mSpriteBatch.addSprite(sprite);
-		sprite.setCenter(500, 100);
+		sprite.setCenter(100, 500);
 		mSpriteBatch.addSprite(sprite);
-		sprite.setCenter(600, 100);
+		sprite.setCenter(100, 600);
 		mSpriteBatch.addSprite(sprite);
+		sprite.setPosition(200, 300);
+		mSpriteBatch.addSprite(200, 600, 1, 1, 1.5f, tex);
 	}
 
 	public void setCamera (Camera camera) {
@@ -59,6 +64,7 @@ public class RendererSystem extends SubSystem {
 	public void process (float interpolationAlpha) {
 		glClear(GL_COLOR_BUFFER_BIT);
 		mEntities.sort(false);
+
 		mSpriteBatcher.begin();
 		mSpriteBatcher.enableBlending();
 		mSpriteBatcher.setBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -71,7 +77,8 @@ public class RendererSystem extends SubSystem {
 			mSpriteBatcher.drawSprite(cp.x, cp.y, cp.rotation, cs.scale, cs.scale, sprite);
 		}
 		mSpriteBatcher.setProjection(mCamera.getCameraMatrix(1.0f, matrix));
-		mSpriteBatcher.drawText("This is a test of the new SpriteBatch API FPS:", 500, 500, font);
+		mSpriteBatcher.drawText("This is a test of the new SpriteBatch API FPS:", 500, 500, font); //
+		mSpriteBatcher.drawSprite(sprite);
 		mSpriteBatcher.end();
 		mPrimitiveRenderer.begin();
 		mPrimitiveRenderer.setProjection(mCamera.getCameraMatrix(1.0f, matrix));
@@ -80,7 +87,10 @@ public class RendererSystem extends SubSystem {
 		mPrimitiveRenderer.drawRectangle(50, 50, 100, 100, 0, 1.0f, 0.0f, 0.5f);
 		mPrimitiveRenderer.drawRectangle(50, 150, 100, 100, 1, 1.0f, 1.0f, 0.5f);
 		mPrimitiveRenderer.end();
+
 		mSpriteBatch.setProjection(mCamera.getCameraMatrix(1.0f, matrix));
 		mSpriteBatch.draw();
+		mSpriteBatch.updateSprite(2, sprite);
+		mSpriteBatch.updateSprite(0, 300, 600, 1, 1, 1.5f, tex);
 	}
 }

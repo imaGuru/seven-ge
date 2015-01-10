@@ -28,7 +28,7 @@ public class RendererSystem extends SubSystem {
 		super(SpriteComponent.MASK | PositionComponent.MASK, size);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		mEntities.setComparator(Entity.SortByLayerAndTexture);
-		mSpriteBatcher = new SpriteBatcher(300);
+		mSpriteBatcher = new SpriteBatcher(size);
 		mPrimitiveRenderer = new PrimitiveRenderer(1000);
 	}
 

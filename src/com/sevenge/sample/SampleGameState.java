@@ -86,7 +86,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private PhysicsComponent fcSpaceShip;
 	private float spaceShipAngle;
 
-	SpriteBatcher mSpriteBatch = new SpriteBatcher(300);
+	SpriteBatcher mSpriteBatch = new SpriteBatcher(500);
 
 	private float[] projectionMatrix = new float[16];
 
@@ -108,7 +108,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		createCamera();
 		loadAssets();
 		loadControls();
-		// generateRandomPlanets();
+		generateRandomPlanets();
 
 		sprite = new Sprite((TextureRegion)SevenGE.getAssetManager().getAsset("Hull4.png"));
 
@@ -202,13 +202,13 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	private void createSystems () {
 
-		rendererSystem = new RendererSystem(200);
+		rendererSystem = new RendererSystem(500);
 		animationSystem = new AnimationSystem(200);
 		scriptingSystem = new ScriptingSystem();
-		physicsSystem = new PhysicsSystem(200);
+		physicsSystem = new PhysicsSystem(500);
 		sceneManager = new SceneManager();
 
-		mEM = new EntityManager(300, 10);
+		mEM = new EntityManager(500, 10);
 		mEM.registerSystem(rendererSystem);
 		mEM.registerSystem(animationSystem);
 		mEM.registerSystem(scriptingSystem);
@@ -228,29 +228,42 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private void generateRandomPlanets () {
 
 		Random rng = new Random();
-		for (int i = 0; i < 0; i++) {
+		for (int i = 0; i < 400; i++) {
 			Entity entity = mEM.createEntity(10);
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
 			cp.rotation = rng.nextFloat() * 360.0f;
-			cp.x = rng.nextFloat() * 1000f;
-			cp.y = rng.nextFloat() * 1000f;
+			cp.x = rng.nextFloat() * 8000f - 4000f;
+			cp.y = rng.nextFloat() * 8000f - 4000f;
 			cs.scale = 1.0f;
-			float rnd = rng.nextFloat();
-			if (rnd < 0.5f) {
-				cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull2.png");
-				cs.scale = 1f;
-			} else if (rnd < 0.7f)
-				cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull4.png");
-			else if (rnd < 0.75f)
-				cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull.png");
-			else {
-				cp.layer = 4;
-				cp.parallaxFactor = 1f;
-				cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull3.png");
+			int rnd = rng.nextInt(24) + 1;
 
+			int count = 0;
+
+			cs.textureRegion = (TextureRegion)assetManager.getAsset("a" + rnd);
+			if (cs.textureRegion == null) {
+				DebugLog.d("POOL", rnd + ", count :" + count);
+				count += 1;
 			}
 
+			PhysicsComponent physicsComponent = new PhysicsComponent();
+			BodyDef bodyDef = new BodyDef();
+			bodyDef.type = BodyDef.BodyType.DynamicBody;
+			bodyDef.position.set(PhysicsSystem.WORLD_TO_BOX * cp.x, PhysicsSystem.WORLD_TO_BOX * cp.y);
+			Body body = physicsSystem.getWorld().createBody(bodyDef);
+			body.setAngularDamping(0.1f);
+			body.setLinearDamping(0.1f);
+			CircleShape dynamicCircle = new CircleShape();
+			dynamicCircle.setRadius(cs.textureRegion.height / 2 * PhysicsSystem.WORLD_TO_BOX);
+			FixtureDef fixtureDef = new FixtureDef();
+			fixtureDef.shape = dynamicCircle;
+			fixtureDef.density = 2.0f;
+			fixtureDef.friction = 0.5f;
+			fixtureDef.restitution = 0.5f;
+			body.createFixture(fixtureDef);
+			physicsComponent.setBody(body);
+
+			entity.addComponent(physicsComponent, 4);
 			entity.addComponent(cp, 0);
 			entity.addComponent(cs, 1);
 
@@ -461,7 +474,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			float buttonX = controls[1].getX() + controls[1].getAxisAlignedBoundingBox().width / 2;
 
 			double angle = Math.toDegrees(Math.atan2(y - buttonY, x - buttonX));
-// angle = (angle + 360) % 360;
+
 			DebugLog.d("touchDown", "x : " + x + " y : " + y);
 			DebugLog.d("touchDown", "angle : " + angle);
 

@@ -46,6 +46,10 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private PhysicsSystem physicsSystem;
 	private SceneManager sceneManager;
 
+	private Entity eSpaceShip;
+	private SpriteComponent scSpaceShip;
+	private PositionComponent pcSpaceShip;
+
 	private int counter = 0;
 	private Camera camera;
 	private float lastScale = 1;
@@ -85,16 +89,16 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	}
 
 	private void loadPlayer () {
-		Entity entity = mEM.createEntity(10);
-		SpriteComponent cs = new SpriteComponent();
-		PositionComponent cp = new PositionComponent();
-		cp.x = 0;
-		cp.y = 0;
-		cs.scale = 1.0f;
-		cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull4.png");
+		eSpaceShip = mEM.createEntity(10);
+		scSpaceShip = new SpriteComponent();
+		pcSpaceShip = new PositionComponent();
+		pcSpaceShip.x = 0;
+		pcSpaceShip.y = 0;
+		scSpaceShip.scale = 1.0f;
+		scSpaceShip.textureRegion = (TextureRegion)assetManager.getAsset("Hull4.png");
 
-		entity.addComponent(cp, 0);
-		entity.addComponent(cs, 1);
+		eSpaceShip.addComponent(pcSpaceShip, 0);
+		eSpaceShip.addComponent(scSpaceShip, 1);
 
 	}
 
@@ -239,21 +243,21 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public boolean onScroll (MotionEvent me1, MotionEvent me2, float distX, float distY) {
-		float me2x = me2.getX();
-		float me2y = me2.getY();
-
-		float[] coords = camera.unproject((int)(me2x + distX), (int)(me2y + distY), SevenGE.getWidth(), SevenGE.getHeight(),
-			camera.getCameraMatrix());
-		float x1 = coords[0];
-		float y1 = coords[1];
-		coords = camera.unproject((int)me2x, (int)me2y, SevenGE.getWidth(), SevenGE.getHeight(), camera.getCameraMatrix());
-		float x2 = coords[0];
-		float y2 = coords[1];
-
-		com.sevenge.utils.Vector2 camPos = camera.getPosition();
-		camPos.x -= x2 - x1;
-		camPos.y -= y2 - y1;
-		camera.setPostion(camPos.x, camPos.y);
+// float me2x = me2.getX();
+// float me2y = me2.getY();
+//
+// float[] coords = camera.unproject((int)(me2x + distX), (int)(me2y + distY), SevenGE.getWidth(), SevenGE.getHeight(),
+// camera.getCameraMatrix());
+// float x1 = coords[0];
+// float y1 = coords[1];
+// coords = camera.unproject((int)me2x, (int)me2y, SevenGE.getWidth(), SevenGE.getHeight(), camera.getCameraMatrix());
+// float x2 = coords[0];
+// float y2 = coords[1];
+//
+// com.sevenge.utils.Vector2 camPos = camera.getPosition();
+// camPos.x -= x2 - x1;
+// camPos.y -= y2 - y1;
+// camera.setPostion(camPos.x, camPos.y);
 		return false;
 	}
 
@@ -284,7 +288,14 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			laserSfx.play(1f);
 		}
 		if (isButtonClicked(controls[1], x, y)) {
-			DebugLog.d("Controls", "clicked");
+
+			double angle = Math.atan2(x - controls[1].getX(), y - controls[1].getY());
+			DebugLog.d("touchDown", "angle degrees : " + angle);
+			angle = (angle + 360) % 360;
+			DebugLog.d("touchDown", "angle degrees : " + angle);
+			angle = Math.toRadians(angle);
+			DebugLog.d("touchDown", "angle radians : " + angle);
+			pcSpaceShip.rotation = ((float)angle);
 		}
 		if (isButtonClicked(controls[2], x, y)) {
 			DebugLog.d("Controls", "clicked");

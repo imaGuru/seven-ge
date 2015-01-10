@@ -2,6 +2,9 @@
 package com.sevenge.sample;
 
 import static android.opengl.Matrix.orthoM;
+
+import java.util.Random;
+
 import android.view.MotionEvent;
 
 import com.sevenge.GameState;
@@ -61,6 +64,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private int acceleratingPointer = -1;
 	private boolean isRotating = false;
 	private int rotatingPointer = -1;
+	private int rotationX;
+	private int rotationY;
 
 	SpriteBatcher mSpriteBatch = new SpriteBatcher(300);
 
@@ -77,6 +82,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		loadAssets();
 		loadControls();
 		loadPlayer();
+		generateRandomPlanets();
 
 		mEM.assignEntities();
 
@@ -170,10 +176,46 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	}
 
+	private void generateRandomPlanets () {
+
+		Random rng = new Random();
+		for (int i = 0; i < 150; i++) {
+			Entity entity = mEM.createEntity(10);
+			SpriteComponent cs = new SpriteComponent();
+			PositionComponent cp = new PositionComponent();
+			cp.rotation = rng.nextFloat() * 360.0f;
+			cp.x = rng.nextFloat() * 1000f;
+			cp.y = rng.nextFloat() * 1000f;
+			cs.scale = 1.0f;
+			float rnd = rng.nextFloat();
+			if (rnd < 0.5f) {
+				cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull2.png");
+				cs.scale = 1f;
+			} else if (rnd < 0.7f)
+				cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull4.png");
+			else if (rnd < 0.75f)
+				cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull.png");
+			else {
+				cp.layer = 4;
+				cp.parallaxFactor = 1f;
+				cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull3.png");
+
+			}
+
+			entity.addComponent(cp, 0);
+			entity.addComponent(cs, 1);
+
+		}
+	}
+
 	@Override
 	public void update () {
 		physicsSystem.process();
 		input.process();
+
+		if (isAccelerating) {
+			pcSpaceShip.x += 1;
+		}
 
 		animationSystem.process();
 		if (counter == 33) {
@@ -293,6 +335,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			controls[1].setCenter(x, y);
 			isRotating = true;
 			rotatingPointer = pointer;
+			rotationX = x;
+			rotationY = y;
 		}
 
 		if (isButtonClicked(controls[0], x, y)) {

@@ -57,7 +57,10 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private AssetManager assetManager;
 	private Input input;
 	private Sprite[] controls;
-	private boolean accelerating = false;
+	private boolean isAccelerating = false;
+	private int acceleratingPointer = -1;
+	private boolean isRotating = false;
+	private int rotatingPointer = -1;
 
 	SpriteBatcher mSpriteBatch = new SpriteBatcher(300);
 
@@ -193,8 +196,11 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		rendererSystem.process(interpolationAlpha);
 		mSpriteBatch.begin();
 		mSpriteBatch.setProjection(projectionMatrix);
-		for (Sprite control : controls)
-			mSpriteBatch.drawSprite(control);
+
+		mSpriteBatch.drawSprite(controls[0]);
+		if (isRotating) mSpriteBatch.drawSprite(controls[1]);
+		mSpriteBatch.drawSprite(controls[2]);
+
 		mSpriteBatch.end();
 
 	}
@@ -283,32 +289,20 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		y = SevenGE.getHeight() - y;
 
+		if (x > 0 && x < SevenGE.getWidth() / 2 && y > 0 && y < SevenGE.getHeight()) {
+			controls[1].setCenter(x, y);
+			isRotating = true;
+			rotatingPointer = pointer;
+		}
+
 		if (isButtonClicked(controls[0], x, y)) {
 			DebugLog.d("Controls", "clicked");
 			laserSfx.play(1f);
 		}
-		if (isButtonClicked(controls[1], x, y)) {
-
-			float buttonY = controls[1].getY() + controls[1].getAxisAlignedBoundingBox().height / 2;
-			float buttonX = controls[1].getX() + controls[1].getAxisAlignedBoundingBox().width / 2;
-			DebugLog.d("touchDown", "buttonX : " + buttonX);
-			DebugLog.d("touchDown", "buttonY : " + buttonY);
-
-			double angle = Math.toDegrees(Math.atan2(y - buttonY, x - buttonX));
-			DebugLog.d("touchDown", "angle degrees : " + angle);
-			angle = (angle + 360) % 360;
-			DebugLog.d("touchDown", "angle degrees : " + angle);
-			angle = Math.toRadians(angle);
-			DebugLog.d("touchDown", "angle radians : " + angle);
-			pcSpaceShip.rotation = ((float)angle);
-		}
 		if (isButtonClicked(controls[2], x, y)) {
-			DebugLog.d("Controls", "clicked");
-			accelerating = true;
+			isAccelerating = true;
+			acceleratingPointer = pointer;
 			engineMusic.play();
-		} else {
-			accelerating = false;
-			engineMusic.stop();
 		}
 
 		return false;
@@ -317,22 +311,46 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	@Override
 	public boolean touchUp (int x, int y, int pointer, int button) {
 
-		accelerating = false;
-		engineMusic.stop();
+		if (pointer == acceleratingPointer) {
+			isAccelerating = false;
+			engineMusic.stop();
+			acceleratingPointer = -1;
+		}
+		if (pointer == rotatingPointer) {
+			isRotating = false;
+			rotatingPointer = -1;
+
+		}
 
 		return false;
 	}
 
 	@Override
 	public boolean touchMove (int x, int y, int pointer) {
-		// Log.d(TAG, "touchMove" + " x : " + x + " , y : " + y + " , pointerid : " + pointer);
+
+		y = SevenGE.getHeight() - y;
+
+		if (isRotating && rotatingPointer == pointer) {
+
+			float buttonY = controls[1].getY() + controls[1].getAxisAlignedBoundingBox().height / 2;
+			float buttonX = controls[1].getX() + controls[1].getAxisAlignedBoundingBox().width / 2;
+
+			double angle = Math.toDegrees(Math.atan2(y - buttonY, x - buttonX));
+			angle = (angle + 360) % 360;
+			DebugLog.d("touchDown", "x : " + x + " y : " + y);
+			DebugLog.d("touchDown", "angle : " + angle);
+
+			pcSpaceShip.rotation = (float)(360 - angle);
+
+		}
+
 		return false;
 	}
 
 	@Override
 	public boolean onScale (float currentSpan) {
-		float scale = lastScale * firstSpan / currentSpan;
-		camera.setZoom(Math.min(5.0f, Math.max(0.1f, scale)));
+// float scale = lastScale * firstSpan / currentSpan;
+// camera.setZoom(Math.min(5.0f, Math.max(0.1f, scale)));
 		return true;
 	}
 

@@ -9,7 +9,7 @@ import com.sevenge.graphics.TextureShaderProgram;
 
 public class TextureShaderProgramLoader extends AssetLoader {
 
-	protected TextureShaderProgramLoader (AssetManager as) {
+	public TextureShaderProgramLoader (AssetManager as) {
 		super(as);
 	}
 

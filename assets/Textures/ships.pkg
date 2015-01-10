@@ -1,0 +1,238 @@
+{textureID:"ships",
+"frames": [
+
+{
+	"filename": "Hull.png",
+	"frame": {"x":112,"y":181,"w":48,"h":41},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":41},
+	"sourceSize": {"w":48,"h":41},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Hull1.png",
+	"frame": {"x":234,"y":93,"w":37,"h":43},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":37,"h":43},
+	"sourceSize": {"w":37,"h":43},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Hull2.png",
+	"frame": {"x":233,"y":406,"w":83,"h":97},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":83,"h":97},
+	"sourceSize": {"w":83,"h":97},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Hull3.png",
+	"frame": {"x":194,"y":2,"w":89,"h":89},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":89,"h":89},
+	"sourceSize": {"w":89,"h":89},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Hull4.png",
+	"frame": {"x":63,"y":2,"w":129,"h":177},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":129,"h":177},
+	"sourceSize": {"w":129,"h":177},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Hull5.png",
+	"frame": {"x":102,"y":232,"w":172,"h":166},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":172,"h":166},
+	"sourceSize": {"w":172,"h":166},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Minigun.png",
+	"frame": {"x":72,"y":429,"w":22,"h":61},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":22,"h":61},
+	"sourceSize": {"w":22,"h":61},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "SideGun.png",
+	"frame": {"x":41,"y":493,"w":13,"h":46},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":13,"h":46},
+	"sourceSize": {"w":13,"h":46},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "SideGun1.png",
+	"frame": {"x":89,"y":492,"w":13,"h":46},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":13,"h":46},
+	"sourceSize": {"w":13,"h":46},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "SmallGun1.png",
+	"frame": {"x":196,"y":420,"w":13,"h":28},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":13,"h":28},
+	"sourceSize": {"w":13,"h":28},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "SmallGun2.png",
+	"frame": {"x":102,"y":406,"w":13,"h":28},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":13,"h":28},
+	"sourceSize": {"w":13,"h":28},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "SmallGunM2.png",
+	"frame": {"x":196,"y":406,"w":12,"h":35},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":12,"h":35},
+	"sourceSize": {"w":12,"h":35},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "SmallGunM21.png",
+	"frame": {"x":196,"y":406,"w":12,"h":35},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":12,"h":35},
+	"sourceSize": {"w":12,"h":35},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "hull1Jet.png",
+	"frame": {"x":2,"y":429,"w":37,"h":69},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":37,"h":69},
+	"sourceSize": {"w":37,"h":69},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "hull2Jet.png",
+	"frame": {"x":137,"y":481,"w":29,"h":94},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":29,"h":94},
+	"sourceSize": {"w":29,"h":94},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "hull2Turret.png",
+	"frame": {"x":63,"y":181,"w":47,"h":49},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":47,"h":49},
+	"sourceSize": {"w":47,"h":49},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "hull3Jet.png",
+	"frame": {"x":155,"y":181,"w":45,"h":82},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":45,"h":82},
+	"sourceSize": {"w":45,"h":82},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "hull3Turret2.png",
+	"frame": {"x":41,"y":429,"w":29,"h":62},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":29,"h":62},
+	"sourceSize": {"w":29,"h":62},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "hull4Jet.png",
+	"frame": {"x":2,"y":235,"w":98,"h":192},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":98,"h":192},
+	"sourceSize": {"w":98,"h":192},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "hull4SniperCanon.png",
+	"frame": {"x":194,"y":93,"w":38,"h":85},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":38,"h":85},
+	"sourceSize": {"w":38,"h":85},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "hull5BlasterCanon.png",
+	"frame": {"x":96,"y":429,"w":50,"h":98},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":98},
+	"sourceSize": {"w":50,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "hull5Jet2.png",
+	"frame": {"x":2,"y":2,"w":59,"h":231},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":59,"h":231},
+	"sourceSize": {"w":59,"h":231},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "hull5RocketLauncher.png",
+	"frame": {"x":234,"y":138,"w":27,"h":42},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":42},
+	"sourceSize": {"w":27,"h":42},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "hullJet.png",
+	"frame": {"x":196,"y":435,"w":23,"h":43},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":23,"h":43},
+	"sourceSize": {"w":23,"h":43},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "hullJet1.png",
+	"frame": {"x":196,"y":435,"w":23,"h":43},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":23,"h":43},
+	"sourceSize": {"w":23,"h":43},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "ships.png",
+	"format": "RGBA8888",
+	"size": {"w":512,"h":512},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:f88c100f54352e7a22f536edaec9c95d:a817b06c21e92ba08b383188a708fb7b:78154fe33c5dfc8c7f67f0a3677ac0ac$"
+}
+}

@@ -1,0 +1,22 @@
+{textureID:"dust2",
+"frames": [
+
+{
+	"filename": "Hot Nebula.png",
+	"frame": {"x":2,"y":2,"w":749,"h":929},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":1,"w":749,"h":929},
+	"sourceSize": {"w":750,"h":930},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "dust2.png",
+	"format": "RGBA8888",
+	"size": {"w":1024,"h":1024},
+	"scale": "0.7",
+	"smartupdate": "$TexturePacker:SmartUpdate:bc0d4ef523cc161a3cafc986db9d0a10:ef984fb1a36928bbb26e6a5748e3f914:9e89d682d0f3e2ad42e76372ae27ff90$"
+}
+}

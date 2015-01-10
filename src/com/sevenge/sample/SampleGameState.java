@@ -12,9 +12,15 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.sevenge.GameState;
+import com.sevenge.IO;
 import com.sevenge.SevenGE;
 import com.sevenge.assets.AssetManager;
+import com.sevenge.assets.AudioLoader;
+import com.sevenge.assets.ShaderLoader;
+import com.sevenge.assets.SpriteSheetFTLoader;
 import com.sevenge.assets.Texture;
+import com.sevenge.assets.TextureLoader;
+import com.sevenge.assets.TextureShaderProgramLoader;
 import com.sevenge.audio.Music;
 import com.sevenge.ecs.AnimationComponent;
 import com.sevenge.ecs.AnimationSystem;
@@ -27,6 +33,7 @@ import com.sevenge.ecs.RendererSystem;
 import com.sevenge.ecs.ScriptingSystem;
 import com.sevenge.ecs.SpriteComponent;
 import com.sevenge.graphics.Camera;
+import com.sevenge.graphics.FontUtils;
 import com.sevenge.graphics.TextureRegion;
 import com.sevenge.input.GestureProcessor;
 import com.sevenge.input.Input;
@@ -60,13 +67,23 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		input.addInputProcessor(this);
 		input.addGestureProcessor(this);
 		assetManager = SevenGE.getAssetManager();
-		assetManager.loadAssets("sample.pkg");
+// assetManager.loadAssets("sample.pkg");
 
 		rendererSystem = new RendererSystem(200);
 		animationSystem = new AnimationSystem(200);
 		scriptingSystem = new ScriptingSystem();
 		physicsSystem = new PhysicsSystem(200);
 		sceneManager = new SceneManager();
+
+		assetManager.addLoader("spriteSheet", new SpriteSheetFTLoader(assetManager));
+		assetManager.addLoader("texture", new TextureLoader(assetManager));
+		assetManager.addLoader("program", new TextureShaderProgramLoader(assetManager));
+		assetManager.addLoader("shader", new ShaderLoader(assetManager));
+		assetManager.addLoader("audio", new AudioLoader(assetManager));
+
+		assetManager.loadAssets("package.pkg");
+
+		assetManager.registerAsset("font", FontUtils.load(IO.getAssetManager(), "Fonts/OpenSansBold.ttf", 20, 2, 0));
 
 		mEM = new EntityManager(300, 10);
 		mEM.registerSystem(rendererSystem);
@@ -95,22 +112,17 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			cs.scale = 1.0f;
 			float rnd = rng.nextFloat();
 			if (rnd < 0.5f) {
-				cs.textureRegion = (TextureRegion)assetManager.getAsset("meteorGrey_big1");
+				cs.textureRegion = (TextureRegion)assetManager.getAsset("Exoplanet2.png");
 				cs.scale = 1f;
-				cp.layer = 1;
-				cp.parallaxFactor = 0.7f;
-			} else if (rnd < 0.7f) {
-				cs.textureRegion = (TextureRegion)assetManager.getAsset("meteorGrey_small2");
-				cp.layer = 2;
-				cp.parallaxFactor = 0.8f;
-			} else if (rnd < 0.75f) {
-				cp.layer = 3;
-				cp.parallaxFactor = 0.9f;
-				cs.textureRegion = (TextureRegion)assetManager.getAsset("meteorGrey_tiny2");
-			} else {
+			} else if (rnd < 0.7f)
+				cs.textureRegion = (TextureRegion)assetManager.getAsset("Exoplanet2.png");
+			else if (rnd < 0.75f)
+				cs.textureRegion = (TextureRegion)assetManager.getAsset("Exoplanet2.png");
+			else {
 				cp.layer = 4;
 				cp.parallaxFactor = 1f;
-				cs.textureRegion = (TextureRegion)assetManager.getAsset("enemyBlack1");
+				cs.textureRegion = (TextureRegion)assetManager.getAsset("Exoplanet2.png");
+
 				AnimationComponent ca = new AnimationComponent();
 				PhysicsComponent physicsComponent = new PhysicsComponent();
 
@@ -128,9 +140,14 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 				body.createFixture(fixtureDef);
 				physicsComponent.setBody(body);
 
-				ca.frameList = new TextureRegion[] {(TextureRegion)assetManager.getAsset("enemyBlack1"),
-					(TextureRegion)assetManager.getAsset("enemyBlack2"), (TextureRegion)assetManager.getAsset("enemyBlack3"),
-					(TextureRegion)assetManager.getAsset("enemyBlack4"), (TextureRegion)assetManager.getAsset("enemyBlack5")};
+				ca.frameList = new TextureRegion[] {(TextureRegion)assetManager.getAsset("Exoplanet.png"),
+					(TextureRegion)assetManager.getAsset("Exoplanet.png"), (TextureRegion)assetManager.getAsset("Exoplanet.png"),
+					(TextureRegion)assetManager.getAsset("Exoplanet.png"), (TextureRegion)assetManager.getAsset("Exoplanet.png")};
+
+// ca.frameList = new TextureRegion[] {(TextureRegion)assetManager.getAsset("enemyBlack1"),
+// (TextureRegion)assetManager.getAsset("enemyBlack2"), (TextureRegion)assetManager.getAsset("enemyBlack3"),
+// (TextureRegion)assetManager.getAsset("enemyBlack4"), (TextureRegion)assetManager.getAsset("enemyBlack5")};
+
 				ca.durations = new int[] {500, 1000, 2000, 234, 666};
 				ca.isPlaying = true;
 				entity.addComponent(ca, 3);
@@ -182,7 +199,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		cp.x = 0;
 		cp.y = 512;
 		cs.scale = 1.0f;
-		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("star3-0-0"));
+		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("dust1"));
 		e.addComponent(cp, 0);
 		e.addComponent(cs, 1);
 
@@ -195,7 +212,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		cp.x = 0;
 		cp.y = 0;
 		cs.scale = 1.0f;
-		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("star3-0-1"));
+		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("dust1"));
 		e.addComponent(cp, 0);
 		e.addComponent(cs, 1);
 
@@ -208,7 +225,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		cp.x = 512;
 		cp.y = 512;
 		cs.scale = 1.0f;
-		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("star3-1-0"));
+		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("dust1"));
 		e.addComponent(cp, 0);
 		e.addComponent(cs, 1);
 
@@ -221,7 +238,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		cp.x = 512;
 		cp.y = 0;
 		cs.scale = 1.0f;
-		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("star3-1-1"));
+		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("dust1"));
 		e.addComponent(cp, 0);
 		e.addComponent(cs, 1);
 
@@ -230,11 +247,6 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		music = (Music)assetManager.getAsset("music1");
 		music.setLooping(true);
 		music.play();
-
-	}
-
-	@Override
-	public void onSurfaceChange (int width, int height) {
 
 	}
 

@@ -1,4 +1,23 @@
 {
+	"assets": [
+		
+		{
+			"key" ="texture"
+		},
+		{
+			"key" ="spriteSheet"
+		},
+		
+		{
+			"key" ="shader"
+		},
+		
+		{
+			"key" ="audio"
+		},
+		{
+			"key" ="program"
+		}],
 	"audio": [
 		{
 			"id":"music1",

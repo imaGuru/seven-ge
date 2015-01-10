@@ -1,0 +1,229 @@
+{textureID:"asteroids",
+"frames": [
+
+{
+	"filename": "Asteroid copy 10.png",
+	"frame": {"x":90,"y":338,"w":37,"h":38},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":37,"h":38},
+	"sourceSize": {"w":37,"h":38},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 11.png",
+	"frame": {"x":118,"y":448,"w":56,"h":49},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":56,"h":49},
+	"sourceSize": {"w":56,"h":49},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 12.png",
+	"frame": {"x":41,"y":287,"w":33,"h":33},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":33,"h":33},
+	"sourceSize": {"w":33,"h":33},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 13.png",
+	"frame": {"x":76,"y":176,"w":33,"h":33},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":33,"h":33},
+	"sourceSize": {"w":33,"h":33},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 14.png",
+	"frame": {"x":2,"y":287,"w":37,"h":38},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":37,"h":38},
+	"sourceSize": {"w":37,"h":38},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 15.png",
+	"frame": {"x":2,"y":338,"w":42,"h":42},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":42,"h":42},
+	"sourceSize": {"w":42,"h":42},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 2 #1.png",
+	"frame": {"x":183,"y":158,"w":99,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":99,"h":96},
+	"sourceSize": {"w":99,"h":96},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 2.png",
+	"frame": {"x":349,"y":164,"w":99,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":99,"h":96},
+	"sourceSize": {"w":99,"h":96},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 3 #1.png",
+	"frame": {"x":349,"y":262,"w":78,"h":74},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":78,"h":74},
+	"sourceSize": {"w":78,"h":74},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 3.png",
+	"frame": {"x":429,"y":312,"w":78,"h":74},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":78,"h":74},
+	"sourceSize": {"w":78,"h":74},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 4 #1.png",
+	"frame": {"x":284,"y":158,"w":74,"h":63},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":74,"h":63},
+	"sourceSize": {"w":74,"h":63},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 4.png",
+	"frame": {"x":284,"y":234,"w":74,"h":63},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":74,"h":63},
+	"sourceSize": {"w":74,"h":63},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 5 #1.png",
+	"frame": {"x":62,"y":388,"w":58,"h":57},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":58,"h":57},
+	"sourceSize": {"w":58,"h":57},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 5.png",
+	"frame": {"x":121,"y":176,"w":58,"h":57},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":58,"h":57},
+	"sourceSize": {"w":58,"h":57},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 6 #1.png",
+	"frame": {"x":450,"y":164,"w":72,"h":58},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":72,"h":58},
+	"sourceSize": {"w":72,"h":58},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 6.png",
+	"frame": {"x":450,"y":238,"w":72,"h":58},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":72,"h":58},
+	"sourceSize": {"w":72,"h":58},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 7 #1.png",
+	"frame": {"x":121,"y":235,"w":57,"h":50},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":57,"h":50},
+	"sourceSize": {"w":57,"h":50},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 7.png",
+	"frame": {"x":66,"y":448,"w":57,"h":50},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":57,"h":50},
+	"sourceSize": {"w":57,"h":50},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 8 #1.png",
+	"frame": {"x":2,"y":388,"w":62,"h":58},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":62,"h":58},
+	"sourceSize": {"w":62,"h":58},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 8.png",
+	"frame": {"x":2,"y":452,"w":62,"h":58},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":62,"h":58},
+	"sourceSize": {"w":62,"h":58},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Asteroid copy 9.png",
+	"frame": {"x":46,"y":338,"w":42,"h":42},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":42,"h":42},
+	"sourceSize": {"w":42,"h":42},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Body.png",
+	"frame": {"x":2,"y":2,"w":179,"h":172},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":179,"h":172},
+	"sourceSize": {"w":179,"h":172},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "Shards.png",
+	"frame": {"x":183,"y":2,"w":172,"h":154},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":172,"h":154},
+	"sourceSize": {"w":172,"h":154},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "fire.png",
+	"frame": {"x":357,"y":2,"w":129,"h":160},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":129,"h":160},
+	"sourceSize": {"w":129,"h":160},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "asteroids.png",
+	"format": "RGBA8888",
+	"size": {"w":512,"h":512},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:728447e75ef68ac216840e9c141ff090:532cb6ae9b7e4dec226628bdf2f1275f:3cb2167982f406a3d6627570b02f9be7$"
+}
+}

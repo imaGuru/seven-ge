@@ -18,7 +18,6 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Build;
 import android.os.SystemClock;
-import android.util.DisplayMetrics;
 
 import com.sevenge.assets.AssetManager;
 import com.sevenge.audio.Audio;
@@ -54,7 +53,7 @@ public class SevenGE implements Renderer {
 
 	private static int width;
 	private static int height;
-	
+
 	public SevenGE (Activity activity, GLSurfaceView glSurfaceView) {
 		final ActivityManager activityManager = (ActivityManager)activity.getSystemService(Context.ACTIVITY_SERVICE);
 		final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
@@ -63,10 +62,6 @@ public class SevenGE implements Renderer {
 				|| Build.FINGERPRINT.startsWith("unknown") || Build.MODEL.contains("google_sdk") || Build.MODEL.contains("Emulator") || Build.MODEL
 					.contains("Android SDK built for x86")));
 
-		DisplayMetrics metrics =  activity.getResources().getDisplayMetrics();
-		SevenGE.width = metrics.widthPixels;
-		SevenGE.height = metrics.heightPixels;
-		
 		IO.initialize(activity);
 		SevenGE.input = new Input(activity);
 		SevenGE.audio = new Audio(activity);
@@ -164,6 +159,8 @@ public class SevenGE implements Renderer {
 	/** Handles setup and changes to the size of the glsurface */
 	@Override
 	public void onSurfaceChanged (GL10 gl, int width, int height) {
+		this.height = height;
+		this.width = width;
 		DebugLog.d(TAG, "onSurfaceChanged");
 		// Double calls. fix this
 		// Also loading resources add load method to gamestate TODO
@@ -200,12 +197,12 @@ public class SevenGE implements Renderer {
 	public static GameStateManager getStateManager () {
 		return stateManager;
 	}
-	
-	public static int getWidth(){
+
+	public static int getWidth () {
 		return width;
 	}
-	
-	public static int getHeight(){
+
+	public static int getHeight () {
 		return height;
 	}
 

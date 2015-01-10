@@ -7,7 +7,14 @@ import java.util.Random;
 
 import android.view.MotionEvent;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.sevenge.ActionManager;
 import com.sevenge.GameState;
+import com.sevenge.Move;
 import com.sevenge.SevenGE;
 import com.sevenge.assets.AssetManager;
 import com.sevenge.assets.AudioLoader;
@@ -20,6 +27,7 @@ import com.sevenge.audio.Sound;
 import com.sevenge.ecs.AnimationSystem;
 import com.sevenge.ecs.Entity;
 import com.sevenge.ecs.EntityManager;
+import com.sevenge.ecs.PhysicsComponent;
 import com.sevenge.ecs.PhysicsSystem;
 import com.sevenge.ecs.PositionComponent;
 import com.sevenge.ecs.RendererSystem;
@@ -66,6 +74,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private int rotatingPointer = -1;
 	private int rotationX;
 	private int rotationY;
+	private ActionManager actionManager;
+	private PhysicsComponent fcSpaceShip;
 
 	SpriteBatcher mSpriteBatch = new SpriteBatcher(300);
 
@@ -74,6 +84,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	@Override
 	public void load () {
 
+		actionManager = new ActionManager();
 		assetManager = SevenGE.getAssetManager();
 		registerInput();
 		createSystems();
@@ -101,10 +112,28 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		eSpaceShip = mEM.createEntity(10);
 		scSpaceShip = new SpriteComponent();
 		pcSpaceShip = new PositionComponent();
+		fcSpaceShip = new PhysicsComponent();
 		pcSpaceShip.x = 0;
 		pcSpaceShip.y = 0;
 		scSpaceShip.scale = 1.0f;
 		scSpaceShip.textureRegion = (TextureRegion)assetManager.getAsset("Hull4.png");
+
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyDef.BodyType.DynamicBody;
+		bodyDef.position.set(PhysicsSystem.WORLD_TO_BOX * pcSpaceShip.x, PhysicsSystem.WORLD_TO_BOX * pcSpaceShip.y);
+		Body body = physicsSystem.getWorld().createBody(bodyDef);
+		CircleShape dynamicCircle = new CircleShape();
+		dynamicCircle.setRadius(scSpaceShip.textureRegion.height / 2 * PhysicsSystem.WORLD_TO_BOX);
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = dynamicCircle;
+		fixtureDef.density = 2.0f;
+		fixtureDef.friction = 0.5f;
+		fixtureDef.restitution = 0.5f;
+		body.createFixture(fixtureDef);
+		fcSpaceShip.setBody(body);
+		body.setLinearDamping((float)0.1);
+		body.setAngularDamping((float)0.2);
+		eSpaceShip.addComponent(fcSpaceShip, 4);
 
 		eSpaceShip.addComponent(pcSpaceShip, 0);
 		eSpaceShip.addComponent(scSpaceShip, 1);
@@ -212,6 +241,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	public void update () {
 		physicsSystem.process();
 		input.process();
+		actionManager.process();
 
 		if (isAccelerating) {
 			pcSpaceShip.x += 1;
@@ -286,6 +316,11 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	@Override
 	public void onLongPress (MotionEvent arg0) {
 		// SevenGE.getStateManager().setCurrentState(new SampleGameState());
+
+		float[] coords = camera.unproject((int)arg0.getX(), (int)arg0.getY(), SevenGE.getWidth(), SevenGE.getHeight(),
+			camera.getCameraMatrix());
+
+		actionManager.add(new Move(eSpaceShip, new Vector2(coords[0], coords[1])));
 
 	}
 

@@ -45,7 +45,7 @@ public class RendererSystem extends SubSystem {
 		mSpriteBatcher.begin();
 		mSpriteBatcher.enableBlending();
 		mSpriteBatcher.setBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-		mSpriteBatcher.setProjection(mCamera.getCameraMatrix(0.7f, matrix));
+		mSpriteBatcher.setProjection(mCamera.getCameraMatrix(1f, matrix));
 		for (int j = 0; j < mEntities.getCount(); j++) {
 			Entity entity = mEntities.get(j);
 			PositionComponent cp = (PositionComponent)entity.mComponents[0];

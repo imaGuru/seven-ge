@@ -14,7 +14,6 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.sevenge.ActionManager;
 import com.sevenge.GameState;
-import com.sevenge.Move;
 import com.sevenge.SevenGE;
 import com.sevenge.assets.AssetManager;
 import com.sevenge.assets.AudioLoader;
@@ -76,10 +75,13 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private int rotationY;
 	private ActionManager actionManager;
 	private PhysicsComponent fcSpaceShip;
+	private float spaceShipAngle;
 
 	SpriteBatcher mSpriteBatch = new SpriteBatcher(300);
 
 	private float[] projectionMatrix = new float[16];
+
+	private Sprite sprite;
 
 	@Override
 	public void load () {
@@ -89,11 +91,13 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		registerInput();
 		createSystems();
 		createLoaders();
+		loadPlayer();
 		createCamera();
 		loadAssets();
 		loadControls();
-		loadPlayer();
 		generateRandomPlanets();
+
+		sprite = new Sprite((TextureRegion)SevenGE.getAssetManager().getAsset("Hull4.png"));
 
 		mEM.assignEntities();
 
@@ -115,6 +119,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		fcSpaceShip = new PhysicsComponent();
 		pcSpaceShip.x = 0;
 		pcSpaceShip.y = 0;
+
 		scSpaceShip.scale = 1.0f;
 		scSpaceShip.textureRegion = (TextureRegion)assetManager.getAsset("Hull4.png");
 
@@ -198,7 +203,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private void createCamera () {
 
 		camera = new Camera(SevenGE.getWidth(), SevenGE.getHeight());
-		camera.setPostion(0.0f, 0.0f);
+		camera.setPostion(pcSpaceShip.x, pcSpaceShip.y);
 		camera.setRotation(0.0f);
 		camera.setZoom(1.0f);
 		rendererSystem.setCamera(camera);
@@ -243,8 +248,20 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		input.process();
 		actionManager.process();
 
+		if (isRotating) {
+			float angle = (float)Math.toRadians(spaceShipAngle);
+			fcSpaceShip.getBody().setTransform(fcSpaceShip.getBody().getPosition(), angle);
+		}
+
 		if (isAccelerating) {
-			pcSpaceShip.x += 1;
+
+			Vector2 force = new Vector2(100, 0);
+			float angle = fcSpaceShip.getBody().getAngle();// (float)Math.toRadians(spaceShipAngle);
+			float X = (float)(force.x * Math.cos(angle) - force.y * Math.sin(angle));
+			float Y = (float)(force.y * Math.cos(angle) + force.x * Math.sin(angle));
+
+			fcSpaceShip.getBody().applyForce(new Vector2(X, Y), fcSpaceShip.getBody().getPosition());
+
 		}
 
 		animationSystem.process();
@@ -255,6 +272,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		counter++;
 		mEM.assignEntities();
 		sceneManager.update();
+		camera.setPostion(pcSpaceShip.x, pcSpaceShip.y);
 	}
 
 	@Override
@@ -272,7 +290,10 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		mSpriteBatch.drawSprite(controls[0]);
 		if (isRotating) mSpriteBatch.drawSprite(controls[1]);
 		mSpriteBatch.drawSprite(controls[2]);
-
+		mSpriteBatch.setProjection(camera.getCameraMatrix());
+		sprite.setPosition(-100, -100);
+		sprite.setRotation(45);
+		mSpriteBatch.drawSprite(sprite);
 		mSpriteBatch.end();
 
 	}
@@ -317,10 +338,10 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	public void onLongPress (MotionEvent arg0) {
 		// SevenGE.getStateManager().setCurrentState(new SampleGameState());
 
-		float[] coords = camera.unproject((int)arg0.getX(), (int)arg0.getY(), SevenGE.getWidth(), SevenGE.getHeight(),
-			camera.getCameraMatrix());
-
-		actionManager.add(new Move(eSpaceShip, new Vector2(coords[0], coords[1])));
+// float[] coords = camera.unproject((int)arg0.getX(), (int)arg0.getY(), SevenGE.getWidth(), SevenGE.getHeight(),
+// camera.getCameraMatrix());
+//
+// actionManager.add(new Move(eSpaceShip, new Vector2(coords[0], coords[1])));
 
 	}
 
@@ -415,11 +436,11 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			float buttonX = controls[1].getX() + controls[1].getAxisAlignedBoundingBox().width / 2;
 
 			double angle = Math.toDegrees(Math.atan2(y - buttonY, x - buttonX));
-			angle = (angle + 360) % 360;
+// angle = (angle + 360) % 360;
 			DebugLog.d("touchDown", "x : " + x + " y : " + y);
 			DebugLog.d("touchDown", "angle : " + angle);
 
-			pcSpaceShip.rotation = (float)(360 - angle);
+			spaceShipAngle = (float)(angle - 90);
 
 		}
 

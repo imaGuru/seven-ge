@@ -14,7 +14,7 @@ public class Move extends Action {
 	private final float WORLD_TO_BOX = 1 / 30f;
 	private final float BOX_TO_WORLD = 1 / WORLD_TO_BOX;
 	private float maxForce = 1000;
-	private float maxSpeed = 50;
+	private float maxSpeed = 10;
 	private float slowingRadius = 400;
 	private float distance;
 
@@ -76,7 +76,7 @@ public class Move extends Action {
 		} else {
 			vel.add(steering);
 		}
-		phiC.getBody().setLinearVelocity(vel); // , phiC.getBody().getPosition());
+		phiC.getBody().applyLinearImpulse(vel, phiC.getBody().getPosition());
 		return false;
 	}
 }

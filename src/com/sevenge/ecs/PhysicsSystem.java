@@ -39,7 +39,7 @@ public class PhysicsSystem extends SubSystem {
 
 			positionComponent.x = BOX_TO_WORLD * physicsComponent.getBody().getPosition().x;
 			positionComponent.y = BOX_TO_WORLD * physicsComponent.getBody().getPosition().y;
-			positionComponent.rotation = (float)-Math.toDegrees(physicsComponent.getBody().getAngle());
+			positionComponent.rotation = (float)-Math.toDegrees(physicsComponent.getBody().getAngle()) + 90;
 
 		}
 	}

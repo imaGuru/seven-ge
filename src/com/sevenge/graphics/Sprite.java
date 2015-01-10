@@ -1,6 +1,8 @@
 
 package com.sevenge.graphics;
 
+import java.util.Comparator;
+
 import com.sevenge.assets.Texture;
 import com.sevenge.utils.AABB;
 
@@ -251,4 +253,11 @@ public class Sprite {
 		}
 		return aabb;
 	}
+
+	public static Comparator<Sprite> SortByTexture = new Comparator<Sprite>() {
+		@Override
+		public int compare (Sprite lhs, Sprite rhs) {
+			return lhs.texture - rhs.texture;
+		}
+	};
 }

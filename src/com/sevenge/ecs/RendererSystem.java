@@ -1,10 +1,8 @@
 
 package com.sevenge.ecs;
 
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_ONE;
 import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
-import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 
 import com.sevenge.assets.Font;
@@ -39,7 +37,6 @@ public class RendererSystem extends SubSystem {
 	}
 
 	public void process (float interpolationAlpha) {
-		glClear(GL_COLOR_BUFFER_BIT);
 		mEntities.sort(false);
 
 		mSpriteBatcher.begin();

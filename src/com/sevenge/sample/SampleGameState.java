@@ -1,6 +1,15 @@
 
 package com.sevenge.sample;
 
+import static android.opengl.GLES20.GL_BLEND;
+import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_ONE;
+import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
+import static android.opengl.GLES20.GL_STATIC_DRAW;
+import static android.opengl.GLES20.glBlendFunc;
+import static android.opengl.GLES20.glClear;
+import static android.opengl.GLES20.glEnable;
+
 import java.util.Random;
 
 import android.view.MotionEvent;
@@ -18,7 +27,6 @@ import com.sevenge.assets.AssetManager;
 import com.sevenge.assets.AudioLoader;
 import com.sevenge.assets.ShaderLoader;
 import com.sevenge.assets.SpriteSheetFTLoader;
-import com.sevenge.assets.Texture;
 import com.sevenge.assets.TextureLoader;
 import com.sevenge.assets.TextureShaderProgramLoader;
 import com.sevenge.audio.Music;
@@ -34,10 +42,13 @@ import com.sevenge.ecs.ScriptingSystem;
 import com.sevenge.ecs.SpriteComponent;
 import com.sevenge.graphics.Camera;
 import com.sevenge.graphics.FontUtils;
+import com.sevenge.graphics.Sprite;
+import com.sevenge.graphics.SpriteBatch;
 import com.sevenge.graphics.TextureRegion;
 import com.sevenge.input.GestureProcessor;
 import com.sevenge.input.Input;
 import com.sevenge.input.InputProcessor;
+import com.sevenge.utils.FixedSizeArray;
 
 public class SampleGameState extends GameState implements InputProcessor, GestureProcessor {
 
@@ -60,6 +71,11 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private float firstSpan;
 	private AssetManager assetManager;
 	private Input input;
+	private SpriteBatch spritetest = new SpriteBatch(1, GL_STATIC_DRAW);
+
+	private FixedSizeArray<Layer> maplayers;
+
+	private float[] matrix = new float[16];
 
 	@Override
 	public void load () {
@@ -83,6 +99,10 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		assetManager.loadAssets("package.pkg");
 
+		MapLoader maploader = new MapLoader();
+		maploader.load("map.json");
+		maplayers = maploader.getLayers();
+
 		assetManager.registerAsset("font", FontUtils.load(IO.getAssetManager(), "Fonts/OpenSansBold.ttf", 20, 2, 0));
 
 		mEM = new EntityManager(300, 10);
@@ -100,9 +120,14 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		camera.setZoom(1.0f);
 
 		rendererSystem.setCamera(camera);
+		Sprite sprite = new Sprite((TextureRegion)assetManager.getAsset("Exoplanet2.png"));
+		sprite.setCenter(0, 0);
+		sprite.setScale(1, 1);
+		sprite.setRotation(45);
+		spritetest.addSprite(sprite);
 
 		Random rng = new Random();
-		for (int i = 0; i < 150; i++) {
+		for (int i = 0; i < 0; i++) {
 			Entity entity = mEM.createEntity(10);
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
@@ -187,61 +212,6 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		e.addComponent(positionComponent, 0);
 		e.addComponent(physicsComponent, 4);
 
-		SpriteComponent cs;
-		PositionComponent cp;
-
-		e = mEM.createEntity(10);
-		cs = new SpriteComponent();
-		cp = new PositionComponent();
-		cp.layer = -1;
-		cp.parallaxFactor = 0.1f;
-		cp.rotation = 0;
-		cp.x = 0;
-		cp.y = 512;
-		cs.scale = 1.0f;
-		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("dust1"));
-		e.addComponent(cp, 0);
-		e.addComponent(cs, 1);
-
-		e = mEM.createEntity(10);
-		cs = new SpriteComponent();
-		cp = new PositionComponent();
-		cp.layer = -1;
-		cp.parallaxFactor = 0.1f;
-		cp.rotation = 0;
-		cp.x = 0;
-		cp.y = 0;
-		cs.scale = 1.0f;
-		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("dust1"));
-		e.addComponent(cp, 0);
-		e.addComponent(cs, 1);
-
-		e = mEM.createEntity(10);
-		cs = new SpriteComponent();
-		cp = new PositionComponent();
-		cp.layer = -1;
-		cp.parallaxFactor = 0.1f;
-		cp.rotation = 0;
-		cp.x = 512;
-		cp.y = 512;
-		cs.scale = 1.0f;
-		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("dust1"));
-		e.addComponent(cp, 0);
-		e.addComponent(cs, 1);
-
-		e = mEM.createEntity(10);
-		cs = new SpriteComponent();
-		cp = new PositionComponent();
-		cp.layer = -1;
-		cp.parallaxFactor = 0.1f;
-		cp.rotation = 0;
-		cp.x = 512;
-		cp.y = 0;
-		cs.scale = 1.0f;
-		cs.textureRegion = new TextureRegion(512, 512, 0, 0, (Texture)assetManager.getAsset("dust1"));
-		e.addComponent(cp, 0);
-		e.addComponent(cs, 1);
-
 		mEM.assignEntities();
 
 		music = (Music)assetManager.getAsset("music1");
@@ -266,6 +236,17 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void draw (float interpolationAlpha) {
+		glClear(GL_COLOR_BUFFER_BIT);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		for (int i = 0; i < maplayers.getCount(); i++) {
+			Layer layer = maplayers.get(i);
+			for (int j = 0; j < layer.batches.getCount(); j++) {
+				SpriteBatch sb = layer.batches.get(j);
+				sb.setProjection(camera.getCameraMatrix(layer.parallaxFactor, matrix));
+				sb.draw();
+			}
+		}
 		rendererSystem.process(interpolationAlpha);
 	}
 

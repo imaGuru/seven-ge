@@ -1,0 +1,72 @@
+[{
+	"id":0,
+	"parallax":0.25,
+	"sprites":[{
+		"textureRegion":"Red Giant.png",
+		"scaleX":2,
+		"scaleY":2,
+		"rotation":45,
+		"x":24.5,
+		"y":54.2
+	},
+	{
+		"textureRegion":"Layer 2 copy.png",
+		"scaleX":1,
+		"scaleY":1,
+		"rotation":45,
+		"x":1000,
+		"y":160
+	},
+	{
+		"textureRegion":"Layer 2.png",
+		"scaleX":1,
+		"scaleY":1,
+		"rotation":45,
+		"x":1060,
+		"y":200
+	},
+	{
+		"textureRegion":"Layer 2.png",
+		"scaleX":1,
+		"scaleY":1,
+		"rotation":45,
+		"x":-400,
+		"y":500
+	}]
+},
+{
+	"id":1,
+	"parallax":0.5,
+	"sprites":[{
+		"textureRegion":"VioletDust.png",
+		"scaleX":1,
+		"scaleY":1,
+		"rotation":45,
+		"x":24.5,
+		"y":54.2
+	},
+	{
+		"textureRegion":"VioletDust.png",
+		"scaleX":1,
+		"scaleY":1,
+		"rotation":45,
+		"x":-394,
+		"y":325
+	},
+	{
+		"textureRegion":"YellowDust.png",
+		"scaleX":1,
+		"scaleY":1,
+		"rotation":45,
+		"x":500,
+		"y":54.2
+	},
+	{
+		"textureRegion":"YellowDust.png",
+		"scaleX":1,
+		"scaleY":1,
+		"rotation":45,
+		"x":1600,
+		"y":1500
+	}]
+}]

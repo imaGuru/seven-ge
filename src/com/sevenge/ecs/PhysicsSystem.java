@@ -20,8 +20,8 @@ public class PhysicsSystem extends SubSystem {
 	public PhysicsSystem (int size) {
 		super(PhysicsComponent.MASK | PositionComponent.MASK, size);
 
-	
-
+		this.world = new World(gravityVector, true);
+		
 	}
 
 	public World getWorld () {

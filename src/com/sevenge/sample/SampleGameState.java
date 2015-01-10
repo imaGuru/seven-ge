@@ -136,8 +136,8 @@ public class SampleGameState extends GameState implements InputProcessor,
 		fixtureDef.restitution = 0.5f;
 		body.createFixture(fixtureDef);
 		physicsComponent.setBody(body);
-		body.setLinearDamping((float) 0.9);
-		body.setAngularDamping((float) 15);
+		body.setLinearDamping((float) 0.1);
+		body.setAngularDamping((float) 0.2);
 		shit.addComponent(physicsComponent, 4);
 		shit.addComponent(cp, 0);
 		shit.addComponent(cs, 1);

@@ -1,7 +1,6 @@
 
 package com.sevenge.sample;
 
-import static android.opengl.Matrix.orthoM;
 import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_ONE;
@@ -9,6 +8,7 @@ import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
 import static android.opengl.GLES20.glBlendFunc;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glEnable;
+import static android.opengl.Matrix.orthoM;
 
 import java.util.Random;
 
@@ -40,9 +40,9 @@ import com.sevenge.ecs.RendererSystem;
 import com.sevenge.ecs.ScriptingSystem;
 import com.sevenge.ecs.SpriteComponent;
 import com.sevenge.graphics.Camera;
-import com.sevenge.graphics.SpriteBatcher;
 import com.sevenge.graphics.Sprite;
 import com.sevenge.graphics.SpriteBatch;
+import com.sevenge.graphics.SpriteBatcher;
 import com.sevenge.graphics.TextureRegion;
 import com.sevenge.input.GestureProcessor;
 import com.sevenge.input.Input;
@@ -108,7 +108,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		createCamera();
 		loadAssets();
 		loadControls();
-		//generateRandomPlanets();
+		// generateRandomPlanets();
 
 		sprite = new Sprite((TextureRegion)SevenGE.getAssetManager().getAsset("Hull4.png"));
 
@@ -221,7 +221,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		camera = new Camera(SevenGE.getWidth(), SevenGE.getHeight());
 		camera.setPostion(pcSpaceShip.x, pcSpaceShip.y);
 		camera.setRotation(0.0f);
-		camera.setZoom(1.0f);
+		camera.setZoom(0.5f);
 		rendererSystem.setCamera(camera);
 	}
 
@@ -465,7 +465,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			DebugLog.d("touchDown", "x : " + x + " y : " + y);
 			DebugLog.d("touchDown", "angle : " + angle);
 
-			spaceShipAngle = (float)(angle - 90);
+			spaceShipAngle = (float)(angle);
 
 		}
 

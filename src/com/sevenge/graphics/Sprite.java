@@ -7,13 +7,13 @@ import com.sevenge.utils.AABB;
 public class Sprite {
 	private final float vdata[] = new float[16];
 	public final int texture;
-	private float scaleX;
-	private float scaleY;
+	private float scaleX = 1.0f;
+	private float scaleY = 1.0f;
 	private float x;
 	private float y;
 	private float width;
 	private float height;
-	private float rotation;
+	private float rotation = 0;
 	private boolean changed = true;
 	private boolean aabbUpdated = false;
 	private AABB aabb;
@@ -75,12 +75,13 @@ public class Sprite {
 	}
 
 	public void setCenter (float x, float y) {
-		translate(x - width / 2, y - height / 2);
+		translate((x - width / 2) - this.x, (y - height / 2) - this.y);
 	}
 
 	public void translate (float xdist, float ydist) {
 		this.x += xdist;
 		this.y += ydist;
+		if (changed == true) return;
 		vdata[0] += xdist;
 		vdata[1] += ydist;
 
@@ -96,6 +97,7 @@ public class Sprite {
 
 	public void translateX (float xdist) {
 		this.x += xdist;
+		if (changed == true) return;
 		vdata[0] += xdist;
 		vdata[4] += xdist;
 		vdata[8] += xdist;
@@ -104,6 +106,7 @@ public class Sprite {
 
 	public void translateY (float ydist) {
 		this.y += ydist;
+		if (changed == true) return;
 		vdata[1] += ydist;
 		vdata[5] += ydist;
 		vdata[9] += ydist;

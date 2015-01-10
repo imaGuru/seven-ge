@@ -289,7 +289,12 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		}
 		if (isButtonClicked(controls[1], x, y)) {
 
-			double angle = Math.atan2(x - controls[1].getX(), y - controls[1].getY());
+			float buttonY = controls[1].getY() + controls[1].getAxisAlignedBoundingBox().height / 2;
+			float buttonX = controls[1].getX() + controls[1].getAxisAlignedBoundingBox().width / 2;
+			DebugLog.d("touchDown", "buttonX : " + buttonX);
+			DebugLog.d("touchDown", "buttonY : " + buttonY);
+
+			double angle = Math.toDegrees(Math.atan2(y - buttonY, x - buttonX));
 			DebugLog.d("touchDown", "angle degrees : " + angle);
 			angle = (angle + 360) % 360;
 			DebugLog.d("touchDown", "angle degrees : " + angle);

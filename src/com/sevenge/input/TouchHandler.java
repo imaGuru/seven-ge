@@ -86,7 +86,7 @@ public class TouchHandler {
 		else if (action == MotionEvent.ACTION_MOVE)
 			actionStr = "MOVE";
 		else
-			actionStr = "UNKNOWN (" + action + ")";
+			actionStr = "UNKNOWN";
 		// Log.d("TouchHandler", "action " + actionStr + ", Android pointer id: " + pointer);
 	}
 
@@ -105,7 +105,7 @@ public class TouchHandler {
 		input.deltaX[index] = deltaX;
 		input.deltaY[index] = deltaY;
 		input.touchEventsBuffer.add(event);
-		logAction(type, pointer);
+		// logAction(type, pointer);
 	}
 
 }

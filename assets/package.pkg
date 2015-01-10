@@ -25,7 +25,18 @@
 			"id":"music1",
 			"type":"music",
 			"path":"Music/intro.mp3"
+		},
+		{
+			"id":"engine",
+			"type":"music",
+			"path":"Music/engine.mp3"
+		},
+		{
+			"id":"laser",
+			"type":"sound",
+			"path":"Music/laser.mp3"
 		}],
+
 	"shader": [
 		{
 			"id":"shader1",

@@ -18,12 +18,17 @@ public class AudioLoader extends AssetLoader {
 		try {
 			JSONArray jarr = new JSONArray(content);
 			for (int i = 0; i < jarr.length(); i++) {
-				JSONObject jMusic = jarr.getJSONObject(i);
-				assetManager.registerAsset(jMusic.getString("id"), SevenGE.getAudio().getMusic(jMusic.getString("path")));
+				JSONObject jAudio = jarr.getJSONObject(i);
+
+				if (jAudio.getString("type").equals("music")) {
+					assetManager.registerAsset(jAudio.getString("id"), SevenGE.getAudio().getMusic(jAudio.getString("path")));
+				} else if (jAudio.getString("type").equals("sound")) {
+					assetManager.registerAsset(jAudio.getString("id"), SevenGE.getAudio().getSound(jAudio.getString("path")));
+				}
+
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
-
 }

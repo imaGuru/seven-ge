@@ -1,7 +1,7 @@
 
 package com.sevenge.sample;
 
-import com.sevenge.ecs.Entity
+import static android.opengl.Matrix.orthoM;
 import android.view.MotionEvent;
 
 import com.sevenge.GameState;
@@ -13,7 +13,9 @@ import com.sevenge.assets.SpriteSheetFTLoader;
 import com.sevenge.assets.TextureLoader;
 import com.sevenge.assets.TextureShaderProgramLoader;
 import com.sevenge.audio.Music;
+import com.sevenge.audio.Sound;
 import com.sevenge.ecs.AnimationSystem;
+import com.sevenge.ecs.Entity;
 import com.sevenge.ecs.EntityManager;
 import com.sevenge.ecs.PhysicsSystem;
 import com.sevenge.ecs.PositionComponent;
@@ -21,11 +23,13 @@ import com.sevenge.ecs.RendererSystem;
 import com.sevenge.ecs.ScriptingSystem;
 import com.sevenge.ecs.SpriteComponent;
 import com.sevenge.graphics.Camera;
+import com.sevenge.graphics.Sprite;
 import com.sevenge.graphics.SpriteBatcher;
 import com.sevenge.graphics.TextureRegion;
 import com.sevenge.input.GestureProcessor;
 import com.sevenge.input.Input;
 import com.sevenge.input.InputProcessor;
+import com.sevenge.utils.DebugLog;
 
 public class SampleGameState extends GameState implements InputProcessor, GestureProcessor {
 
@@ -33,6 +37,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	private EntityManager mEM;
 	private Music music;
+	private Music engineMusic;
+	private Sound laserSfx;
 
 	private RendererSystem rendererSystem;
 	private AnimationSystem animationSystem;
@@ -46,6 +52,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private float firstSpan;
 	private AssetManager assetManager;
 	private Input input;
+	private Sprite[] controls;
+	private boolean accelerating = false;
 
 	SpriteBatcher mSpriteBatch = new SpriteBatcher(300);
 
@@ -60,6 +68,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		createLoaders();
 		createCamera();
 		loadAssets();
+		loadControls();
+		loadPlayer();
 
 		mEM.assignEntities();
 
@@ -67,20 +77,46 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	private void loadAssets () {
 		music = (Music)assetManager.getAsset("music1");
+		engineMusic = (Music)assetManager.getAsset("engine");
+		laserSfx = (Sound)assetManager.getAsset("laser");
 
 		music.setLooping(true);
+		engineMusic.setLooping(true);
 	}
 
-	private void loadControls(){
-		
-		Entity eFireButton = mEM.createEntity(10);
-		SpriteComponent spriteComponent = new SpriteComponent();
-		PositionComponent positionComponent = new PositionComponent();
-	   spriteComponent.textureRegion = (TextureRegion)assetManager.getAsset("shadedLight41.png");
-	   spriteComponent.scale = 1.0f;
-	   eFireButton.addComponent(positionComponent, 0);
-	   eFireButton.addComponent(spriteComponent, 1);
-		
+	private void loadPlayer () {
+		Entity entity = mEM.createEntity(10);
+		SpriteComponent cs = new SpriteComponent();
+		PositionComponent cp = new PositionComponent();
+		cp.x = 0;
+		cp.y = 0;
+		cs.scale = 1.0f;
+		cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull4.png");
+
+		entity.addComponent(cp, 0);
+		entity.addComponent(cs, 1);
+
+	}
+
+	private void loadControls () {
+		controls = new Sprite[3];
+
+		Sprite sMoveButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight07.png"));
+		sMoveButton.setPosition(40, 40);
+		sMoveButton.setScale(1, 1);
+
+		Sprite sAccelerateButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight00.png"));
+		sAccelerateButton.setPosition(SevenGE.getWidth() - 140, 40);
+		sAccelerateButton.setScale(1, 1);
+
+		Sprite sFireButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight46.png"));
+		sFireButton.setPosition(SevenGE.getWidth() - 100, 160);
+		sFireButton.setScale(1, 1);
+
+		controls[0] = sFireButton;
+		controls[1] = sMoveButton;
+		controls[2] = sAccelerateButton;
+
 	}
 
 	private void registerInput () {
@@ -131,6 +167,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	public void update () {
 		physicsSystem.process();
 		input.process();
+
 		animationSystem.process();
 		if (counter == 33) {
 			counter = 0;
@@ -145,6 +182,16 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	public void draw (float interpolationAlpha) {
 
 		rendererSystem.process(interpolationAlpha);
+
+		float aspect = 1.0f * SevenGE.getWidth() / SevenGE.getHeight();
+
+		orthoM(projectionMatrix, 0, 0, SevenGE.getWidth(), 0, SevenGE.getHeight(), -1f, 1f);
+		rendererSystem.process(interpolationAlpha);
+		mSpriteBatch.begin();
+		mSpriteBatch.setProjection(projectionMatrix);
+		for (Sprite control : controls)
+			mSpriteBatch.drawSprite(control);
+		mSpriteBatch.end();
 
 	}
 
@@ -162,7 +209,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void resume () {
-		music.play();
+		// music.play();
 
 	}
 
@@ -186,7 +233,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void onLongPress (MotionEvent arg0) {
-		SevenGE.getStateManager().setCurrentState(new SampleGameState());
+		// SevenGE.getStateManager().setCurrentState(new SampleGameState());
 
 	}
 
@@ -210,15 +257,53 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		return false;
 	}
 
+	public boolean isButtonClicked (Sprite button, int x, int y) {
+
+		boolean isClicked = false;
+
+		float buttonX = button.getAxisAlignedBoundingBox().x;
+		float buttonY = button.getAxisAlignedBoundingBox().y;
+		float buttonWidth = button.getAxisAlignedBoundingBox().width;
+		float buttonHeight = button.getAxisAlignedBoundingBox().height;
+
+		if (x > buttonX && x < buttonX + buttonWidth && y > buttonY && y < buttonY + buttonHeight) {
+			isClicked = true;
+		}
+
+		return isClicked;
+
+	}
+
 	@Override
 	public boolean touchDown (int x, int y, int pointer, int button) {
-		// Log.d(TAG, "touchDown" + " x : " + x + " , y : " + y + " , pointerid : " + pointer);
+
+		y = SevenGE.getHeight() - y;
+
+		if (isButtonClicked(controls[0], x, y)) {
+			DebugLog.d("Controls", "clicked");
+			laserSfx.play(1f);
+		}
+		if (isButtonClicked(controls[1], x, y)) {
+			DebugLog.d("Controls", "clicked");
+		}
+		if (isButtonClicked(controls[2], x, y)) {
+			DebugLog.d("Controls", "clicked");
+			accelerating = true;
+			engineMusic.play();
+		} else {
+			accelerating = false;
+			engineMusic.stop();
+		}
+
 		return false;
 	}
 
 	@Override
 	public boolean touchUp (int x, int y, int pointer, int button) {
-		// Log.d(TAG, "touchUp" + " x : " + x + " , y : " + y + " , pointerid : " + pointer);
+
+		accelerating = false;
+		engineMusic.stop();
+
 		return false;
 	}
 

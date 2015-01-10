@@ -4,15 +4,11 @@ package com.sevenge.ecs;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_ONE;
 import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
-import static android.opengl.GLES20.GL_STREAM_DRAW;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 
-import com.sevenge.IO;
-import com.sevenge.SevenGE;
 import com.sevenge.assets.Font;
 import com.sevenge.graphics.Camera;
-import com.sevenge.graphics.FontUtils;
 import com.sevenge.graphics.PrimitiveRenderer;
 import com.sevenge.graphics.Sprite;
 import com.sevenge.graphics.SpriteBatch;
@@ -36,25 +32,6 @@ public class RendererSystem extends SubSystem {
 		mEntities.setComparator(Entity.SortByLayerAndTexture);
 		mSpriteBatcher = new SpriteBatcher(300);
 		mPrimitiveRenderer = new PrimitiveRenderer(1000);
-		font = FontUtils.load(IO.getAssetManager(), "Fonts/OpenSansBold.ttf", 20, 2, 0);
-		tex = (TextureRegion)SevenGE.getAssetManager().getAsset("enemyBlack1");
-		mSpriteBatch = new SpriteBatch(200, tex.texture, GL_STREAM_DRAW);
-		sprite = new Sprite(tex);
-		sprite.setScale(1, 1);
-		sprite.setCenter(100, 100);
-		mSpriteBatch.addSprite(sprite);
-		sprite.setCenter(100, 200);
-		mSpriteBatch.addSprite(sprite);
-		sprite.setCenter(100, 300);
-		mSpriteBatch.addSprite(sprite);
-		sprite.setCenter(100, 400);
-		mSpriteBatch.addSprite(sprite);
-		sprite.setCenter(100, 500);
-		mSpriteBatch.addSprite(sprite);
-		sprite.setCenter(100, 600);
-		mSpriteBatch.addSprite(sprite);
-		sprite.setPosition(200, 300);
-		mSpriteBatch.addSprite(200, 600, 1, 1, 1.5f, tex);
 	}
 
 	public void setCamera (Camera camera) {
@@ -76,9 +53,6 @@ public class RendererSystem extends SubSystem {
 			TextureRegion sprite = cs.textureRegion;
 			mSpriteBatcher.drawSprite(cp.x, cp.y, cp.rotation, cs.scale, cs.scale, sprite);
 		}
-		mSpriteBatcher.setProjection(mCamera.getCameraMatrix(1.0f, matrix));
-		mSpriteBatcher.drawText("This is a test of the new SpriteBatch API FPS:", 500, 500, font); //
-		mSpriteBatcher.drawSprite(sprite);
 		mSpriteBatcher.end();
 		mPrimitiveRenderer.begin();
 		mPrimitiveRenderer.setProjection(mCamera.getCameraMatrix(1.0f, matrix));
@@ -87,10 +61,5 @@ public class RendererSystem extends SubSystem {
 		mPrimitiveRenderer.drawRectangle(50, 50, 100, 100, 0, 1.0f, 0.0f, 0.5f);
 		mPrimitiveRenderer.drawRectangle(50, 150, 100, 100, 1, 1.0f, 1.0f, 0.5f);
 		mPrimitiveRenderer.end();
-
-		mSpriteBatch.setProjection(mCamera.getCameraMatrix(1.0f, matrix));
-		mSpriteBatch.draw();
-		mSpriteBatch.updateSprite(2, sprite);
-		mSpriteBatch.updateSprite(0, 300, 600, 1, 1, 1.5f, tex);
 	}
 }

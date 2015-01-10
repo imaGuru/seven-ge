@@ -3,6 +3,7 @@ package com.sevenge.ecs;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.joints.FrictionJoint;
 
 public class PhysicsSystem extends SubSystem {
 
@@ -19,7 +20,7 @@ public class PhysicsSystem extends SubSystem {
 	public PhysicsSystem (int size) {
 		super(PhysicsComponent.MASK | PositionComponent.MASK, size);
 
-		this.world = new World(gravityVector, true);
+	
 
 	}
 

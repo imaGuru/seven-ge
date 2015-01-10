@@ -24,7 +24,7 @@ public class IO {
 	public static void initialize (Context context) {
 		IO.context = context;
 		INTERNAL_PATH = context.getFilesDir().getAbsolutePath();
-		EXTERNAL_PATH = context.getExternalFilesDir(null).getAbsolutePath();
+		//EXTERNAL_PATH = context.getExternalFilesDir(null).getAbsolutePath();
 		CACHE_PATH = context.getCacheDir().getAbsolutePath();
 	}
 

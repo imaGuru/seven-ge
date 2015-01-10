@@ -2,6 +2,7 @@ package com.sevenge.sample;
 
 import java.util.Random;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.math.Vector2;
@@ -44,7 +45,7 @@ public class SampleGameState extends GameState implements InputProcessor,
 	private static final String TAG = "SampleGameState";
 
 	public Entity shit;
-
+	Vector2 tar =new Vector2(0,0);
 	private EntityManager mEM;
 	private Music music;
 
@@ -73,7 +74,7 @@ public class SampleGameState extends GameState implements InputProcessor,
 
 		rendererSystem = new RendererSystem(200);
 		animationSystem = new AnimationSystem(200);
-		scriptingSystem = new ScriptingSystem();
+		// scriptingSystem = new ScriptingSystem();
 		physicsSystem = new PhysicsSystem(200);
 		sceneManager = new SceneManager();
 
@@ -93,7 +94,7 @@ public class SampleGameState extends GameState implements InputProcessor,
 		mEM = new EntityManager(300, 10);
 		mEM.registerSystem(rendererSystem);
 		mEM.registerSystem(animationSystem);
-		mEM.registerSystem(scriptingSystem);
+		// mEM.registerSystem(scriptingSystem);
 		mEM.registerSystem(physicsSystem);
 
 		mWidth = SevenGE.getWidth();
@@ -112,11 +113,11 @@ public class SampleGameState extends GameState implements InputProcessor,
 		SpriteComponent cs = new SpriteComponent();
 		PositionComponent cp = new PositionComponent();
 		cp.rotation = rng.nextFloat() * 360.0f;
-		cp.x = rng.nextFloat() * 1400f;
-		cp.y = rng.nextFloat() * 1400f;
+		cp.x =  rng.nextFloat() * 1400f;
+		cp.y =  rng.nextFloat() * 1400f;
 		cs.scale = 1.0f;
 		cs.textureRegion = (TextureRegion) assetManager
-				.getAsset("Exoplanet2.png");
+				.getAsset("Exoplanet3.png");
 
 		PhysicsComponent physicsComponent = new PhysicsComponent();
 
@@ -135,12 +136,13 @@ public class SampleGameState extends GameState implements InputProcessor,
 		fixtureDef.restitution = 0.5f;
 		body.createFixture(fixtureDef);
 		physicsComponent.setBody(body);
-
+		body.setLinearDamping((float) 0.9);
+		body.setAngularDamping((float) 15);
 		shit.addComponent(physicsComponent, 4);
 		shit.addComponent(cp, 0);
 		shit.addComponent(cs, 1);
 
-		for (int i = 0; i < 150; i++) {
+		for (int i = 0; i < 10; i++) {
 			Entity entity = mEM.createEntity(10);
 			cs = new SpriteComponent();
 			cp = new PositionComponent();
@@ -208,6 +210,7 @@ public class SampleGameState extends GameState implements InputProcessor,
 			entity.addComponent(cs, 1);
 
 		}
+	/*
 		Entity e = mEM.createEntity(10);
 		physicsComponent = new PhysicsComponent();
 		PositionComponent positionComponent = new PositionComponent();
@@ -236,8 +239,8 @@ public class SampleGameState extends GameState implements InputProcessor,
 
 		e.addComponent(positionComponent, 0);
 		e.addComponent(physicsComponent, 4);
-
-		e = mEM.createEntity(10);
+*/
+		Entity e = mEM.createEntity(10);
 		cs = new SpriteComponent();
 		cp = new PositionComponent();
 		cp.layer = -1;
@@ -303,16 +306,19 @@ public class SampleGameState extends GameState implements InputProcessor,
 
 	@Override
 	public void update() {
+		
 		physicsSystem.process();
+		move();
 		input.process();
 		animationSystem.process();
 		if (counter == 33) {
 			counter = 0;
-			scriptingSystem.process();
+			// scriptingSystem.process();
 		}
 		counter++;
 		mEM.assignEntities();
 		sceneManager.update();
+		
 	}
 
 	@Override
@@ -358,35 +364,64 @@ public class SampleGameState extends GameState implements InputProcessor,
 	}
 
 	@Override
-	public void onLongPress (MotionEvent arg0) {
-		float maxForce = 10;
-		float maxSpeed = 100;
-		//float maxSteering = 5;
-		
-		float[] coords = camera.unproject((int)arg0.getX(), (int)arg0.getY(), mWidth, mHeight, camera.getCameraMatrix());
+	public void onLongPress(MotionEvent arg0) {
+		Log.d("move", "tar x =" + tar.x
+				+ " tar y = " + tar.y);
+		float[] coords = camera.unproject((int) arg0.getX(), (int) arg0.getY(),
+				mWidth, mHeight, camera.getCameraMatrix());
 		float x = coords[0];
 		float y = coords[1];
+		Log.d("move", "tar x =" + x
+				+ " tar y = " + y);
+		tar.x=x;
+		tar.y=y;
+		Log.d("move", " x =" + x
+				+ "  y = " + y);
+		Log.d("move", "tar x =" + tar.x
+				+ " tar y = " + tar.y);
+	}
+
+	public void move() {
+		final float WORLD_TO_BOX = 1 / 30f;
+		final float BOX_TO_WORLD = 1 / WORLD_TO_BOX;
+		float maxForce = 1000;
+		float maxSpeed = 100;
+		// float maxSteering = 5;
 		
 		PhysicsComponent phiC = (PhysicsComponent) shit.mComponents[4];
-		//PositionComponent posC = (PositionComponent) shit.mComponents[0];
+		PositionComponent posC = (PositionComponent) shit.mComponents[0];
+		Vector2 pos = phiC.getBody().getPosition().cpy();
+		Vector2 vel = phiC.getBody().getLinearVelocity().cpy();
+		pos.mul(BOX_TO_WORLD);
 		
-		Vector2 tar = new Vector2(x,y);
-		Vector2 pos = phiC.getBody().getPosition();
-		Vector2 hehe=tar.sub(pos);
-		Vector2 vel = phiC.getBody().getLinearVelocity();
+		Vector2 hehe = tar.cpy();
 		
-		Vector2 desired_velocity = hehe.nor().mul(maxSpeed);
-		Vector2 steering = desired_velocity.sub(vel);
-		if(steering.len()>maxForce){
-			float temp = 1/steering.len();
+		
+		hehe.sub(pos);
+		hehe.mul(WORLD_TO_BOX);
+		
+
+		Vector2 desired_velocity = hehe.nor().mul(maxSpeed).cpy();
+		
+		Vector2 steering = desired_velocity.cpy();
+		steering.sub(vel);
+		
+		if (steering.len() > maxForce) {
+			float temp = maxForce / steering.len();
 			steering.mul(temp);
 		}
-		if((vel.add(steering)).len()>maxSpeed){
-			float temp = 1/(vel.add(steering)).len();
-			vel = (vel.add(steering)).mul(temp);
+		if ((vel.add(steering)).len() > maxSpeed) {
+			float temp = maxSpeed / (vel.add(steering)).len();
+			 (vel.add(steering)).mul(temp);
+		}else{
+			vel.add(steering);
 		}
-		phiC.getBody().applyLinearImpulse(vel,phiC.getBody().getLocalCenter());
-}
+		phiC.getBody().applyForce(vel,phiC.getBody().getPosition());
+		//Log.d("move", "tar x =" + tar.x
+		//		+ " tar y = " + tar.y);
+		//Log.d("move", "pos x =" + posC.x + " y =" + posC.y );
+		//Log.d("move", "boxpos x =" + phiC.getBody().getPosition().x+ " y =" +phiC.getBody().getPosition().y );
+	}
 
 	@Override
 	public boolean onScroll(MotionEvent me1, MotionEvent me2, float distX,

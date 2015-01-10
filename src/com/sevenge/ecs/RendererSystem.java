@@ -60,6 +60,9 @@ public class RendererSystem extends SubSystem {
 		mPrimitiveRenderer.drawCircle(500, 500, 200, 1, 100, 1.0f, 0.2f, 1.0f);
 		mPrimitiveRenderer.drawRectangle(50, 50, 100, 100, 0, 1.0f, 0.0f, 0.5f);
 		mPrimitiveRenderer.drawRectangle(50, 150, 100, 100, 1, 1.0f, 1.0f, 0.5f);
+		mPrimitiveRenderer.drawLine(300, 300, 500, 900, 0.3f, 1.0f, 0.1f);
+		mPrimitiveRenderer.drawAngleLine(600, 300, 1.5f, 500, 0.3f, 1.0f, 0.1f);
+		mPrimitiveRenderer.drawVector(400, 100, -100, 100, 20, 0.25f, 0.3f, 1.0f, 0.1f);
 		mPrimitiveRenderer.end();
 	}
 }

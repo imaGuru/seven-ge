@@ -26,12 +26,14 @@ public class ParticleSystem {
 	private int currentParticleCount = 0;
 	private int nextParticle = 0;
 	private TexturedParticleShaderProgram mProgram;
+	private int textureID;
 
-	public ParticleSystem (int maxParticleCount, TexturedParticleShaderProgram psp) {
+	public ParticleSystem (int maxParticleCount, TexturedParticleShaderProgram psp, int texture) {
 		particles = new float[maxParticleCount * TOTAL_COMPONENT_COUNT];
 		vertexArray = new VertexArray(maxParticleCount * TOTAL_COMPONENT_COUNT);
 		this.maxParticleCount = maxParticleCount;
 		mProgram = psp;
+		textureID = texture;
 	}
 
 	public void addParticle (Vector3 position, int color, Vector3 direction, float particleStartTime) {
@@ -57,10 +59,10 @@ public class ParticleSystem {
 		vertexArray.put(particles, particleOffset, TOTAL_COMPONENT_COUNT);
 	}
 
-	public void draw (float[] vpMatrix, float time, int textureId) {
+	public void draw (float[] vpMatrix, float time) {
 		glUseProgram(mProgram.mGlID);
 		glBlendFunc(GL_ONE, GL_ONE);
-		mProgram.setUniforms(vpMatrix, time, textureId, 25.0f);
+		mProgram.setUniforms(vpMatrix, time, textureID, 25.0f);
 		int dataOffset = 0;
 		vertexArray.setVertexAttribPointer(dataOffset, mProgram.aPositionLocation, POSITION_COMPONENT_COUNT, STRIDE);
 		dataOffset += POSITION_COMPONENT_COUNT;

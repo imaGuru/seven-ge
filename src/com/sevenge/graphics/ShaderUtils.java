@@ -56,6 +56,32 @@ public class ShaderUtils {
 		+ "{"//
 		+ "	gl_FragColor = v_Color;"//
 		+ "}";
+	public static final String PARTICLE_FRAGMENT_SHADER = "precision mediump float;"//
+		+ "varying vec3 v_Color;"//
+		+ "varying float v_ElapsedTime;"//
+		+ "uniform sampler2D u_TextureUnit;"//
+		+ "void main()"//
+		+ "{"//
+		+ "	gl_FragColor = vec4(v_Color / v_ElapsedTime, 1.0) * texture2D(u_TextureUnit, gl_PointCoord);"//
+		+ "}";//
+
+	public static final String PARTICLE_VERTEX_SHADER = "uniform mat4 u_Matrix;"//
+		+ "uniform float u_Time;"//
+		+ "uniform float u_GravityFactor;"//
+		+ "attribute vec3 a_Position;"//
+		+ "attribute vec3 a_Color;"//
+		+ "attribute vec3 a_DirectionVector;"//
+		+ "attribute float a_ParticleStartTime;"//
+		+ "varying vec3 v_Color;"//
+		+ "varying float v_ElapsedTime;"//
+		+ "void main()"//
+		+ "{"//
+		+ "	v_Color = a_Color;"//
+		+ "	v_ElapsedTime = u_Time - a_ParticleStartTime;"//
+		+ "   vec3 currentPosition = a_Position + (a_DirectionVector * v_ElapsedTime);"//
+		+ "	gl_Position = u_Matrix * vec4(currentPosition, 1.0);v_ElapsedTime=v_ElapsedTime*v_ElapsedTime*v_ElapsedTime;"//
+		+ "	gl_PointSize = 35.0;"//
+		+ "}";//
 
 	public static final ColorShaderProgram COLOR_SHADER = new ColorShaderProgram(ShaderUtils.compileShader(
 		ShaderUtils.COLOR_VERTEX_SHADER, GL_VERTEX_SHADER), ShaderUtils.compileShader(ShaderUtils.COLOR_FRAGMENT_SHADER,
@@ -65,9 +91,9 @@ public class ShaderUtils {
 		ShaderUtils.TEXTURE_VERTEX_SHADER, GL_VERTEX_SHADER), ShaderUtils.compileShader(ShaderUtils.TEXTURE_FRAGMENT_SHADER,
 		GL_FRAGMENT_SHADER));
 
-	public static final ParticleShaderProgram PARTICLE_SHADER = new ParticleShaderProgram(ShaderUtils.compileShader(
-		ShaderUtils.COLOR_VERTEX_SHADER, GL_VERTEX_SHADER), ShaderUtils.compileShader(ShaderUtils.COLOR_FRAGMENT_SHADER,
-		GL_FRAGMENT_SHADER));
+	public static final TexturedParticleShaderProgram PARTICLE_SHADER = new TexturedParticleShaderProgram(
+		ShaderUtils.compileShader(ShaderUtils.PARTICLE_VERTEX_SHADER, GL_VERTEX_SHADER), ShaderUtils.compileShader(
+			ShaderUtils.PARTICLE_FRAGMENT_SHADER, GL_FRAGMENT_SHADER));
 
 	/** Creates shader of specified type (vertex, fragment)
 	 * @param shaderCode string with shader code to compile

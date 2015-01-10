@@ -12,6 +12,7 @@ import static android.opengl.Matrix.orthoM;
 
 import java.util.Random;
 
+import android.graphics.Color;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.math.Vector2;
@@ -26,6 +27,7 @@ import com.sevenge.assets.AssetManager;
 import com.sevenge.assets.AudioLoader;
 import com.sevenge.assets.ShaderLoader;
 import com.sevenge.assets.SpriteSheetFTLoader;
+import com.sevenge.assets.Texture;
 import com.sevenge.assets.TextureLoader;
 import com.sevenge.assets.TextureShaderProgramLoader;
 import com.sevenge.audio.Music;
@@ -40,6 +42,9 @@ import com.sevenge.ecs.RendererSystem;
 import com.sevenge.ecs.ScriptingSystem;
 import com.sevenge.ecs.SpriteComponent;
 import com.sevenge.graphics.Camera;
+import com.sevenge.graphics.Emitter;
+import com.sevenge.graphics.ParticleSystem;
+import com.sevenge.graphics.ShaderUtils;
 import com.sevenge.graphics.Sprite;
 import com.sevenge.graphics.SpriteBatch;
 import com.sevenge.graphics.SpriteBatcher;
@@ -49,6 +54,7 @@ import com.sevenge.input.Input;
 import com.sevenge.input.InputProcessor;
 import com.sevenge.utils.DebugLog;
 import com.sevenge.utils.FixedSizeArray;
+import com.sevenge.utils.Vector3;
 
 public class SampleGameState extends GameState implements InputProcessor, GestureProcessor {
 
@@ -85,19 +91,25 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private ActionManager actionManager;
 	private PhysicsComponent fcSpaceShip;
 	private float spaceShipAngle;
+	private Vector3 position = new Vector3(0, 0, 0);;
+	private Vector3 direction = new Vector3(0, 0, 0);
 
 	SpriteBatcher mSpriteBatch = new SpriteBatcher(300);
 
 	private float[] projectionMatrix = new float[16];
-
-	private Sprite sprite;
-
 	private FixedSizeArray<Layer> maplayers;
 
 	private float[] matrix = new float[16];
 
+	private ParticleSystem particleSystem;
+
+	private Emitter emiter;
+
+	private long globalStartTime;
+
 	@Override
 	public void load () {
+		globalStartTime = System.nanoTime();
 
 		actionManager = new ActionManager();
 		assetManager = SevenGE.getAssetManager();
@@ -110,7 +122,9 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		loadControls();
 		// generateRandomPlanets();
 
-		sprite = new Sprite((TextureRegion)SevenGE.getAssetManager().getAsset("Hull4.png"));
+		Texture tex = (Texture)SevenGE.getAssetManager().getAsset("particle");
+		particleSystem = new ParticleSystem(400, ShaderUtils.PARTICLE_SHADER, tex.glID);
+		emiter = new Emitter(particleSystem, Color.rgb(5, 50, 255), 30, 2);
 
 		mEM.assignEntities();
 
@@ -270,13 +284,21 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		if (isAccelerating) {
 
-			Vector2 force = new Vector2(100, 0);
+			Vector2 force = new Vector2(500, 0);
 			float angle = fcSpaceShip.getBody().getAngle();// (float)Math.toRadians(spaceShipAngle);
 			float X = (float)(force.x * Math.cos(angle) - force.y * Math.sin(angle));
 			float Y = (float)(force.y * Math.cos(angle) + force.x * Math.sin(angle));
 
 			fcSpaceShip.getBody().applyForce(new Vector2(X, Y), fcSpaceShip.getBody().getPosition());
-
+			float length = (float)Math.sqrt((X * X) + (Y * Y));
+			direction.x = -X / length * 90;
+			direction.y = -Y / length * 90;
+			direction.z = 0;
+			position.x = pcSpaceShip.x + direction.x * 90;
+			position.y = pcSpaceShip.y + direction.y * 90;
+			position.z = 0;
+			float currentTime = (System.nanoTime() - globalStartTime) / 1000000000f;
+			emiter.addParticles(position, direction, currentTime, 5);
 		}
 
 		animationSystem.process();
@@ -303,10 +325,9 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 				sb.draw();
 			}
 		}
+		float currentTime = (System.nanoTime() - globalStartTime) / 1000000000f;
 		rendererSystem.process(interpolationAlpha);
-
-		float aspect = 1.0f * SevenGE.getWidth() / SevenGE.getHeight();
-
+		particleSystem.draw(camera.getCameraMatrix(), currentTime);
 		orthoM(projectionMatrix, 0, 0, SevenGE.getWidth(), 0, SevenGE.getHeight(), -1f, 1f);
 		rendererSystem.process(interpolationAlpha);
 		mSpriteBatch.begin();
@@ -316,9 +337,6 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		if (isRotating) mSpriteBatch.drawSprite(controls[1]);
 		mSpriteBatch.drawSprite(controls[2]);
 		mSpriteBatch.setProjection(camera.getCameraMatrix());
-		sprite.setPosition(-100, -100);
-		sprite.setRotation(45);
-		mSpriteBatch.drawSprite(sprite);
 		mSpriteBatch.end();
 
 	}
@@ -462,8 +480,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 			double angle = Math.toDegrees(Math.atan2(y - buttonY, x - buttonX));
 // angle = (angle + 360) % 360;
-			DebugLog.d("touchDown", "x : " + x + " y : " + y);
-			DebugLog.d("touchDown", "angle : " + angle);
+			// DebugLog.d("touchDown", "x : " + x + " y : " + y);
+			// DebugLog.d("touchDown", "angle : " + angle);
 
 			spaceShipAngle = (float)(angle);
 

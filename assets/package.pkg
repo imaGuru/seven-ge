@@ -108,6 +108,10 @@
 		{ 
 			"id":"shadedLight",
 			"path":"Textures/shadedLight.png"
+		},
+		{ 
+			"id":"particle",
+			"path":"Textures/particle.png"
 		}
 
 		],

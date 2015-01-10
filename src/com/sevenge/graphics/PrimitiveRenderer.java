@@ -12,6 +12,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
+import com.sevenge.utils.Vector2;
+
 /** Class responsible for creating sprite batches and puting sprites in the correct batches for fast and easy drawing */
 public class PrimitiveRenderer {
 	private static final float DOUBLEPI = (float)(Math.PI * 2.0f);
@@ -156,5 +158,52 @@ public class PrimitiveRenderer {
 			mIndices[offset + i * 2 + 1] = (short)(mPrimitiveCount + (i + 1) % 4);
 		}
 		mPrimitiveCount += 4;
+	}
+
+	public void drawLine (float x, float y, float x2, float y2, float red, float green, float blue) {
+		int offset = mPrimitiveCount * 5;
+		mPrimitives[offset] = x;
+		mPrimitives[offset + 1] = y;
+		mPrimitives[offset + 2] = red;
+		mPrimitives[offset + 3] = green;
+		mPrimitives[offset + 4] = blue;
+
+		mPrimitives[offset + 5] = x2;
+		mPrimitives[offset + 6] = y2;
+		mPrimitives[offset + 7] = red;
+		mPrimitives[offset + 8] = green;
+		mPrimitives[offset + 9] = blue;
+
+		offset = mPrimitiveCount * 2;
+		mIndices[offset] = (short)mPrimitiveCount;
+		mIndices[offset + 1] = (short)(mPrimitiveCount + 1);
+		mPrimitiveCount += 2;
+	}
+
+	public void drawAngleLine (float x, float y, float angle, float length, float red, float green, float blue) {
+		float x2 = (float)(Math.sin(angle) * length + x);
+		float y2 = (float)(Math.cos(angle) * length + y);
+		drawLine(x, y, x2, y2, red, green, blue);
+	}
+
+	public void drawVector (float ox, float oy, float xdist, float ydist, float arrowWidth, float arrowHeightFactor, float red,
+		float green, float blue) {
+		float destx = ox + xdist;
+		float desty = oy + ydist;
+		float angle = (float)Math.atan2(desty - oy, destx - ox);
+		float cos = (float)Math.sin(-angle);
+		float sin = (float)Math.cos(-angle);
+		float xl = -arrowWidth * cos + destx - xdist * arrowHeightFactor;
+		float yl = sin * (-arrowWidth) + desty - ydist * arrowHeightFactor;
+		float xr = arrowWidth * cos + destx - xdist * arrowHeightFactor;
+		float yr = sin * arrowWidth + desty - ydist * arrowHeightFactor;
+		drawLine(ox, oy, destx, desty, red, green, blue);
+		drawLine(destx, desty, xl, yl, red, green, blue);
+		drawLine(destx, desty, xr, yr, red, green, blue);
+		// drawLine(xl, yl, xr, yr, red, green, 1.0f);
+	}
+
+	public void drawVector (Vector2 origin, Vector2 direction) {
+
 	}
 }

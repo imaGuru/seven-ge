@@ -26,16 +26,15 @@ public class SpriteBatch {
 	private final VertexBuffer mVertexBuffer;
 	private final IndexBuffer mIndexBuffer;
 	public final TextureShaderProgram shader;
-	private final int mTextureID;
+	private int mTextureID = 0;
 	private int mSpriteCount = 0, mUploadedSprites = 0;
 	private final float[] mProjectionMatrix;
 	private final float[] mSpriteData;
 
-	public SpriteBatch (int size, int texture, int type) {
-		mTextureID = texture;
-		mVertexBuffer = new VertexBuffer(size, type);
+	public SpriteBatch (int size, int type) {
+		mVertexBuffer = new VertexBuffer(size * 16, type);
 		shader = ShaderUtils.TEXTURE_SHADER;
-		mSpriteData = new float[size * VERTICES_PER_SPRITE];
+		mSpriteData = new float[size * 4 * VERTICES_PER_SPRITE];
 		mProjectionMatrix = new float[16];
 		short[] indices = new short[size * INDICES_PER_SPRITE];
 		for (int i = 0; i < size; i++) {
@@ -52,6 +51,7 @@ public class SpriteBatch {
 	}
 
 	public void addSprite (Sprite sprite) {
+		if (mTextureID == 0) mTextureID = sprite.texture;
 		if (mTextureID != sprite.texture) throw new RuntimeException("Adding sprite with different texture is forbidden!");
 		System.arraycopy(sprite.getVertices(), 0, mSpriteData, mSpriteCount * VERTICES_PER_SPRITE
 			* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT), 16);
@@ -59,6 +59,7 @@ public class SpriteBatch {
 	}
 
 	public void addSprite (float x, float y, float rotation, float scaleX, float scaleY, TextureRegion sprite) {
+		if (mTextureID == 0) mTextureID = sprite.texture;
 		if (mTextureID != sprite.texture) throw new RuntimeException("Adding sprite with different texture is forbidden!");
 		int offset = mSpriteCount * 16;
 		float[] uvs = sprite.UVs;

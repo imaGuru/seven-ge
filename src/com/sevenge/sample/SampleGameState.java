@@ -2,6 +2,13 @@
 package com.sevenge.sample;
 
 import static android.opengl.Matrix.orthoM;
+import static android.opengl.GLES20.GL_BLEND;
+import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_ONE;
+import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
+import static android.opengl.GLES20.glBlendFunc;
+import static android.opengl.GLES20.glClear;
+import static android.opengl.GLES20.glEnable;
 
 import java.util.Random;
 
@@ -33,13 +40,15 @@ import com.sevenge.ecs.RendererSystem;
 import com.sevenge.ecs.ScriptingSystem;
 import com.sevenge.ecs.SpriteComponent;
 import com.sevenge.graphics.Camera;
-import com.sevenge.graphics.Sprite;
 import com.sevenge.graphics.SpriteBatcher;
+import com.sevenge.graphics.Sprite;
+import com.sevenge.graphics.SpriteBatch;
 import com.sevenge.graphics.TextureRegion;
 import com.sevenge.input.GestureProcessor;
 import com.sevenge.input.Input;
 import com.sevenge.input.InputProcessor;
 import com.sevenge.utils.DebugLog;
+import com.sevenge.utils.FixedSizeArray;
 
 public class SampleGameState extends GameState implements InputProcessor, GestureProcessor {
 
@@ -83,6 +92,10 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	private Sprite sprite;
 
+	private FixedSizeArray<Layer> maplayers;
+
+	private float[] matrix = new float[16];
+
 	@Override
 	public void load () {
 
@@ -95,7 +108,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		createCamera();
 		loadAssets();
 		loadControls();
-		generateRandomPlanets();
+		//generateRandomPlanets();
 
 		sprite = new Sprite((TextureRegion)SevenGE.getAssetManager().getAsset("Hull4.png"));
 
@@ -107,6 +120,9 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		music = (Music)assetManager.getAsset("music1");
 		engineMusic = (Music)assetManager.getAsset("engine");
 		laserSfx = (Sound)assetManager.getAsset("laser");
+		MapLoader maploader = new MapLoader();
+		maploader.load("map.json");
+		maplayers = maploader.getLayers();
 
 		music.setLooping(true);
 		engineMusic.setLooping(true);
@@ -207,13 +223,12 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		camera.setRotation(0.0f);
 		camera.setZoom(1.0f);
 		rendererSystem.setCamera(camera);
-
 	}
 
 	private void generateRandomPlanets () {
 
 		Random rng = new Random();
-		for (int i = 0; i < 150; i++) {
+		for (int i = 0; i < 0; i++) {
 			Entity entity = mEM.createEntity(10);
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
@@ -277,7 +292,17 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void draw (float interpolationAlpha) {
-
+		glClear(GL_COLOR_BUFFER_BIT);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		for (int i = 0; i < maplayers.getCount(); i++) {
+			Layer layer = maplayers.get(i);
+			for (int j = 0; j < layer.batches.getCount(); j++) {
+				SpriteBatch sb = layer.batches.get(j);
+				sb.setProjection(camera.getCameraMatrix(layer.parallaxFactor, matrix));
+				sb.draw();
+			}
+		}
 		rendererSystem.process(interpolationAlpha);
 
 		float aspect = 1.0f * SevenGE.getWidth() / SevenGE.getHeight();

@@ -94,7 +94,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private Vector3 position = new Vector3(0, 0, 0);;
 	private Vector3 direction = new Vector3(0, 0, 0);
 
-	SpriteBatcher mSpriteBatch = new SpriteBatcher(300);
+	SpriteBatcher mSpriteBatch = new SpriteBatcher(500);
 
 	private float[] projectionMatrix = new float[16];
 	private FixedSizeArray<Layer> maplayers;
@@ -120,7 +120,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		createCamera();
 		loadAssets();
 		loadControls();
-		// generateRandomPlanets();
+		generateRandomPlanets();
 
 		Texture tex = (Texture)SevenGE.getAssetManager().getAsset("particle");
 		particleSystem = new ParticleSystem(400, ShaderUtils.PARTICLE_SHADER, tex.glID);
@@ -161,7 +161,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		dynamicCircle.setRadius(scSpaceShip.textureRegion.height / 2 * PhysicsSystem.WORLD_TO_BOX);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = dynamicCircle;
-		fixtureDef.density = 2.0f;
+		fixtureDef.density = 100.0f;
 		fixtureDef.friction = 0.5f;
 		fixtureDef.restitution = 0.5f;
 		body.createFixture(fixtureDef);
@@ -216,13 +216,13 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	private void createSystems () {
 
-		rendererSystem = new RendererSystem(200);
+		rendererSystem = new RendererSystem(500);
 		animationSystem = new AnimationSystem(200);
 		scriptingSystem = new ScriptingSystem();
-		physicsSystem = new PhysicsSystem(200);
+		physicsSystem = new PhysicsSystem(500);
 		sceneManager = new SceneManager();
 
-		mEM = new EntityManager(300, 10);
+		mEM = new EntityManager(500, 10);
 		mEM.registerSystem(rendererSystem);
 		mEM.registerSystem(animationSystem);
 		mEM.registerSystem(scriptingSystem);
@@ -242,29 +242,42 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private void generateRandomPlanets () {
 
 		Random rng = new Random();
-		for (int i = 0; i < 0; i++) {
+		for (int i = 0; i < 400; i++) {
 			Entity entity = mEM.createEntity(10);
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
 			cp.rotation = rng.nextFloat() * 360.0f;
-			cp.x = rng.nextFloat() * 1000f;
-			cp.y = rng.nextFloat() * 1000f;
+			cp.x = rng.nextFloat() * 8000f - 4000f;
+			cp.y = rng.nextFloat() * 8000f - 4000f;
 			cs.scale = 1.0f;
-			float rnd = rng.nextFloat();
-			if (rnd < 0.5f) {
-				cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull2.png");
-				cs.scale = 1f;
-			} else if (rnd < 0.7f)
-				cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull4.png");
-			else if (rnd < 0.75f)
-				cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull.png");
-			else {
-				cp.layer = 4;
-				cp.parallaxFactor = 1f;
-				cs.textureRegion = (TextureRegion)assetManager.getAsset("Hull3.png");
+			int rnd = rng.nextInt(24) + 1;
 
+			int count = 0;
+
+			cs.textureRegion = (TextureRegion)assetManager.getAsset("a" + rnd);
+			if (cs.textureRegion == null) {
+				DebugLog.d("POOL", rnd + ", count :" + count);
+				count += 1;
 			}
 
+			PhysicsComponent physicsComponent = new PhysicsComponent();
+			BodyDef bodyDef = new BodyDef();
+			bodyDef.type = BodyDef.BodyType.DynamicBody;
+			bodyDef.position.set(PhysicsSystem.WORLD_TO_BOX * cp.x, PhysicsSystem.WORLD_TO_BOX * cp.y);
+			Body body = physicsSystem.getWorld().createBody(bodyDef);
+			body.setAngularDamping(0.1f);
+			body.setLinearDamping(0.1f);
+			CircleShape dynamicCircle = new CircleShape();
+			dynamicCircle.setRadius(cs.textureRegion.height / 2 * PhysicsSystem.WORLD_TO_BOX);
+			FixtureDef fixtureDef = new FixtureDef();
+			fixtureDef.shape = dynamicCircle;
+			fixtureDef.density = cs.textureRegion.height * 0.8f;
+			fixtureDef.friction = 0.5f;
+			fixtureDef.restitution = 0.5f;
+			body.createFixture(fixtureDef);
+			physicsComponent.setBody(body);
+
+			entity.addComponent(physicsComponent, 4);
 			entity.addComponent(cp, 0);
 			entity.addComponent(cs, 1);
 
@@ -284,7 +297,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		if (isAccelerating) {
 
-			Vector2 force = new Vector2(500, 0);
+			Vector2 force = new Vector2(10000, 0);
 			float angle = fcSpaceShip.getBody().getAngle();// (float)Math.toRadians(spaceShipAngle);
 			float X = (float)(force.x * Math.cos(angle) - force.y * Math.sin(angle));
 			float Y = (float)(force.y * Math.cos(angle) + force.x * Math.sin(angle));
@@ -294,8 +307,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			direction.x = -X / length * 90;
 			direction.y = -Y / length * 90;
 			direction.z = 0;
-			position.x = pcSpaceShip.x + direction.x * 90;
-			position.y = pcSpaceShip.y + direction.y * 90;
+			position.x = pcSpaceShip.x + direction.x;
+			position.y = pcSpaceShip.y + direction.y;
 			position.z = 0;
 			float currentTime = (System.nanoTime() - globalStartTime) / 1000000000f;
 			emiter.addParticles(position, direction, currentTime, 5);
@@ -329,7 +342,6 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		rendererSystem.process(interpolationAlpha);
 		particleSystem.draw(camera.getCameraMatrix(), currentTime);
 		orthoM(projectionMatrix, 0, 0, SevenGE.getWidth(), 0, SevenGE.getHeight(), -1f, 1f);
-		rendererSystem.process(interpolationAlpha);
 		mSpriteBatch.begin();
 		mSpriteBatch.setProjection(projectionMatrix);
 

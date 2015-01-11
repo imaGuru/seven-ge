@@ -115,8 +115,10 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	private long globalStartTime;
 
+	int colCounter;
+
 	private ArrayList<Entity> activeBullets = new ArrayList<Entity>(25);
-	private ArrayList<Body> bodiesToRemove = new ArrayList<Body>(25);
+	private ArrayList<Entity> bulletsToRemove = new ArrayList<Entity>(25);
 	private FixedSizeArray<Entity> explosions = new FixedSizeArray<Entity>(25, Entity.SortByID);
 
 	@Override
@@ -173,22 +175,30 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 				if (a == eSpaceShip || b == eSpaceShip) {
 					PositionComponent posC = (PositionComponent)b.mComponents[0];
 					createExplosionAnimation(posC.x, posC.y);
-
 					((Sound)assetManager.getAsset("explosion1")).play(1f);
-
-					// mEM.assignEntities();
-					// mEM.removeEntity(b.mId);
-
 				}
 
 				for (Entity bullet : activeBullets) {
-					if (a == bullet || b == bullet) {
-						PositionComponent posC = (PositionComponent)bullet.mComponents[0];
-						PhysicsComponent fC = (PhysicsComponent)bullet.mComponents[4];
+					if (a == bullet) {
+						PositionComponent posC = (PositionComponent)a.mComponents[0];
+						PhysicsComponent fC = (PhysicsComponent)a.mComponents[4];
 						createExplosionAnimation(posC.x, posC.y);
 						((Sound)assetManager.getAsset("explosion2")).play(1f);
-						// mEM.removeEntity(bullet.mId);
-						bodiesToRemove.add(fC.getBody());
+						if (!bulletsToRemove.contains(bullet)) {
+							bulletsToRemove.add(bullet);
+							colCounter++;
+						}
+
+					} else if (b == bullet) {
+						PositionComponent posC = (PositionComponent)b.mComponents[0];
+						PhysicsComponent fC = (PhysicsComponent)b.mComponents[4];
+						createExplosionAnimation(posC.x, posC.y);
+						((Sound)assetManager.getAsset("explosion2")).play(1f);
+						if (!bulletsToRemove.contains(bullet)) {
+							bulletsToRemove.add(bullet);
+							colCounter++;
+						}
+
 					}
 				}
 
@@ -374,9 +384,6 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		CircleShape dynamicCircle = new CircleShape();
 		dynamicCircle.setRadius(scSpaceShip.textureRegion.height / 2 * PhysicsSystem.WORLD_TO_BOX);
-		// PolygonShape polygonShape = new PolygonShape();
-// polygonShape.setAsBox(PhysicsSystem.WORLD_TO_BOX * scBullet.textureRegion.width / 2 + 100, PhysicsSystem.WORLD_TO_BOX
-// * scBullet.textureRegion.height / 2 + 100);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = dynamicCircle;
 		fixtureDef.density = 2.0f;
@@ -470,23 +477,30 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		for (Entity bullet : activeBullets) {
 
+			if (bulletsToRemove.contains(bullet)) {
+				continue;
+			}
+
 			PositionComponent pcBullet = (PositionComponent)bullet.mComponents[0];
 			PhysicsComponent fC = (PhysicsComponent)bullet.mComponents[4];
 			float dist = (float)Math.sqrt((pcBullet.x - pcSpaceShip.x) * (pcBullet.x - pcSpaceShip.x) + (pcBullet.y - pcSpaceShip.y)
 				* (pcBullet.y - pcSpaceShip.y));
 
 			if (dist > 2000) {
-				bodiesToRemove.add(fC.getBody());
-				mEM.removeEntity(bullet.mId);
+
+				bulletsToRemove.add(bullet);
 			}
 
 		}
-		for (Body body : bodiesToRemove) {
-			physicsSystem.getWorld().destroyBody(body);
-			activeBullets.remove(body.getUserData());
-			mEM.removeEntity(((Entity)body.getUserData()).mId);
+
+		for (Entity bullet : bulletsToRemove) {
+			activeBullets.remove(bullet);
+			mEM.removeEntity(bullet.mId);
+
+			physicsSystem.getWorld().destroyBody(((PhysicsComponent)bullet.mComponents[4]).getBody());
+
 		}
-		bodiesToRemove.clear();
+		bulletsToRemove.clear();
 
 		for (int i = 0; i < explosions.getCount(); i++) {
 
@@ -628,7 +642,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		}
 
 		if (isButtonClicked(controls[0], x, y)) {
-			DebugLog.d("Controls", "clicked");
+
 			laserSfx.play(1f);
 			Vector2 target = new Vector2(1, 0);
 
@@ -677,9 +691,6 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			float buttonX = controls[1].getX() + controls[1].getAxisAlignedBoundingBox().width / 2;
 
 			double angle = Math.toDegrees(Math.atan2(y - buttonY, x - buttonX));
-// angle = (angle + 360) % 360;
-			// DebugLog.d("touchDown", "x : " + x + " y : " + y);
-			// DebugLog.d("touchDown", "angle : " + angle);
 
 			spaceShipAngle = (float)(angle);
 

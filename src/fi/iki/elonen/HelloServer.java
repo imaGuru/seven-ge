@@ -14,6 +14,7 @@ import java.util.Set;
 import android.content.Context;
 
 import com.sevenge.IO;
+import com.sevenge.utils.DebugLog;
 
 public class HelloServer extends NanoHTTPD {
 
@@ -49,6 +50,17 @@ public class HelloServer extends NanoHTTPD {
 			}
 
 			return new NanoHTTPD.Response(msg);
+		} else if ("script".equals(uri)) {
+
+			String msg = "";
+
+			String script = parms.get("value");
+			if (script != null) {
+				msg += "<span style='color:green;'>" + "> " + "executed script" + "</span>" + "<br>";
+				DebugLog.d("POOL", script);
+			}
+
+			return new NanoHTTPD.Response(msg);
 		}
 
 		String msg = "<html>\r\n" + "<script>\r\n" + "\r\n" + "window.onload = function() {\r\n" + "\r\n"
@@ -65,8 +77,8 @@ public class HelloServer extends NanoHTTPD {
 			+ "            if (xhr.status === 200) {\r\n" + "                uploadButton.innerHTML = 'Upload';\r\n"
 			+ "            } else {\r\n" + "                alert('An error occurred!');\r\n" + "            }\r\n"
 			+ "        };\r\n" + "\r\n" + "        xhr.send(formData);\r\n" + "\r\n" + "    }\r\n" + "\r\n" + "};\r\n" + "\r\n"
-			+ "function send_command() {\r\n" + "    var xmlhttp;\r\n" + "\r\n" + "    xmlhttp = new XMLHttpRequest();\r\n" + "\r\n"
-			+ "    xmlhttp.onreadystatechange = function() {\r\n"
+			+ "function send_command(isScript) {\r\n" + "\r\n" + "    var xmlhttp;\r\n" + "\r\n"
+			+ "    xmlhttp = new XMLHttpRequest();\r\n" + "\r\n" + "    xmlhttp.onreadystatechange = function() {\r\n"
 			+ "        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {\r\n"
 			+ "        	if(xmlhttp.responseText != \"<span style='color:green;'>> clear</span><br>clear\"){\r\n"
 			+ "	            var div = document.createElement(\"div\");\r\n"
@@ -74,10 +86,13 @@ public class HelloServer extends NanoHTTPD {
 			+ "	            document.getElementById(\"command_results\").appendChild(div);\r\n" + "        	}else{\r\n"
 			+ "        		document.getElementById(\"command_results\").innerHTML = \"\";\r\n" + "        	}\r\n" + "        }\r\n"
 			+ "    }\r\n" + "    var newvalue = encodeURIComponent(document.getElementById(\"value\").value);\r\n"
-			+ "    xmlhttp.open(\"GET\", \"command?value=\" + newvalue, true);\r\n" + "    xmlhttp.send();\r\n" + "}\r\n" + "\r\n"
-			+ "</script>\r\n" + "<body>\r\n" + "	<h1>Hello, this is the seven-ge server</h1>\r\n"
-			+ "	<div id='command_results' style='overflow-y: scroll; height:400px;'></div>\r\n"
-			+ "	<input type='text' id='value'>\r\n" + "	<input type='button' value='submit' onclick='send_command()'>\r\n" + "\r\n"
+			+ "    if(isScript){\r\n" + "        xmlhttp.open(\"GET\", \"script?value=\" + newvalue, true);\r\n" + "    }else {\r\n"
+			+ "        xmlhttp.open(\"GET\", \"command?value=\" + newvalue, true);\r\n" + "    }\r\n" + "    xmlhttp.send();\r\n"
+			+ "}\r\n" + "\r\n" + "</script>\r\n" + "<body>\r\n" + "	<h1>Hello, this is the seven-ge server</h1>\r\n"
+			+ "	<div id='command_results' style='overflow-y: scroll; height:300px;'></div>\r\n"
+			+ "	<textarea id='value' style='width:100%; height:200px;'></textarea> <br />\r\n"
+			+ "	<input type='button' value='submit as command' onclick='send_command(false)'>\r\n"
+			+ "    <input type='button' value='submit as script' onclick='send_command(true)'>\r\n" + "\r\n"
 			+ "		<form id=\"file-form\" action=\"\" method=\"POST\">\r\n"
 			+ "		<input type=\"file\" id=\"file-select\" name=\"files[]\" multiple/>\r\n"
 			+ "		<button type=\"submit\" id=\"upload-button\">Upload</button></form>\r\n" + "\r\n" + "</html>";

@@ -24,6 +24,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.sevenge.ActionManager;
 import com.sevenge.GameState;
 import com.sevenge.SevenGE;
@@ -155,11 +156,13 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 				if (a == eSpaceShip || b == eSpaceShip) {
 					PositionComponent posC = (PositionComponent)b.mComponents[0];
 					createExplosionAnimation(posC.x, posC.y);
-					if (random.nextInt(2) == 0) ((Sound)assetManager.getAsset("explosion1")).play(1f);
-					else 	((Sound)assetManager.getAsset("explosion2")).play(1f);
+					if (random.nextInt(2) == 0)
+						((Sound)assetManager.getAsset("explosion1")).play(1f);
+					else
+						((Sound)assetManager.getAsset("explosion2")).play(1f);
 					mEM.assignEntities();
 
-				} 
+				}
 
 			}
 		});
@@ -313,6 +316,45 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			entity.addComponent(cs, 1);
 
 		}
+
+	}
+
+	private void createBullet (float x, float y, Vector2 target) {
+
+		Entity eBullet = mEM.createEntity(10);
+		PositionComponent pcBullet = new PositionComponent();
+		SpriteComponent scBullet = new SpriteComponent();
+		PhysicsComponent fcBullet = new PhysicsComponent();
+
+		scBullet.textureRegion = (TextureRegion)assetManager.getAsset("hull5Jet2.png");
+		scBullet.scale = 1f;
+		pcBullet.x = x;
+		pcBullet.y = y;
+
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyDef.BodyType.DynamicBody;
+		bodyDef.position.set(PhysicsSystem.WORLD_TO_BOX * pcBullet.x, PhysicsSystem.WORLD_TO_BOX * pcBullet.y);
+		Body body = physicsSystem.getWorld().createBody(bodyDef);
+
+		PolygonShape polygonShape = new PolygonShape();
+		polygonShape.setAsBox(PhysicsSystem.WORLD_TO_BOX * scBullet.textureRegion.width / 2, PhysicsSystem.WORLD_TO_BOX
+			* scBullet.textureRegion.height / 2 + 10);
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = polygonShape;
+		fixtureDef.density = 2.0f;
+		fixtureDef.friction = 0.5f;
+		fixtureDef.restitution = 0.5f;
+		body.createFixture(fixtureDef);
+		body.setUserData(eBullet);
+		fcBullet.setBody(body);
+
+		eBullet.addComponent(pcBullet, 0);
+		eBullet.addComponent(fcBullet, 4);
+		eBullet.addComponent(scBullet, 1);
+
+		float angle = (float)Math.toRadians(spaceShipAngle);
+		fcBullet.getBody().setTransform(fcSpaceShip.getBody().getPosition(), angle);
+		body.applyLinearImpulse(target.mul(100), body.getPosition());
 
 	}
 
@@ -508,6 +550,16 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		if (isButtonClicked(controls[0], x, y)) {
 			DebugLog.d("Controls", "clicked");
 			laserSfx.play(1f);
+			Vector2 target = new Vector2(1, 0);
+
+			float angle = fcSpaceShip.getBody().getAngle();
+			float X = (float)(target.x * Math.cos(angle) - target.y * Math.sin(angle));
+			float Y = (float)(target.y * Math.cos(angle) + target.x * Math.sin(angle));
+
+			fcSpaceShip.getBody().applyForce(new Vector2(X, Y), fcSpaceShip.getBody().getPosition());
+
+			createBullet(pcSpaceShip.x + scSpaceShip.textureRegion.width / 2, pcSpaceShip.y + scSpaceShip.textureRegion.height,
+				target.cpy());
 		}
 		if (isButtonClicked(controls[2], x, y)) {
 			isAccelerating = true;

@@ -479,7 +479,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		}
 		for (Body body : bodiesToRemove) {
-			// physicsSystem.getWorld().destroyBody(body);
+			physicsSystem.getWorld().destroyBody(body);
 			activeBullets.remove(body.getUserData());
 			mEM.removeEntity(((Entity)body.getUserData()).mId);
 		}

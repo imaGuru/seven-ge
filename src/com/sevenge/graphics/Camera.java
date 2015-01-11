@@ -32,7 +32,7 @@ public class Camera {
 	}
 
 	public void setZoom (float z) {
-		zoom = 1 / z;
+		zoom = z;
 	}
 
 	public float getZoom () {

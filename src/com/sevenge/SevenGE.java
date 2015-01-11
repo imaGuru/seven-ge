@@ -23,6 +23,7 @@ import com.sevenge.assets.AssetManager;
 import com.sevenge.audio.Audio;
 import com.sevenge.input.Input;
 import com.sevenge.sample.SampleGameState;
+import com.sevenge.script.ScriptingEngine;
 import com.sevenge.utils.DebugLog;
 
 import fi.iki.elonen.HelloServer;
@@ -46,6 +47,7 @@ public class SevenGE implements Renderer {
 	public static float fps;
 	private GLSurfaceView mGLSurfaceView;
 	private Activity mActivity;
+	private static HelloServer server;
 
 	private long mStartTime = 0;
 	private long mLastTime = 0;
@@ -69,7 +71,7 @@ public class SevenGE implements Renderer {
 		SevenGE.stateManager = new GameStateManager();
 		mActivity = activity;
 		mGLSurfaceView = glSurfaceView;
-		HelloServer server = new HelloServer(activity);
+		server = new HelloServer(activity);
 		try {
 			server.start();
 		} catch (IOException e) {
@@ -206,6 +208,10 @@ public class SevenGE implements Renderer {
 
 	public static int getHeight () {
 		return height;
+	}
+
+	public static void attachScriptingEngineToServer (ScriptingEngine scriptingEngine) {
+		server.setScriptingEngine(scriptingEngine);
 	}
 
 }

@@ -90,6 +90,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private Input input;
 	private Sprite[] controls;
 	private boolean isAccelerating = false;
+	private boolean isCameraFollowingPlayer = true;
 	private int acceleratingPointer = -1;
 	private boolean isRotating = false;
 	private int rotatingPointer = -1;
@@ -252,7 +253,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	}
 
 	private void loadControls () {
-		controls = new Sprite[3];
+		controls = new Sprite[4];
 
 		Sprite sMoveButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight07.png"));
 		sMoveButton.setPosition(40, 40);
@@ -262,13 +263,18 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		sAccelerateButton.setPosition(SevenGE.getWidth() - 140, 40);
 		sAccelerateButton.setScale(1, 1);
 
-		Sprite sFireButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight46.png"));
+		Sprite sFireButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight49.png"));
 		sFireButton.setPosition(SevenGE.getWidth() - 100, 160);
 		sFireButton.setScale(1, 1);
+
+		Sprite sCameraSwitchButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight48.png"));
+		sCameraSwitchButton.setPosition(SevenGE.getWidth() - 100, 300);
+		sCameraSwitchButton.setScale(1, 1);
 
 		controls[0] = sFireButton;
 		controls[1] = sMoveButton;
 		controls[2] = sAccelerateButton;
+		controls[3] = sCameraSwitchButton;
 
 	}
 
@@ -296,6 +302,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		rendererSystem = new RendererSystem(500);
 		animationSystem = new AnimationSystem(200);
+
 		physicsSystem = new PhysicsSystem(500);
 		sceneManager = new SceneManager();
 
@@ -307,6 +314,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		eh.EM = mEM;
 		eh.ps = physicsSystem;
 		scriptingSystem = new ScriptingEngine(eh);
+		SevenGE.attachScriptingEngineToServer(scriptingSystem);
 	}
 
 	private void createCamera () {
@@ -314,7 +322,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		camera = new Camera(SevenGE.getWidth(), SevenGE.getHeight());
 		camera.setPostion(pcSpaceShip.x, pcSpaceShip.y);
 		camera.setRotation(0.0f);
-		camera.setZoom(0.5f);
+		camera.setZoom(1.1f);
 		rendererSystem.setCamera(camera);
 	}
 
@@ -326,8 +334,8 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			SpriteComponent cs = new SpriteComponent();
 			PositionComponent cp = new PositionComponent();
 			cp.rotation = rng.nextFloat() * 360.0f;
-			cp.x = rng.nextFloat() * 8000f - 4000f;
-			cp.y = rng.nextFloat() * 8000f - 4000f;
+			cp.x = rng.nextFloat() * 10000f - 5000f;
+			cp.y = rng.nextFloat() * 10000f - 5000f;
 			cs.scale = 1.0f;
 			int rnd = rng.nextInt(24) + 1;
 
@@ -473,7 +481,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		counter++;
 
 		sceneManager.update();
-		camera.setPostion(pcSpaceShip.x, pcSpaceShip.y);
+		if (isCameraFollowingPlayer) camera.setPostion(pcSpaceShip.x, pcSpaceShip.y);
 
 		for (Entity bullet : activeBullets) {
 
@@ -536,9 +544,12 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		mSpriteBatch.begin();
 		mSpriteBatch.setProjection(projectionMatrix);
 
-		mSpriteBatch.drawSprite(controls[0]);
-		if (isRotating) mSpriteBatch.drawSprite(controls[1]);
-		mSpriteBatch.drawSprite(controls[2]);
+		if (isCameraFollowingPlayer) {
+			mSpriteBatch.drawSprite(controls[0]);
+			if (isRotating) mSpriteBatch.drawSprite(controls[1]);
+			mSpriteBatch.drawSprite(controls[2]);
+		}
+		mSpriteBatch.drawSprite(controls[3]);
 		mSpriteBatch.setProjection(camera.getCameraMatrix());
 		mSpriteBatch.end();
 
@@ -593,21 +604,23 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public boolean onScroll (MotionEvent me1, MotionEvent me2, float distX, float distY) {
-// float me2x = me2.getX();
-// float me2y = me2.getY();
-//
-// float[] coords = camera.unproject((int)(me2x + distX), (int)(me2y + distY), SevenGE.getWidth(), SevenGE.getHeight(),
-// camera.getCameraMatrix());
-// float x1 = coords[0];
-// float y1 = coords[1];
-// coords = camera.unproject((int)me2x, (int)me2y, SevenGE.getWidth(), SevenGE.getHeight(), camera.getCameraMatrix());
-// float x2 = coords[0];
-// float y2 = coords[1];
-//
-// com.sevenge.utils.Vector2 camPos = camera.getPosition();
-// camPos.x -= x2 - x1;
-// camPos.y -= y2 - y1;
-// camera.setPostion(camPos.x, camPos.y);
+		if (!isCameraFollowingPlayer) {
+			float me2x = me2.getX();
+			float me2y = me2.getY();
+
+			float[] coords = camera.unproject((int)(me2x + distX), (int)(me2y + distY), SevenGE.getWidth(), SevenGE.getHeight(),
+				camera.getCameraMatrix());
+			float x1 = coords[0];
+			float y1 = coords[1];
+			coords = camera.unproject((int)me2x, (int)me2y, SevenGE.getWidth(), SevenGE.getHeight(), camera.getCameraMatrix());
+			float x2 = coords[0];
+			float y2 = coords[1];
+
+			com.sevenge.utils.Vector2 camPos = camera.getPosition();
+			camPos.x -= x2 - x1;
+			camPos.y -= y2 - y1;
+			camera.setPostion(camPos.x, camPos.y);
+		}
 		return false;
 	}
 
@@ -633,29 +646,49 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		y = SevenGE.getHeight() - y;
 
-		if (x > 0 && x < SevenGE.getWidth() / 2 && y > 0 && y < SevenGE.getHeight()) {
-			controls[1].setCenter(x, y);
-			isRotating = true;
-			rotatingPointer = pointer;
-			rotationX = x;
-			rotationY = y;
+		if (isCameraFollowingPlayer) {
+			if (x > 0 && x < SevenGE.getWidth() / 2 && y > 0 && y < SevenGE.getHeight()) {
+				controls[1].setCenter(x, y);
+				isRotating = true;
+				rotatingPointer = pointer;
+				rotationX = x;
+				rotationY = y;
+			}
+
+			if (isButtonClicked(controls[0], x, y)) {
+
+				laserSfx.play(1f);
+				Vector2 target = new Vector2(1, 0);
+
+				float angle = fcSpaceShip.getBody().getAngle();
+				float X = (float)(target.x * Math.cos(angle) - target.y * Math.sin(angle));
+				float Y = (float)(target.y * Math.cos(angle) + target.x * Math.sin(angle));
+
+				// fcSpaceShip.getBody().applyForce(new Vector2(X, Y), fcSpaceShip.getBody().getPosition());
+
+				createBullet(pcSpaceShip.x, pcSpaceShip.y, new Vector2(X, Y));
+			}
+			if (isButtonClicked(controls[2], x, y)) {
+				isAccelerating = true;
+				acceleratingPointer = pointer;
+				engineMusic.play();
+			}
 		}
+		if (isButtonClicked(controls[3], x, y)) {
 
-		if (isButtonClicked(controls[0], x, y)) {
-
-			laserSfx.play(1f);
-			Vector2 target = new Vector2(1, 0);
-
-			float angle = fcSpaceShip.getBody().getAngle();
-			float X = (float)(target.x * Math.cos(angle) - target.y * Math.sin(angle));
-			float Y = (float)(target.y * Math.cos(angle) + target.x * Math.sin(angle));
-
-			// fcSpaceShip.getBody().applyForce(new Vector2(X, Y), fcSpaceShip.getBody().getPosition());
-
-			createBullet(pcSpaceShip.x, pcSpaceShip.y, new Vector2(X, Y));
-		}
-		if (isButtonClicked(controls[2], x, y)) {
-			isAccelerating = true;
+			if (isCameraFollowingPlayer) {
+				isCameraFollowingPlayer = false;
+				Sprite sCameraSwitchButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight45.png"));
+				sCameraSwitchButton.setPosition(SevenGE.getWidth() - 100, 300);
+				sCameraSwitchButton.setScale(1, 1);
+				controls[3] = sCameraSwitchButton;
+			} else {
+				isCameraFollowingPlayer = true;
+				Sprite sCameraSwitchButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight48.png"));
+				sCameraSwitchButton.setPosition(SevenGE.getWidth() - 100, 300);
+				sCameraSwitchButton.setScale(1, 1);
+				controls[3] = sCameraSwitchButton;
+			}
 			acceleratingPointer = pointer;
 			engineMusic.play();
 		}
@@ -685,7 +718,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		y = SevenGE.getHeight() - y;
 
-		if (isRotating && rotatingPointer == pointer) {
+		if (isRotating && rotatingPointer == pointer && isCameraFollowingPlayer) {
 
 			float buttonY = controls[1].getY() + controls[1].getAxisAlignedBoundingBox().height / 2;
 			float buttonX = controls[1].getX() + controls[1].getAxisAlignedBoundingBox().width / 2;
@@ -701,8 +734,11 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public boolean onScale (float currentSpan) {
-// float scale = lastScale * firstSpan / currentSpan;
-// camera.setZoom(Math.min(5.0f, Math.max(0.1f, scale)));
+		if (!isCameraFollowingPlayer) {
+			float scale = lastScale * firstSpan / currentSpan;
+			// DebugLog.d(TAG, "lastscale " + lastScale + " current " + currentSpan / firstSpan + " result " + scale);
+			camera.setZoom(Math.min(5.0f, Math.max(0.1f, scale)));
+		}
 		return true;
 	}
 
@@ -712,8 +748,11 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void onScaleBegin (float currentSpan) {
-		lastScale = camera.getZoom();
-		firstSpan = currentSpan;
+		if (!isCameraFollowingPlayer) {
+			lastScale = camera.getZoom();
+			firstSpan = currentSpan;
+		}
+
 	}
 
 }

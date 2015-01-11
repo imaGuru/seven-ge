@@ -1,0 +1,22 @@
+{textureID:"motherShip1",
+"frames": [
+
+{
+	"filename": "starbase-tex.png",
+	"frame": {"x":2,"y":2,"w":978,"h":978},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":23,"w":978,"h":978},
+	"sourceSize": {"w":1024,"h":1024},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "motherShip1.png",
+	"format": "RGBA8888",
+	"size": {"w":1024,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:21632b31e8be09d6a23138ef01ee3153:2288c899254cf3a479bed08689ef35f7:1f62758981c273bd493aae09c761e575$"
+}
+}

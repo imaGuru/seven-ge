@@ -2,7 +2,6 @@ Entity = {}
 Entity.__index = Entity
 
 function Entity.create()
-  SevenGE.log("SCRIPTS","Creating entity")
   local entity = {}
   entity.components={}
   entity.id = -1
@@ -12,7 +11,6 @@ end
 
 function Entity:addComponent(position, component)
 	self.components[position] = component
-	--SevenGE.log("SCRIPTS","Addcomponents" .. self.components[0].x)
 end
 
 function Entity:removeComponent(position)
@@ -29,6 +27,48 @@ end
 
 function EntityManager.remove(entity)
   SevenGE.removeEntity(entity.id)
+end
+
+function EntityManager.getEntity(id)
+  SevenGE.getEntity(id)
+end
+
+Camera = {}
+Camera.__index = Camera
+
+function Camera.setPosition(x,y)
+  Camera.x, Camera.y = SevenGE.setCameraPosition(x,y)
+end
+
+function Camera.setRotation(angle)
+  Camera.rotation = SevenGE.setCameraRotation(angle)
+end
+
+function Camera.setZoom(zoom)
+  Camera.zoom = SevenGE.setCameraZoom(zoom)
+end
+
+Audio = {}
+Audio.__index = Audio
+
+function Audio.setVolume(volume)
+   SevenGE.setAudioVolume(volume)
+end
+
+function Audio.setMusicLooping(loop)
+   SevenGE.setMusicLooping(loop)
+end
+
+function Audio.playSound(sound)
+   SevenGE.playSound(sound)
+end
+
+function Audio.playMusic(sound)
+   Audio.currentTrack = SevenGE.playSound(sound)
+end
+
+function Audio.pause(sound)
+   SevenGE.playSound(sound)
 end
 
 SevenGE.log("SCRIPTS","EngineAPI parsed ")

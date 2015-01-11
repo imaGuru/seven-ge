@@ -21,7 +21,6 @@ public class ScriptingEngine {
 			new RemoveEntity(eh)}, true);
 		try {
 			mLuaState.load(IO.openAsset("Scripts/EngineAPI.lua"), "=EngineAPI", "t");
-			// Evaluate the chunk, thus defining the function
 			mLuaState.call(0, 0); // No arguments, no returns
 			mLuaState.load(IO.openAsset("Scripts/Threading.lua"), "=Threading", "t");
 			mLuaState.call(0, 0); // No arguments, no returns

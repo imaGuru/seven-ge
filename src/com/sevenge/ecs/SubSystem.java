@@ -14,6 +14,7 @@ public abstract class SubSystem {
 	public SubSystem (int mask, int size) {
 		mMask = mask;
 		mEntities = new FixedSizeArray<Entity>(size, Entity.SortByID);
+		mEntities.setFinder(Entity.SortByID);
 	}
 
 	public void process () {

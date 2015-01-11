@@ -169,11 +169,13 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 				if (a == eSpaceShip || b == eSpaceShip) {
 					PositionComponent posC = (PositionComponent)b.mComponents[0];
 					createExplosionAnimation(posC.x, posC.y);
-					if (random.nextInt(2) == 0) ((Sound)assetManager.getAsset("explosion1")).play(1f);
-					else 	((Sound)assetManager.getAsset("explosion2")).play(1f);
-					mEM.assignEntities();
-
-				} 
+					if (random.nextInt(2) == 0)
+						((Sound)assetManager.getAsset("explosion1")).play(1f);
+					else
+						((Sound)assetManager.getAsset("explosion2")).play(1f);
+					// mEM.assignEntities();
+					mEM.removeEntity(b.mId);
+				}
 
 			}
 		});
@@ -337,7 +339,9 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		SpriteComponent scExplosion = new SpriteComponent();
 		pcExplosion.x = x;// - 128;
 		pcExplosion.y = y; // - 128;
+		pcExplosion.layer = 100;
 		scExplosion.scale = 1f;// 2.0f;
+		scExplosion.textureRegion = (TextureRegion)assetManager.getAsset("slice_0_0.png");
 		AnimationComponent ca = new AnimationComponent();
 		TextureRegion[] frames = new TextureRegion[48];
 

@@ -8,6 +8,7 @@ public class FixedSizeArray<T> {
 
 	private final T[] mArray;
 	private int mCount;
+	private Comparator<T> mFinder;
 	private Comparator<T> mComparator;
 	private boolean mSorted;
 
@@ -97,7 +98,7 @@ public class FixedSizeArray<T> {
 	public int find (T object, boolean ignoreComparator) {
 		int index = -1;
 		final int count = mCount;
-		final Comparator<T> comparator = mComparator;
+		final Comparator<T> comparator = mFinder;
 		final T[] contents = mArray;
 		if (comparator != null && !ignoreComparator) {
 			for (int x = 0; x < count; x++) {
@@ -169,5 +170,9 @@ public class FixedSizeArray<T> {
 	public void setComparator (Comparator<T> comp) {
 		mSorted = false;
 		mComparator = comp;
+	}
+
+	public void setFinder (Comparator<T> comp) {
+		mFinder = comp;
 	}
 }

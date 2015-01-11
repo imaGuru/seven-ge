@@ -17,6 +17,7 @@ public class EntityManager {
 	public EntityManager (int size, int systemsSize) {
 		mEntities = new FixedSizeArray<Entity>(size, Entity.SortByID);
 		mSystemArrays = new FixedSizeArray<SubSystem>(systemsSize, SubSystem.SortByMASK);
+		mEntities.setFinder(Entity.SortByID);
 	}
 
 	/** Creates new entity with specified component array and mask
@@ -40,10 +41,10 @@ public class EntityManager {
 	/** Remove entity with specified id
 	 * @param index */
 	public Entity removeEntity (int id) {
+		mAssignedCount--;
 		Entity toRemove = new Entity(id, 0);
 		int realid = mEntities.find(toRemove, false);
 		if (realid == -1) return null;
-		toRemove = mEntities.get(realid);
 		mEntities.remove(realid);
 		for (int j = 0; j < mSystemArrays.getCount(); j++) {
 			SubSystem curs = mSystemArrays.get(j);
@@ -66,13 +67,13 @@ public class EntityManager {
 
 	/** Assigns entities to systems that want to process them */
 	public void assignEntities () {
-		for (int i = mAssignedCount; i < mAvailibleId; i++) {
+		for (int i = mAssignedCount; i < mEntities.getCount(); i++) {
 			Entity cure = mEntities.get(i);
 			for (int j = 0; j < mSystemArrays.getCount(); j++) {
 				SubSystem curs = mSystemArrays.get(j);
 				if ((cure.mMask & curs.mMask) == curs.mMask) curs.mEntities.add(cure);
 			}
 		}
-		mAssignedCount = mAvailibleId;
+		mAssignedCount = mEntities.getCount();
 	}
 }

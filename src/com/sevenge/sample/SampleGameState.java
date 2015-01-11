@@ -46,7 +46,6 @@ import com.sevenge.ecs.PhysicsComponent;
 import com.sevenge.ecs.PhysicsSystem;
 import com.sevenge.ecs.PositionComponent;
 import com.sevenge.ecs.RendererSystem;
-import com.sevenge.ecs.ScriptingSystem;
 import com.sevenge.ecs.SpriteComponent;
 import com.sevenge.graphics.Camera;
 import com.sevenge.graphics.Emitter;
@@ -59,6 +58,8 @@ import com.sevenge.graphics.TextureRegion;
 import com.sevenge.input.GestureProcessor;
 import com.sevenge.input.Input;
 import com.sevenge.input.InputProcessor;
+import com.sevenge.script.EngineHandles;
+import com.sevenge.script.ScriptingEngine;
 import com.sevenge.utils.DebugLog;
 import com.sevenge.utils.FixedSizeArray;
 import com.sevenge.utils.Vector3;
@@ -74,7 +75,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	private RendererSystem rendererSystem;
 	private AnimationSystem animationSystem;
-	private ScriptingSystem scriptingSystem;
+	private ScriptingEngine scriptingSystem;
 	private PhysicsSystem physicsSystem;
 	private SceneManager sceneManager;
 
@@ -282,16 +283,18 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	private void createSystems () {
 
+		EngineHandles eh = new EngineHandles();
+		mEM = new EntityManager(500, 10);
+		eh.EM = mEM;
+
 		rendererSystem = new RendererSystem(500);
 		animationSystem = new AnimationSystem(200);
-		scriptingSystem = new ScriptingSystem();
+		scriptingSystem = new ScriptingEngine(eh);
 		physicsSystem = new PhysicsSystem(500);
 		sceneManager = new SceneManager();
 
-		mEM = new EntityManager(500, 10);
 		mEM.registerSystem(rendererSystem);
 		mEM.registerSystem(animationSystem);
-		mEM.registerSystem(scriptingSystem);
 		mEM.registerSystem(physicsSystem);
 
 	}
@@ -456,9 +459,9 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		}
 
 		animationSystem.process();
-		if (counter == 33) {
+		if (counter == 10) {
 			counter = 0;
-			scriptingSystem.process();
+			scriptingSystem.run(0.32);
 		}
 		counter++;
 

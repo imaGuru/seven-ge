@@ -1,5 +1,5 @@
 
-package com.sevenge.ecs;
+package com.sevenge.script;
 
 import java.io.IOException;
 
@@ -12,34 +12,39 @@ import com.naef.jnlua.LuaType;
 import com.naef.jnlua.NamedJavaFunction;
 import com.sevenge.IO;
 
-public class ScriptingSystem extends SubSystem {
+public class ScriptingEngine {
 	private LuaState mLuaState;
 
-	public ScriptingSystem () {
-		super(16, 0);
+	public ScriptingEngine (EngineHandles eh) {
 		mLuaState = new LuaState();
 		mLuaState.openLibs();
-		mLuaState.register("simplelol", new NamedJavaFunction[] {new DebugLog()}, true);
+		mLuaState.register("SevenGE", new NamedJavaFunction[] {new SetFrameTime(), new DebugLog(), new CreateEntity(eh),
+			new RemoveEntity(eh)}, true);
 		try {
-			mLuaState.load(IO.openAsset("Scripts/main.lua"), "=main", "t");
-
+			mLuaState.load(IO.openAsset("Scripts/EngineAPI.lua"), "=EngineAPI", "t");
 			// Evaluate the chunk, thus defining the function
 			mLuaState.call(0, 0); // No arguments, no returns
-
+			mLuaState.load(IO.openAsset("Scripts/main.lua"), "=main", "t");
+			mLuaState.call(0, 0); // No arguments, no returns
 		} catch (LuaSyntaxException e) {
 			Log.e("SCRIPTS", e.getMessage());
 			e.printStackTrace();
-		} catch (IOException e) { // TODO Auto-generated catch block
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	public void process () {
+	public void executeScript (String script) {
+		mLuaState.load(script, "=runtimeScript");
+		mLuaState.call(0, 0);
+	}
+
+	public void run (double delta) {
 		// Prepare a function call
 		try {
 			mLuaState.getGlobal("wakeUpWaitingThreads"); // Push the function on the stack //
-			mLuaState.pushInteger(1);
+			mLuaState.pushNumber(delta);
 			mLuaState.call(1, 0); // 1 arguments, 0 return
 		} catch (LuaRuntimeException e) {
 			Log.e("SCRIPTS", e.getLocalizedMessage());

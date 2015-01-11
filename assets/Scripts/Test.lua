@@ -1,0 +1,16 @@
+-- And a function to demo it all:
+runProcess(function ()
+    waitSeconds(2)
+    SevenGE.log("SCRIPTS","We've got a problem:(.")
+    entity = Entity.create()
+    entity:addComponent(0,{x=-100,y=-100,rotation=45})
+    entity:addComponent(1,{scale=2,textureRegion="Hull4.png"})
+    entity:addComponent(4,{density=50,friction=0.1,restitution=0.15});
+    SevenGE.log("SCRIPTS","Trying to create entity")
+    EntityManager.create(entity)
+    SevenGE.log("SCRIPTS","Created entity with id " .. entity.id)
+    waitSeconds(10)
+    EntityManager.remove(entity)
+    SevenGE.log("SCRIPTS","Ha! haaa! I removed that entity!")
+    SevenGE.setFrameTime(16)
+end)

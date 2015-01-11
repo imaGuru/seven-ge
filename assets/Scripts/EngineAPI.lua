@@ -24,7 +24,7 @@ EntityManager.__index = EntityManager
 
 function EntityManager.create(entity)
   SevenGE.log("SCRIPTS","Registering entity")
-	entity.id = SevenGE.createEntity(entity)
+	entity.id = SevenGE.createEntity(entity.components)
 end
 
 function EntityManager.remove(entity)

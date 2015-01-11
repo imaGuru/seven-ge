@@ -60,7 +60,6 @@ import com.sevenge.input.Input;
 import com.sevenge.input.InputProcessor;
 import com.sevenge.script.EngineHandles;
 import com.sevenge.script.ScriptingEngine;
-import com.sevenge.utils.DebugLog;
 import com.sevenge.utils.FixedSizeArray;
 import com.sevenge.utils.Vector3;
 
@@ -300,6 +299,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		rendererSystem = new RendererSystem(500);
 		animationSystem = new AnimationSystem(200);
 		scriptingSystem = new ScriptingEngine(eh);
+		SevenGE.attachScriptingEngineToServer(scriptingSystem);
 		physicsSystem = new PhysicsSystem(500);
 		sceneManager = new SceneManager();
 

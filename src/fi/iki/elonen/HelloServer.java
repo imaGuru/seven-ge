@@ -14,10 +14,11 @@ import java.util.Set;
 import android.content.Context;
 
 import com.sevenge.IO;
-import com.sevenge.utils.DebugLog;
+import com.sevenge.script.ScriptingEngine;
 
 public class HelloServer extends NanoHTTPD {
 
+	private ScriptingEngine scriptingEngine = null;
 	Context context;
 	private String commands[] = {"commands", "clear", "ls memorytype (internal, external, cache)",
 		"delete memorytype (internal, external, cache) filename"};
@@ -55,11 +56,16 @@ public class HelloServer extends NanoHTTPD {
 			String msg = "";
 
 			String script = parms.get("value");
-			if (script != null) {
-				msg += "<span style='color:green;'>" + "> " + "executed script" + "</span>" + "<br>";
-				DebugLog.d("POOL", script);
-			}
 
+			if (scriptingEngine == null) {
+				msg += "<span style='color:green;'>" + "> " + "scripting engine not attached" + "</span>" + "<br>";
+			} else {
+
+				if (script != null) {
+					this.scriptingEngine.executeScript(script);
+					msg += "<span style='color:green;'>" + "> " + "executed script" + "</span>" + "<br>";
+				}
+			}
 			return new NanoHTTPD.Response(msg);
 		}
 
@@ -173,5 +179,10 @@ public class HelloServer extends NanoHTTPD {
 		}
 
 		return response;
+	}
+
+	public void setScriptingEngine (ScriptingEngine scriptingEngine) {
+		this.scriptingEngine = scriptingEngine;
+
 	}
 }

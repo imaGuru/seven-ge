@@ -10,4 +10,5 @@ public class AnimationComponent extends Component {
 	public boolean isPlaying;
 	public int currentFrameTick;
 	public int currentFrame;
+	public boolean isLooping;
 }

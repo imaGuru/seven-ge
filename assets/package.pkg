@@ -35,7 +35,19 @@
 			"id":"laser",
 			"type":"sound",
 			"path":"Music/laser.mp3"
-		}],
+		},
+		{
+			"id":"explosion1",
+			"type":"sound",
+			"path":"Music/explosion1.mp3"
+		},
+		{
+			"id":"explosion2",
+			"type":"sound",
+			"path":"Music/explosion2.mp3"
+		}
+		
+		],
 
 	"shader": [
 		{
@@ -108,6 +120,30 @@
 		{ 
 			"id":"shadedLight",
 			"path":"Textures/shadedLight.png"
+		},
+		{
+			"id":"explosion0",
+			"path":"Textures/explosion0.png"
+		},
+		{
+			"id":"explosion1",
+			"path":"Textures/explosion1.png"
+		},
+		{
+			"id":"explosion2",
+			"path":"Textures/explosion2.png"
+		},
+		{
+			"id":"explosion3",
+			"path":"Textures/explosion3.png"
+		},
+		{
+			"id":"explosion4",
+			"path":"Textures/explosion4.png"
+		},
+		{
+			"id":"explosion5",
+			"path":"Textures/explosion5.png"
 		}
 
 		],
@@ -155,6 +191,30 @@
 		{ 
 			"id":"shadedLight",
 			"path":"Textures/shadedLight.pkg"
+		},
+		{
+			"id":"explosion0",
+			"path":"Textures/explosion0.pkg"
+		},
+		{
+			"id":"explosion1",
+			"path":"Textures/explosion1.pkg"
+		},
+		{
+			"id":"explosion2",
+			"path":"Textures/explosion2.pkg"
+		},
+		{
+			"id":"explosion3",
+			"path":"Textures/explosion3.pkg"
+		},
+		{
+			"id":"explosion4",
+			"path":"Textures/explosion4.pkg"
+		},
+		{
+			"id":"explosion5",
+			"path":"Textures/explosion5.pkg"
 		}
 
 		]

@@ -30,7 +30,7 @@ import fi.iki.elonen.HelloServer;
 /** Class exposing game engine subsystems anywhere in the code. */
 public class SevenGE implements Renderer {
 	private static final String TAG = "GameEngine";
-	public static final long FRAME_TIME = 33;
+	public static long FRAME_TIME = 33;
 
 	enum GLGameState {
 		Initialized, Running, Paused, Finished, Idle

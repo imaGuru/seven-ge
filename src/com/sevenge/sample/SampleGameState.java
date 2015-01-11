@@ -24,7 +24,6 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.sevenge.ActionManager;
 import com.sevenge.GameState;
 import com.sevenge.SevenGE;
@@ -326,21 +325,29 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		SpriteComponent scBullet = new SpriteComponent();
 		PhysicsComponent fcBullet = new PhysicsComponent();
 
+		Vector2 v = new Vector2(200, 0);
+		float angle = fcSpaceShip.getBody().getAngle();
+		float X = (float)(v.x * Math.cos(angle) - v.y * Math.sin(angle));
+		float Y = (float)(v.y * Math.cos(angle) + v.x * Math.sin(angle));
+
 		scBullet.textureRegion = (TextureRegion)assetManager.getAsset("hull5Jet2.png");
 		scBullet.scale = 1f;
-		pcBullet.x = x;
-		pcBullet.y = y;
+		pcBullet.x = X + x;
+		pcBullet.y = Y + y;
+		pcBullet.rotation = angle;
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
 		bodyDef.position.set(PhysicsSystem.WORLD_TO_BOX * pcBullet.x, PhysicsSystem.WORLD_TO_BOX * pcBullet.y);
 		Body body = physicsSystem.getWorld().createBody(bodyDef);
 
-		PolygonShape polygonShape = new PolygonShape();
-		polygonShape.setAsBox(PhysicsSystem.WORLD_TO_BOX * scBullet.textureRegion.width / 2, PhysicsSystem.WORLD_TO_BOX
-			* scBullet.textureRegion.height / 2 + 10);
+		CircleShape dynamicCircle = new CircleShape();
+		dynamicCircle.setRadius(scSpaceShip.textureRegion.height / 2 * PhysicsSystem.WORLD_TO_BOX);
+		// PolygonShape polygonShape = new PolygonShape();
+// polygonShape.setAsBox(PhysicsSystem.WORLD_TO_BOX * scBullet.textureRegion.width / 2 + 100, PhysicsSystem.WORLD_TO_BOX
+// * scBullet.textureRegion.height / 2 + 100);
 		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = polygonShape;
+		fixtureDef.shape = dynamicCircle;
 		fixtureDef.density = 2.0f;
 		fixtureDef.friction = 0.5f;
 		fixtureDef.restitution = 0.5f;
@@ -352,9 +359,12 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		eBullet.addComponent(fcBullet, 4);
 		eBullet.addComponent(scBullet, 1);
 
-		float angle = (float)Math.toRadians(spaceShipAngle);
-		fcBullet.getBody().setTransform(fcSpaceShip.getBody().getPosition(), angle);
-		body.applyLinearImpulse(target.mul(100), body.getPosition());
+		float angleRad = (float)Math.toRadians(spaceShipAngle);
+		fcBullet.getBody().setTransform(fcBullet.getBody().getPosition(), angleRad);
+		body.applyLinearImpulse(target.mul(2000), body.getPosition());
+
+		DebugLog.d("POOL", "target : " + target.toString() + " ,x : " + pcSpaceShip.x + " ,y : " + pcSpaceShip.y + " , bullet x : "
+			+ x + " ,y : " + y);
 
 	}
 
@@ -386,8 +396,9 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	@Override
 	public void update () {
-		physicsSystem.process();
 		input.process();
+		mEM.assignEntities();
+		physicsSystem.process();
 		actionManager.process();
 
 		if (isRotating) {
@@ -556,10 +567,9 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			float X = (float)(target.x * Math.cos(angle) - target.y * Math.sin(angle));
 			float Y = (float)(target.y * Math.cos(angle) + target.x * Math.sin(angle));
 
-			fcSpaceShip.getBody().applyForce(new Vector2(X, Y), fcSpaceShip.getBody().getPosition());
+			// fcSpaceShip.getBody().applyForce(new Vector2(X, Y), fcSpaceShip.getBody().getPosition());
 
-			createBullet(pcSpaceShip.x + scSpaceShip.textureRegion.width / 2, pcSpaceShip.y + scSpaceShip.textureRegion.height,
-				target.cpy());
+			createBullet(pcSpaceShip.x, pcSpaceShip.y, new Vector2(X, Y));
 		}
 		if (isButtonClicked(controls[2], x, y)) {
 			isAccelerating = true;

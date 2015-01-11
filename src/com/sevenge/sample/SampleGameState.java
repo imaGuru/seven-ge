@@ -10,6 +10,7 @@ import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.Matrix.orthoM;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import android.graphics.Color;
@@ -19,7 +20,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.sevenge.ActionManager;
 import com.sevenge.GameState;
 import com.sevenge.SevenGE;
@@ -32,6 +37,7 @@ import com.sevenge.assets.TextureLoader;
 import com.sevenge.assets.TextureShaderProgramLoader;
 import com.sevenge.audio.Music;
 import com.sevenge.audio.Sound;
+import com.sevenge.ecs.AnimationComponent;
 import com.sevenge.ecs.AnimationSystem;
 import com.sevenge.ecs.Entity;
 import com.sevenge.ecs.EntityManager;
@@ -121,6 +127,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		loadAssets();
 		loadControls();
 		generateRandomPlanets();
+		setCollisionHandlers();
 
 		Texture tex = (Texture)SevenGE.getAssetManager().getAsset("particle");
 		particleSystem = new ParticleSystem(400, ShaderUtils.PARTICLE_SHADER, tex.glID);
@@ -128,6 +135,48 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		mEM.assignEntities();
 
+	}
+
+	private void setCollisionHandlers () {
+		physicsSystem.getWorld().setContactListener(new ContactListener() {
+
+			@Override
+			public void preSolve (Contact contact, Manifold oldManifold) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void postSolve (Contact contact, ContactImpulse impulse) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void endContact (Contact contact) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void beginContact (Contact contact) {
+
+				Entity a = (Entity)contact.getFixtureA().getBody().getUserData();
+				Entity b = (Entity)contact.getFixtureB().getBody().getUserData();
+
+				Random random = new Random();
+
+				if (a == eSpaceShip || b == eSpaceShip) {
+					PositionComponent posC = (PositionComponent)b.mComponents[0];
+					createExplosionAnimation(posC.x, posC.y);
+					if (random.nextInt(2) == 0) ((Sound)assetManager.getAsset("explosion1")).play(1f);
+					else 	((Sound)assetManager.getAsset("explosion2")).play(1f);
+					mEM.assignEntities();
+
+				} 
+
+			}
+		});
 	}
 
 	private void loadAssets () {
@@ -168,6 +217,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		fcSpaceShip.setBody(body);
 		body.setLinearDamping((float)0.1);
 		body.setAngularDamping((float)0.2);
+		body.setUserData(eSpaceShip);
 		eSpaceShip.addComponent(fcSpaceShip, 4);
 
 		eSpaceShip.addComponent(pcSpaceShip, 0);
@@ -252,13 +302,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			cs.scale = 1.0f;
 			int rnd = rng.nextInt(24) + 1;
 
-			int count = 0;
-
 			cs.textureRegion = (TextureRegion)assetManager.getAsset("a" + rnd);
-			if (cs.textureRegion == null) {
-				DebugLog.d("POOL", rnd + ", count :" + count);
-				count += 1;
-			}
 
 			PhysicsComponent physicsComponent = new PhysicsComponent();
 			BodyDef bodyDef = new BodyDef();
@@ -275,6 +319,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			fixtureDef.friction = 0.5f;
 			fixtureDef.restitution = 0.5f;
 			body.createFixture(fixtureDef);
+			body.setUserData(entity);
 			physicsComponent.setBody(body);
 
 			entity.addComponent(physicsComponent, 4);
@@ -282,6 +327,33 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			entity.addComponent(cs, 1);
 
 		}
+
+	}
+
+	private void createExplosionAnimation (float x, float y) {
+
+		Entity eExplosion = mEM.createEntity(10);
+		PositionComponent pcExplosion = new PositionComponent();
+		SpriteComponent scExplosion = new SpriteComponent();
+		pcExplosion.x = x;// - 128;
+		pcExplosion.y = y; // - 128;
+		scExplosion.scale = 1f;// 2.0f;
+		AnimationComponent ca = new AnimationComponent();
+		TextureRegion[] frames = new TextureRegion[48];
+
+		for (int i = 0; i < 48; i++) {
+			frames[i] = (TextureRegion)assetManager.getAsset("slice_0_" + i + ".png");
+		}
+
+		ca.durations = new int[48];
+		Arrays.fill(ca.durations, 16);
+		ca.frameList = frames;
+		ca.isLooping = false;
+		ca.isPlaying = true;
+
+		eExplosion.addComponent(pcExplosion, 0);
+		eExplosion.addComponent(ca, 3);
+		eExplosion.addComponent(scExplosion, 1);
 	}
 
 	@Override

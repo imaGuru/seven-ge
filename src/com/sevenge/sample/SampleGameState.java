@@ -10,6 +10,7 @@ import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.Matrix.orthoM;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -113,6 +114,10 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	private long globalStartTime;
 
+	private ArrayList<Entity> activeBullets = new ArrayList<Entity>(25);
+	private ArrayList<Body> bodiesToRemove = new ArrayList<Body>(25);
+	private FixedSizeArray<Entity> explosions = new FixedSizeArray<Entity>(25, Entity.SortByID);
+
 	@Override
 	public void load () {
 		globalStartTime = System.nanoTime();
@@ -164,17 +169,26 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 				Entity a = (Entity)contact.getFixtureA().getBody().getUserData();
 				Entity b = (Entity)contact.getFixtureB().getBody().getUserData();
 
-				Random random = new Random();
-
 				if (a == eSpaceShip || b == eSpaceShip) {
 					PositionComponent posC = (PositionComponent)b.mComponents[0];
 					createExplosionAnimation(posC.x, posC.y);
-					if (random.nextInt(2) == 0)
-						((Sound)assetManager.getAsset("explosion1")).play(1f);
-					else
-						((Sound)assetManager.getAsset("explosion2")).play(1f);
+
+					((Sound)assetManager.getAsset("explosion1")).play(1f);
+
 					// mEM.assignEntities();
-					mEM.removeEntity(b.mId);
+					// mEM.removeEntity(b.mId);
+
+				}
+
+				for (Entity bullet : activeBullets) {
+					if (a == bullet || b == bullet) {
+						PositionComponent posC = (PositionComponent)bullet.mComponents[0];
+						PhysicsComponent fC = (PhysicsComponent)bullet.mComponents[4];
+						createExplosionAnimation(posC.x, posC.y);
+						((Sound)assetManager.getAsset("explosion2")).play(1f);
+						// mEM.removeEntity(bullet.mId);
+						bodiesToRemove.add(fC.getBody());
+					}
 				}
 
 			}
@@ -332,6 +346,55 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 	}
 
+	private void createBullet (float x, float y, Vector2 target) {
+
+		Entity eBullet = mEM.createEntity(10);
+		PositionComponent pcBullet = new PositionComponent();
+		SpriteComponent scBullet = new SpriteComponent();
+		PhysicsComponent fcBullet = new PhysicsComponent();
+
+		Vector2 v = new Vector2(200, 0);
+		float angle = fcSpaceShip.getBody().getAngle();
+		float X = (float)(v.x * Math.cos(angle) - v.y * Math.sin(angle));
+		float Y = (float)(v.y * Math.cos(angle) + v.x * Math.sin(angle));
+
+		scBullet.textureRegion = (TextureRegion)assetManager.getAsset("hull5Jet2.png");
+		scBullet.scale = 1f;
+		pcBullet.x = X + x;
+		pcBullet.y = Y + y;
+		pcBullet.rotation = angle;
+
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyDef.BodyType.DynamicBody;
+		bodyDef.position.set(PhysicsSystem.WORLD_TO_BOX * pcBullet.x, PhysicsSystem.WORLD_TO_BOX * pcBullet.y);
+		Body body = physicsSystem.getWorld().createBody(bodyDef);
+
+		CircleShape dynamicCircle = new CircleShape();
+		dynamicCircle.setRadius(scSpaceShip.textureRegion.height / 2 * PhysicsSystem.WORLD_TO_BOX);
+		// PolygonShape polygonShape = new PolygonShape();
+// polygonShape.setAsBox(PhysicsSystem.WORLD_TO_BOX * scBullet.textureRegion.width / 2 + 100, PhysicsSystem.WORLD_TO_BOX
+// * scBullet.textureRegion.height / 2 + 100);
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = dynamicCircle;
+		fixtureDef.density = 2.0f;
+		fixtureDef.friction = 0.5f;
+		fixtureDef.restitution = 0.5f;
+		body.createFixture(fixtureDef);
+		body.setUserData(eBullet);
+		fcBullet.setBody(body);
+
+		eBullet.addComponent(pcBullet, 0);
+		eBullet.addComponent(fcBullet, 4);
+		eBullet.addComponent(scBullet, 1);
+
+		float angleRad = (float)Math.toRadians(spaceShipAngle);
+		fcBullet.getBody().setTransform(fcBullet.getBody().getPosition(), angleRad);
+		body.applyLinearImpulse(target.mul(2000), body.getPosition());
+
+		activeBullets.add(eBullet);
+
+	}
+
 	private void createExplosionAnimation (float x, float y) {
 
 		Entity eExplosion = mEM.createEntity(10);
@@ -358,12 +421,14 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		eExplosion.addComponent(pcExplosion, 0);
 		eExplosion.addComponent(ca, 3);
 		eExplosion.addComponent(scExplosion, 1);
+		explosions.add(eExplosion);
 	}
 
 	@Override
 	public void update () {
-		physicsSystem.process();
 		input.process();
+		mEM.assignEntities();
+		physicsSystem.process();
 		actionManager.process();
 
 		if (isRotating) {
@@ -396,9 +461,42 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 			scriptingSystem.process();
 		}
 		counter++;
-		mEM.assignEntities();
+
 		sceneManager.update();
 		camera.setPostion(pcSpaceShip.x, pcSpaceShip.y);
+
+		for (Entity bullet : activeBullets) {
+
+			PositionComponent pcBullet = (PositionComponent)bullet.mComponents[0];
+			PhysicsComponent fC = (PhysicsComponent)bullet.mComponents[4];
+			float dist = (float)Math.sqrt((pcBullet.x - pcSpaceShip.x) * (pcBullet.x - pcSpaceShip.x) + (pcBullet.y - pcSpaceShip.y)
+				* (pcBullet.y - pcSpaceShip.y));
+
+			if (dist > 2000) {
+				bodiesToRemove.add(fC.getBody());
+				mEM.removeEntity(bullet.mId);
+			}
+
+		}
+		for (Body body : bodiesToRemove) {
+			// physicsSystem.getWorld().destroyBody(body);
+			activeBullets.remove(body.getUserData());
+			mEM.removeEntity(((Entity)body.getUserData()).mId);
+		}
+		bodiesToRemove.clear();
+
+		for (int i = 0; i < explosions.getCount(); i++) {
+
+			AnimationComponent ac = (AnimationComponent)explosions.get(i).mComponents[3];
+			if (!ac.isPlaying) {
+				mEM.removeEntity(explosions.get(i).mId);
+				explosions.remove(i);
+				i--;
+			}
+
+		}
+
+		mEM.assignEntities();
 	}
 
 	@Override
@@ -529,6 +627,15 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		if (isButtonClicked(controls[0], x, y)) {
 			DebugLog.d("Controls", "clicked");
 			laserSfx.play(1f);
+			Vector2 target = new Vector2(1, 0);
+
+			float angle = fcSpaceShip.getBody().getAngle();
+			float X = (float)(target.x * Math.cos(angle) - target.y * Math.sin(angle));
+			float Y = (float)(target.y * Math.cos(angle) + target.x * Math.sin(angle));
+
+			// fcSpaceShip.getBody().applyForce(new Vector2(X, Y), fcSpaceShip.getBody().getPosition());
+
+			createBullet(pcSpaceShip.x, pcSpaceShip.y, new Vector2(X, Y));
 		}
 		if (isButtonClicked(controls[2], x, y)) {
 			isAccelerating = true;

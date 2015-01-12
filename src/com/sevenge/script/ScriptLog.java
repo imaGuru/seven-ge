@@ -13,6 +13,7 @@ class ScriptLog implements NamedJavaFunction {
 		String msg = luaState.checkString(2);
 		String TAG = luaState.checkString(1);
 		DebugLog.d(TAG, msg);
+		luaState.pop(2);
 		return 0;
 	}
 

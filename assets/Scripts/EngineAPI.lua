@@ -36,16 +36,41 @@ end
 Camera = {}
 Camera.__index = Camera
 
-function Camera.setPosition(x,y)
-  Camera.x, Camera.y = SevenGE.setCameraPosition(x,y)
+function Camera.create()
+  local camera = {}
+  camera.x = 0
+  camera.y = 0
+  camera.rotation = 0
+  camera.zoom = 1
+  setmetatable(camera,Camera)
+  return camera
 end
 
-function Camera.setRotation(angle)
-  Camera.rotation = SevenGE.setCameraRotation(angle)
+function Camera.getCamera()
+  local camera = {}
+  camera.x, camera.y, camera.zoom, camera.rotation = SevenGE.getCamera()
+  setmetatable(camera,Camera)
+  return camera
 end
 
-function Camera.setZoom(zoom)
-  Camera.zoom = SevenGE.setCameraZoom(zoom)
+function Camera:refresh()
+  self.x, self.y, self.zoom, self.rotation = SevenGE.getCamera()
+end
+
+function Camera:setPosition(x,y)
+  self.x = x 
+  self.y = y 
+  SevenGE.setCameraPosition(x,y)
+end
+
+function Camera:setRotation(angle)
+  self.rotation = angle
+  SevenGE.setCameraRotation(angle)
+end
+
+function Camera:setZoom(zoom)
+  self.zoom = zoom
+  SevenGE.setCameraZoom(zoom)
 end
 
 Audio = {}
@@ -55,20 +80,13 @@ function Audio.setVolume(volume)
    SevenGE.setAudioVolume(volume)
 end
 
-function Audio.setMusicLooping(loop)
-   SevenGE.setMusicLooping(loop)
-end
-
 function Audio.playSound(sound)
    SevenGE.playSound(sound)
 end
 
 function Audio.playMusic(sound)
-   Audio.currentTrack = SevenGE.playSound(sound)
+   SevenGE.playMusic(sound)
 end
 
-function Audio.pause(sound)
-   SevenGE.playSound(sound)
-end
 
 SevenGE.log("SCRIPTS","EngineAPI parsed ")

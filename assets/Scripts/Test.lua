@@ -5,7 +5,7 @@ runProcess(function ()
     entity = Entity.create()
     entity:addComponent(0,{x=-100,y=-100,rotation=45})
     entity:addComponent(1,{scale=2,textureRegion="Hull4.png"})
-    entity:addComponent(4,{density=50,friction=0.1,restitution=0.15});
+    --entity:addComponent(4,{density=50,friction=0.1,restitution=0.15});
     SevenGE.log("SCRIPTS","Trying to create entity")
     EntityManager.create(entity)
     SevenGE.log("SCRIPTS","Created entity with id " .. entity.id)

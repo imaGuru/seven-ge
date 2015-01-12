@@ -45,6 +45,11 @@
 			"id":"explosion2",
 			"type":"sound",
 			"path":"Music/explosion2.mp3"
+		},
+		{
+			"id":"podbaydoors",
+			"type":"music",
+			"path":"Music/podbaydoors.mp3"
 		}
 		
 		],
@@ -150,11 +155,11 @@
 			"path":"Textures/explosion5.png"
 		},
 		{
-			"id":"motherShip0"
+			"id":"motherShip0",
 			"path":"Textures/motherShip0.png"
 		},
 		{
-			"id":"motherShip1"
+			"id":"motherShip1",
 			"path":"Textures/motherShip1.png"
 		}
 		],
@@ -228,12 +233,12 @@
 			"path":"Textures/explosion5.pkg"
 		},
 		{
-			"id":"motherShip0"
-			"path":"Textures/motherShip0.png"
+			"id":"motherShip0",
+			"path":"Textures/motherShip0.pkg"
 		},
 		{
-			"id":"motherShip1"
-			"path":"Textures/motherShip1.png"
+			"id":"motherShip1",
+			"path":"Textures/motherShip1.pkg"
 		}
 
 		]

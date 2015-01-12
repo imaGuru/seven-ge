@@ -14,6 +14,7 @@ import com.sevenge.ecs.PhysicsSystem;
 import com.sevenge.ecs.PositionComponent;
 import com.sevenge.ecs.SpriteComponent;
 import com.sevenge.graphics.TextureRegion;
+import com.sevenge.utils.DebugLog;
 
 public class CreateEntity implements NamedJavaFunction {
 	EngineHandles engine;
@@ -28,7 +29,7 @@ public class CreateEntity implements NamedJavaFunction {
 		luaState.pushNil();
 		float x = 0, y = 0, rotation = 0, radius = 0, scale = 1;
 		while (luaState.next(-2)) {
-			int position = luaState.checkInteger(-2);
+			int position = luaState.checkInteger(-2) - 1;
 			switch (position) {
 			case 0:
 				PositionComponent pc = new PositionComponent();
@@ -76,12 +77,15 @@ public class CreateEntity implements NamedJavaFunction {
 				luaState.pushNil();
 				luaState.next(-2);
 				fixtureDef.density = (float)luaState.checkNumber(-1);
+				DebugLog.d("SCRIPTS", "" + fixtureDef.density);
 				luaState.pop(1);
 				luaState.next(-2);
 				fixtureDef.friction = (float)luaState.checkNumber(-1);
+				DebugLog.d("SCRIPTS", "" + fixtureDef.friction);
 				luaState.pop(1);
 				luaState.next(-2);
 				fixtureDef.restitution = (float)luaState.checkNumber(-1);
+				DebugLog.d("SCRIPTS", "" + fixtureDef.restitution);
 				luaState.pop(1);
 				luaState.next(-2);
 				body.createFixture(fixtureDef);

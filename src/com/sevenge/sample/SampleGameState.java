@@ -309,12 +309,6 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		mEM.registerSystem(rendererSystem);
 		mEM.registerSystem(animationSystem);
 		mEM.registerSystem(physicsSystem);
-
-		EngineHandles eh = new EngineHandles();
-		eh.EM = mEM;
-		eh.ps = physicsSystem;
-		scriptingSystem = new ScriptingEngine(eh);
-		SevenGE.attachScriptingEngineToServer(scriptingSystem);
 	}
 
 	private void createCamera () {
@@ -324,6 +318,12 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		camera.setRotation(0.0f);
 		camera.setZoom(1.1f);
 		rendererSystem.setCamera(camera);
+		EngineHandles eh = new EngineHandles();
+		eh.EM = mEM;
+		eh.ps = physicsSystem;
+		eh.camera = camera;
+		scriptingSystem = new ScriptingEngine(eh);
+		SevenGE.attachScriptingEngineToServer(scriptingSystem);
 	}
 
 	private void generateRandomPlanets () {
@@ -736,7 +736,6 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	public boolean onScale (float currentSpan) {
 		if (!isCameraFollowingPlayer) {
 			float scale = lastScale * firstSpan / currentSpan;
-			// DebugLog.d(TAG, "lastscale " + lastScale + " current " + currentSpan / firstSpan + " result " + scale);
 			camera.setZoom(Math.min(5.0f, Math.max(0.1f, scale)));
 		}
 		return true;

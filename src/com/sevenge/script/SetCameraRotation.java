@@ -4,22 +4,23 @@ package com.sevenge.script;
 import com.naef.jnlua.LuaState;
 import com.naef.jnlua.NamedJavaFunction;
 
-public class RemoveEntity implements NamedJavaFunction {
+public class SetCameraRotation implements NamedJavaFunction {
 	EngineHandles engine;
 
-	public RemoveEntity (EngineHandles engine) {
-		this.engine = engine;
+	public SetCameraRotation (EngineHandles eh) {
+		engine = eh;
 	}
 
 	@Override
 	public int invoke (LuaState luaState) {
-		engine.EM.removeEntity(luaState.checkInteger(1));
+		engine.camera.setRotation((float)luaState.checkNumber(-1));
 		luaState.pop(1);
 		return 0;
 	}
 
 	@Override
 	public String getName () {
-		return "removeEntity";
+		return "setCameraRotation";
 	}
+
 }

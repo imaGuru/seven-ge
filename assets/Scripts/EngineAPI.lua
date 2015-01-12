@@ -29,6 +29,10 @@ function EntityManager.remove(entity)
   SevenGE.removeEntity(entity.id)
 end
 
+function EntityManager.removeByID(id)
+  SevenGE.removeEntity(id)
+end
+
 function EntityManager.getEntity(id)
   SevenGE.getEntity(id)
 end

@@ -7,6 +7,7 @@ import com.sevenge.graphics.Sprite;
 import com.sevenge.graphics.SpriteBatch;
 import com.sevenge.utils.FixedSizeArray;
 
+/** Class responsible for holding layers */
 public class Layer {
 	public final int id;
 	public final float parallaxFactor;

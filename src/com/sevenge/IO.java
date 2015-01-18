@@ -12,7 +12,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
-/** Utility class providing easy execution of common io task in android file system such as creating moving renaming and opening
+/** Utility class providing easy execution of common IO task in android file system such as creating moving renaming and opening
  * files */
 public class IO {
 	private static Context context = null;
@@ -131,12 +131,17 @@ public class IO {
 		}
 	}
 
+	/** Lists files from the specified root path
+	 * @param rootPath directory to scan
+	 * @return array with file handles */
 	public static File[] getFiles (String rootPath) {
 		File f = new File(rootPath);
 		File files[] = f.listFiles();
 		return files;
 	}
 
+	/** Deletes file at the given location
+	 * @param filePath path to file */
 	public static void deleteFile (String filePath) {
 		File file = new File(filePath);
 		file.delete();

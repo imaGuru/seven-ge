@@ -1,8 +1,6 @@
 
-package com.sevenge.sample;
+package com.sevenge.ecs;
 
-import com.sevenge.ecs.Entity;
-import com.sevenge.ecs.PositionComponent;
 import java.math.*;
 
 public class SceneManager {

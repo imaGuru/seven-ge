@@ -51,6 +51,9 @@ public class TextureUtils {
 		return new Texture(textureID[0], bitmap.getWidth(), bitmap.getHeight());
 	}
 
+	/** Creates a new OpenGL texture from given bitmap
+	 * @param bitmap
+	 * @return */
 	public static Texture createTexture (Bitmap bitmap) {
 		int[] textureID = new int[1];
 		glGenTextures(1, textureID, 0);

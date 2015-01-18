@@ -1,11 +1,15 @@
 
-package com.sevenge;
+package com.sevenge.sample;
 
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
+import com.sevenge.R;
+import com.sevenge.SevenGE;
+import com.sevenge.R.id;
+import com.sevenge.R.layout;
 import com.sevenge.utils.DebugLog;
 
 /** Class responsible for setting up and running the game engine It contains framelimited game loop and necessary handles for

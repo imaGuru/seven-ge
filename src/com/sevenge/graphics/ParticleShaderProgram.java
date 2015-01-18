@@ -18,6 +18,9 @@ public class ParticleShaderProgram {
 	public final int aParticleStartTimeLocation;
 	public final int mGlID;
 
+	/** Creates a shader program with specified shaders and retrives attribute locations
+	 * @param vs vertex shader object suitable for particle rendering
+	 * @param fs fragment shader object suitable for particle rendering */
 	public ParticleShaderProgram (int vs, int fs) {
 		mGlID = ShaderUtils.linkShaderProgram(vs, fs);
 		// Retrieve uniform locations for the shader program.
@@ -30,6 +33,9 @@ public class ParticleShaderProgram {
 		aParticleStartTimeLocation = glGetAttribLocation(mGlID, "a_ParticleStartTime");
 	}
 
+	/** Set uniforms for shader program
+	 * @param matrix location matrix
+	 * @param elapsedTime time since the start of the particle system in seconds */
 	public void setUniforms (float[] matrix, float elapsedTime) {
 		glUniformMatrix4fv(uMatrixLocation, 1, false, matrix, 0);
 		glUniform1f(uTimeLocation, elapsedTime);

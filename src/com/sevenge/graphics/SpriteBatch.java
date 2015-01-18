@@ -14,6 +14,8 @@ import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glDrawElements;
 import static android.opengl.GLES20.glUseProgram;
 
+/** Holds sprite data in VRAM using VBO and IBO. Very fast for static sprites as no bandwidth is wasted on transferring the same
+ * data to GPU RAM */
 public class SpriteBatch {
 
 	private static final short INDICES_PER_SPRITE = 6;
@@ -31,6 +33,9 @@ public class SpriteBatch {
 	private final float[] mProjectionMatrix;
 	private final float[] mSpriteData;
 
+	/** Creates a new SpriteBatch of the given size
+	 * @param size maximum number of sprites
+	 * @param type VBO type (GL_STATIC_DRAW, GL_STREAM_DRAW, GL_DYNAMIC_DRAW) */
 	public SpriteBatch (int size, int type) {
 		mVertexBuffer = new VertexBuffer(size * 16, type);
 		shader = ShaderUtils.TEXTURE_SHADER;
@@ -50,6 +55,9 @@ public class SpriteBatch {
 		mIndexBuffer = new IndexBuffer(indices);
 	}
 
+	/** Add a sprite to this batch. Sprite's texture must match this SpriteBatch's texture or else a runtime error is thrown. If
+	 * this is the first sprite added to the batch the textureID is fixed to the sprite's textureID
+	 * @param sprite to be included in this batch */
 	public void addSprite (Sprite sprite) {
 		if (mTextureID == 0) mTextureID = sprite.texture;
 		if (mTextureID != sprite.texture) throw new RuntimeException("Adding sprite with different texture is forbidden!");
@@ -58,6 +66,15 @@ public class SpriteBatch {
 		mSpriteCount++;
 	}
 
+	/** Creates and adds a sprite with the specified textureRegion. TextureRegion's texture must match this SpriteBatch's texture or
+	 * else a runtime error is thrown. If this is the first sprite added to the batch the textureID is fixed to the sprite's
+	 * textureID
+	 * @param x position of the sprite
+	 * @param y position of the sprite
+	 * @param rotation angle in degrees
+	 * @param scaleX scale in x
+	 * @param scaleY scale in y
+	 * @param sprite textureRegion for this sprite */
 	public void addSprite (float x, float y, float rotation, float scaleX, float scaleY, TextureRegion sprite) {
 		if (mTextureID == 0) mTextureID = sprite.texture;
 		if (mTextureID != sprite.texture) throw new RuntimeException("Adding sprite with different texture is forbidden!");
@@ -128,12 +145,23 @@ public class SpriteBatch {
 		mSpriteCount++;
 	}
 
+	/** Updates sprite existing in the batch at index with new data
+	 * @param index of the sprite to update
+	 * @param sprite new data */
 	public void updateSprite (int index, Sprite sprite) {
 		if (index >= mSpriteCount) throw new RuntimeException("Cannot modify a sprite that doesnt exist");
 		mVertexBuffer.put(sprite.getVertices(), 16);
 		mVertexBuffer.upload(index * 16);
 	}
 
+	/** Updates sprite existing in the batch at index with new data
+	 * @param index of the sprite to update
+	 * @param x position of the sprite
+	 * @param y position of the sprite
+	 * @param rotation angle in degrees
+	 * @param scaleX scale in x
+	 * @param scaleY scale in y
+	 * @param sprite textureRegion for this sprite */
 	public void updateSprite (int index, float x, float y, float rotation, float scaleX, float scaleY, TextureRegion sprite) {
 		if (index >= mSpriteCount) throw new RuntimeException("Cannot modify a sprite that doesnt exist");
 		int offset = index * 16;
@@ -204,10 +232,13 @@ public class SpriteBatch {
 		mVertexBuffer.upload(offset);
 	}
 
+	/** Sets the projection matrix for this batch
+	 * @param matrix 16 float array with projection matrix */
 	public void setProjection (float[] matrix) {
 		System.arraycopy(matrix, 0, this.mProjectionMatrix, 0, 16);
 	}
 
+	/** Draws the batch */
 	public void draw () {
 		if (mUploadedSprites != mSpriteCount) {
 			if (mUploadedSprites == 0) {

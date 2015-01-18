@@ -34,6 +34,10 @@ public class VertexArray {
 		mActualSize += length;
 	}
 
+	/** Put data at the start position
+	 * @param vertexData data to input
+	 * @param start index to put data at
+	 * @param length of the data */
 	public void put (float[] vertexData, int start, int length) {
 		mFloatBuffer.position(start);
 		mFloatBuffer.put(vertexData, start, length);
@@ -41,6 +45,8 @@ public class VertexArray {
 		if (size > mActualSize) mActualSize = size;
 	}
 
+	/** Returns the number of floats stored by this array
+	 * @return number of floats held by this VAO */
 	public int size () {
 		return mActualSize;
 	}

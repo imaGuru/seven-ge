@@ -1,24 +1,8 @@
 {
 	"assets": [
-		{
-			"key" ="shader"
-		},
-		{
-			"key" ="program"
-		},
-		
-		{
-			"key" ="texture"
-		},
-		{
-			"key" ="spriteSheet"
-		},
-		
-		
-		
-		{
-			"key" ="audio"
-		}
+		{"key" ="texture"},
+		{"key" ="spriteSheet"},	
+		{"key" ="audio"}
 		],
 	"audio": [
 		{
@@ -53,34 +37,6 @@
 		}
 		
 		],
-
-	"shader": [
-		{
-			"id":"shader1",
-			"type":"vertex",
-			"path":"Shaders/texture_vertex_shader.glsl"
-		},
-		{
-			"id":"shader2",
-			"type":"fragment",
-			"path":"Shaders/texture_fragment_shader.glsl"
-		},
-		{
-			"id":"shader3",
-			"type":"vertex",
-			"path":"Shaders/simple_vertex_shader.glsl"
-		},
-		{
-			"id":"shader4",
-			"type":"fragment",
-			"path":"Shaders/simple_fragment_shader.glsl"
-		}],
-	"program": [
-		{
-			"id":"spriteShader",
-			"vertexShader":"shader1",
-			"fragmentShader":"shader2"
-		}],
 	"texture": [
 		{ 
 			"id":"dust0",
@@ -239,7 +195,5 @@
 		{
 			"id":"motherShip1",
 			"path":"Textures/motherShip1.pkg"
-		}
-
-		]
+		}]
 }

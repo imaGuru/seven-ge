@@ -25,37 +25,36 @@ import com.sevenge.input.Input;
 import com.sevenge.sample.SampleGameState;
 import com.sevenge.script.ScriptingEngine;
 import com.sevenge.utils.DebugLog;
+import com.sevenge.utils.WebConsole;
 
-import fi.iki.elonen.HelloServer;
-
-/** Class exposing game engine subsystems anywhere in the code. */
+/** Main game engine class. Initializes all engine subsystems and stores its settings. */
 public class SevenGE implements Renderer {
 	private static final String TAG = "GameEngine";
 	public static long FRAME_TIME = 33;
 
-	enum GLGameState {
+	private enum GLGameState {
 		Initialized, Running, Paused, Finished, Idle
 	}
 
-	private GLGameState state;
-	private Object stateChanged = new Object();
-
-	private static Input input;
-	private static Audio audio;
-	private static AssetManager assetManager;
-	private static GameStateManager stateManager;
-	public static float fps;
+	private GLGameState mState;
+	private static Input sInput;
+	private static Audio sAudio;
+	private static AssetManager sAssetManager;
+	private static GameStateManager mGameStateManager;
 	private GLSurfaceView mGLSurfaceView;
 	private Activity mActivity;
-	private static HelloServer server;
+	private static WebConsole sServer;
 
 	private long mStartTime = 0;
 	private long mLastTime = 0;
 	private long mAccum = 0;
 
-	private static int width;
-	private static int height;
+	private static int sWidth;
+	private static int sHeight;
 
+	/** Sets up game engine subsystems and configures given glSurface for rendering OpenGL ES 2.0
+	 * @param activity activity displaying the GLSurface
+	 * @param glSurfaceView GLSurface to be used for rendering */
 	public SevenGE (Activity activity, GLSurfaceView glSurfaceView) {
 		final ActivityManager activityManager = (ActivityManager)activity.getSystemService(Context.ACTIVITY_SERVICE);
 		final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
@@ -65,15 +64,15 @@ public class SevenGE implements Renderer {
 					.contains("Android SDK built for x86")));
 
 		IO.initialize(activity);
-		SevenGE.input = new Input(activity);
-		SevenGE.audio = new Audio(activity);
-		SevenGE.assetManager = new AssetManager();
-		SevenGE.stateManager = new GameStateManager();
+		SevenGE.sInput = new Input(activity);
+		SevenGE.sAudio = new Audio(activity);
+		SevenGE.sAssetManager = new AssetManager();
+		SevenGE.mGameStateManager = new GameStateManager();
 		mActivity = activity;
 		mGLSurfaceView = glSurfaceView;
-		server = new HelloServer(activity);
+		sServer = new WebConsole(activity);
 		try {
-			server.start();
+			sServer.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -84,24 +83,25 @@ public class SevenGE implements Renderer {
 			mGLSurfaceView.setPreserveEGLContextOnPause(true);
 			mGLSurfaceView.setRenderer(this);
 			mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-			mGLSurfaceView.setOnTouchListener(SevenGE.input);
-			state = GLGameState.Initialized;
+			mGLSurfaceView.setOnTouchListener(SevenGE.sInput);
+			mState = GLGameState.Initialized;
 		} else
-			state = GLGameState.Finished;
+			mState = GLGameState.Finished;
 	}
 
+	/** Pauses the game engine */
 	public void onPause () {
-		synchronized (stateChanged) {
+		synchronized (this) {
 			if (mActivity.isFinishing()) {
-				state = GLGameState.Finished;
+				mState = GLGameState.Finished;
 				DebugLog.d(TAG, "Finished");
 			} else {
-				state = GLGameState.Paused;
+				mState = GLGameState.Paused;
 				DebugLog.d(TAG, "Paused");
 			}
 			while (true) {
 				try {
-					stateChanged.wait();
+					wait();
 					break;
 				} catch (InterruptedException e) {
 				}
@@ -110,108 +110,118 @@ public class SevenGE implements Renderer {
 		mGLSurfaceView.onPause();
 	}
 
+	/** Resumes running of the engine */
 	public void onResume () {
 		mGLSurfaceView.onResume();
 	}
 
-	/** Called continuously by the glsurface. Implements the frame limited game loop Allows for extension by user by creating a
-	 * custom state which is updated and drawn every frame */
+	/** Called continuously by the GLSurface. Implements the frame limited game loop. Executes update and draw calls of the
+	 * currently selected GameState */
 	@Override
 	public void onDrawFrame (GL10 gl) {
 		GLGameState state = null;
-		synchronized (stateChanged) {
-			state = this.state;
+		synchronized (this) {
+			state = this.mState;
 		}
 		if (state == GLGameState.Running) {
 
 			mStartTime = SystemClock.uptimeMillis();
 			long deltaTime = mStartTime - mLastTime;
-			fps = 1.0f / deltaTime * 1000;
 			mLastTime = mStartTime;
 			if (deltaTime > 250) deltaTime = 250;
 
 			mAccum += deltaTime;
 			while (mAccum >= FRAME_TIME) {
-				SevenGE.stateManager.update();
+				SevenGE.mGameStateManager.update();
 				mAccum -= FRAME_TIME;
 			}
 			float interpolationAlpha = 1.0f * mAccum / FRAME_TIME;
-			SevenGE.stateManager.draw(interpolationAlpha);
+			SevenGE.mGameStateManager.draw(interpolationAlpha);
 
 		} else if (state == GLGameState.Paused) {
-			SevenGE.stateManager.pause();
-			synchronized (stateChanged) {
-				this.state = GLGameState.Idle;
+			SevenGE.mGameStateManager.pause();
+			synchronized (this) {
+				this.mState = GLGameState.Idle;
 				DebugLog.d(TAG, "Idle");
-				stateChanged.notifyAll();
+				notifyAll();
 			}
 		} else if (state == GLGameState.Finished) {
-			SevenGE.stateManager.pause();
-			SevenGE.stateManager.dispose();
+			SevenGE.mGameStateManager.pause();
+			SevenGE.mGameStateManager.dispose();
 
-			synchronized (stateChanged) {
-				this.state = GLGameState.Idle;
+			synchronized (this) {
+				this.mState = GLGameState.Idle;
 				DebugLog.d(TAG, "Idle");
-				stateChanged.notifyAll();
+				notifyAll();
 			}
 		}
 
 	}
 
-	/** Handles setup and changes to the size of the glsurface */
+	/** Handles setup and changes to the size of the GLSurface */
 	@Override
 	public void onSurfaceChanged (GL10 gl, int width, int height) {
 
-		this.width = width;
-		this.height = height;
+		SevenGE.sWidth = width;
+		SevenGE.sHeight = height;
 
 		DebugLog.d(TAG, "onSurfaceChanged");
-		// Double calls. fix this
-		// Also loading resources add load method to gamestate TODO
-		synchronized (stateChanged) {
-			// TODO gamestate manager
-			if (state == GLGameState.Initialized) SevenGE.stateManager.setCurrentState(new SampleGameState());
-			state = GLGameState.Running;
+		synchronized (this) {
+			if (mState == GLGameState.Initialized) SevenGE.mGameStateManager.setCurrentState(new SampleGameState());
+			mState = GLGameState.Running;
 			DebugLog.d(TAG, "Running");
-			SevenGE.stateManager.resume();
+			SevenGE.mGameStateManager.resume();
 		}
 		glViewport(0, 0, width, height);
 
 	}
 
-	/** Function required by glsurface. Not used */
+	/** Called each time GLSurface is created */
 	@Override
 	public void onSurfaceCreated (GL10 gl, EGLConfig config) {
 		DebugLog.d(TAG, "onSurfaceCreated");
 		glEnable(GL_CULL_FACE);
 	}
 
+	/** Retrieves game engine's AssetManager
+	 * @return AssetManager */
 	public static AssetManager getAssetManager () {
-		return assetManager;
+		return sAssetManager;
 	}
 
+	/** Retrieves game engine's Audio
+	 * @return Audio */
 	public static Audio getAudio () {
-		return audio;
+		return sAudio;
 	}
 
+	/** Retrieves game engine's Input
+	 * @return Input */
 	public static Input getInput () {
-		return input;
+		return sInput;
 	}
 
+	/** Retrieves game engine's GameStateManager
+	 * @return GameStateManager */
 	public static GameStateManager getStateManager () {
-		return stateManager;
+		return mGameStateManager;
 	}
 
+	/** Retrieves current GLSurface width
+	 * @return width of the surface */
 	public static int getWidth () {
-		return width;
+		return sWidth;
 	}
 
+	/** Retrieves current GLSurface height
+	 * @return height of the surface */
 	public static int getHeight () {
-		return height;
+		return sHeight;
 	}
 
+	/** Attaches scripting engine to webconsole */
 	public static void attachScriptingEngineToServer (ScriptingEngine scriptingEngine) {
-		server.setScriptingEngine(scriptingEngine);
+		sServer.setScriptingEngine(scriptingEngine);
 	}
 
 }

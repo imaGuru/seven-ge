@@ -23,6 +23,13 @@ public class FontUtils {
 	public final static int FONT_SIZE_MIN = 6; // Minumum Font Size (Pixels)
 	public final static int FONT_SIZE_MAX = 180; // Maximum Font Size (Pixels)
 
+	/** Loads specified font with the given size and padding
+	 * @param as AndroidAssetManager
+	 * @param ttfFont path to font asset
+	 * @param size font size
+	 * @param padX padding between letters
+	 * @param padY padding between letters
+	 * @return loaded font */
 	public static Font load (AssetManager as, String ttfFont, int size, int padX, int padY) {
 
 		float fontHeight; // Font Height (Actual; Pixels)
@@ -139,6 +146,10 @@ public class FontUtils {
 		return font;
 	}
 
+	/** Returns length of the rendered text with the given font
+	 * @param text
+	 * @param font
+	 * @return length of the text in pixels */
 	public static float getLength (String text, Font font) {
 		float len = 0.0f; // Working Length
 		int strLen = text.length(); // Get String Length (Characters)

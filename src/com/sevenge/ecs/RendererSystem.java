@@ -5,11 +5,7 @@ import static android.opengl.GLES20.GL_ONE;
 import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
 import static android.opengl.GLES20.glClearColor;
 
-import com.sevenge.assets.Font;
 import com.sevenge.graphics.Camera;
-import com.sevenge.graphics.PrimitiveRenderer;
-import com.sevenge.graphics.Sprite;
-import com.sevenge.graphics.SpriteBatch;
 import com.sevenge.graphics.SpriteBatcher;
 import com.sevenge.graphics.TextureRegion;
 
@@ -17,19 +13,13 @@ public class RendererSystem extends SubSystem {
 
 	private Camera mCamera;
 	private SpriteBatcher mSpriteBatcher;
-	private SpriteBatch mSpriteBatch;
-	private Font font;
-	private TextureRegion tex;
 	private float[] matrix = new float[16];
-	private PrimitiveRenderer mPrimitiveRenderer;
-	private Sprite sprite;
 
 	public RendererSystem (int size) {
 		super(SpriteComponent.MASK | PositionComponent.MASK, size);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		mEntities.setComparator(Entity.SortByLayerAndTexture);
 		mSpriteBatcher = new SpriteBatcher(size);
-		mPrimitiveRenderer = new PrimitiveRenderer(1000);
 	}
 
 	public void setCamera (Camera camera) {

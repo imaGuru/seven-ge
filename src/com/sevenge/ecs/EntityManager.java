@@ -31,6 +31,9 @@ public class EntityManager {
 		return newEntity;
 	}
 
+	/** Creates new entity with a Components array of a given size
+	 * @param maxComponents size of the Components Array
+	 * @return creted entity object */
 	public Entity createEntity (int maxComponents) {
 		Entity newEntity = new Entity(mAvailibleId, maxComponents);
 		mEntities.add(newEntity);
@@ -53,13 +56,14 @@ public class EntityManager {
 		return toRemove;
 	}
 
+	/** Removes all entities from the manager and systems */
 	public void clearEntities () {
 		mEntities.clear();
 		for (int j = 0; j < mSystemArrays.getCount(); j++)
 			mSystemArrays.get(j).mEntities.clear();
 	}
 
-	/** Register system for receving entities to process
+	/** Register system for receiving entities to process
 	 * @param system to add */
 	public void registerSystem (SubSystem system) {
 		mSystemArrays.add(system);

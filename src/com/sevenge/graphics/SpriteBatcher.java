@@ -19,7 +19,7 @@ import static android.opengl.GLES20.glUseProgram;
 
 import com.sevenge.assets.Font;
 
-/** Drawable batch of sprites using a single texture */
+/** Class enabling the user to efficiently draw sprites by batching OpenGL calls */
 public class SpriteBatcher {
 
 	/** Texture with sprites */
@@ -51,10 +51,8 @@ public class SpriteBatcher {
 	private static final short INDICES_PER_SPRITE = 6;
 	private static final int VERTICES_PER_SPRITE = 4;
 
-	/** Creates a new sprite batch
-	 * @param tex2D texture to be used
-	 * @param spriteShader shader to be used
-	 * @param size hint number of sprites */
+	/** Creates a new SpriteBatcher
+	 * @param maxSpriteCount maximum number of sprites in one batch call */
 	public SpriteBatcher (int maxSpriteCount) {
 		shader = ShaderUtils.TEXTURE_SHADER;
 		mSize = maxSpriteCount;
@@ -81,6 +79,7 @@ public class SpriteBatcher {
 		mIndexBuffer = new IndexBuffer(indices);
 	}
 
+	/** Begins this rendering. Sets OpenGL state for drawing sprites */
 	public void begin () {
 		glUseProgram(shader.mGlID);
 		shader.setTextureUniform(mTexture);
@@ -90,6 +89,7 @@ public class SpriteBatcher {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer.bufferId);
 	}
 
+	/** Draw the created batch using specified view projection matrix */
 	public void flush () {
 		mVertexArray.put(mSprites, mSpriteCount * VERTICES_PER_SPRITE
 			* (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT));
@@ -111,6 +111,7 @@ public class SpriteBatcher {
 		mVertexArray.clear();
 	}
 
+	/** Finishes this rendering, reverting OpenGL state changes */
 	public void end () {
 		if (mSpriteCount > 0) flush();
 		glDisableVertexAttribArray(shader.mAttributePositionLocation);
@@ -120,6 +121,7 @@ public class SpriteBatcher {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
+	/** Enables blending for the next batch. If there were any added sprites before this call the buffer is flushed */
 	public void enableBlending () {
 		if (mBlendingEnabled) return;
 		if (mSpriteCount > 0) flush();
@@ -127,6 +129,7 @@ public class SpriteBatcher {
 		mBlendingChanged = true;
 	}
 
+	/** Disables blending for the next batch. If there were any added sprites before this call the buffer is flushed */
 	public void disableBlending () {
 		if (!mBlendingEnabled) return;
 		if (mSpriteCount > 0) flush();
@@ -142,11 +145,20 @@ public class SpriteBatcher {
 		mBlendingChanged = true;
 	}
 
+	/** Sets the view projection matrix for the current batch
+	 * @param matrix with projection */
 	public void setProjection (float[] matrix) {
 		if (mSpriteCount > 0) flush();
 		System.arraycopy(matrix, 0, this.mProjectionMatrix, 0, 16);
 	}
 
+	/** Draws a new sprite with the given textureRegion.
+	 * @param x coordinate of the left bottom corner of this sprite
+	 * @param y coordinate of the left bottom corner of this sprite
+	 * @param rotation angle in degrees
+	 * @param scaleX scaling factor in x
+	 * @param scaleY scaling factor in y
+	 * @param sprite textureRegion to use for the sprite */
 	public void drawSprite (float x, float y, float rotation, float scaleX, float scaleY, TextureRegion sprite) {
 		if (mSpriteCount == mSize) flush();
 		if (mTexture == 0)
@@ -224,6 +236,8 @@ public class SpriteBatcher {
 		mSpriteCount++;
 	}
 
+	/** Draws the given sprite
+	 * @param sprite to draw */
 	public void drawSprite (Sprite sprite) {
 		if (mSpriteCount == mSize) flush();
 		if (mTexture == 0)
@@ -237,6 +251,11 @@ public class SpriteBatcher {
 		mSpriteCount++;
 	}
 
+	/** Draws a series of sprites representing text using the loaded font
+	 * @param text to render
+	 * @param x coordinate of the first letters left bottom corner
+	 * @param y coordinate of the first letters left bottom corner
+	 * @param font to draw the text with */
 	public void drawText (String text, float x, float y, Font font) {
 		float chrHeight = font.cellHeight * font.scaleY; // Calculate Scaled Character Height
 		float chrWidth = font.cellWidth * font.scaleX; // Calculate Scaled Character Width

@@ -27,6 +27,9 @@ public class TexturedParticleShaderProgram extends Asset {
 	public final int aParticleStartTimeLocation;
 	public final int mGlID;
 
+	/** Creates this shader program and sets shader locations
+	 * @param vs vertex shader glID
+	 * @param fs fragment shader glID */
 	public TexturedParticleShaderProgram (int vs, int fs) {
 		mGlID = ShaderUtils.linkShaderProgram(vs, fs);
 		// Retrieve uniform locations for the shader program.
@@ -41,6 +44,11 @@ public class TexturedParticleShaderProgram extends Asset {
 		aParticleStartTimeLocation = glGetAttribLocation(mGlID, "a_ParticleStartTime");
 	}
 
+	/** Sets the uniforms for this shaderprogram
+	 * @param matrix projection matrix
+	 * @param elapsedTime time since the start of the particle system
+	 * @param textureId texture to draw the point sprites with
+	 * @param gravityFactor not used */
 	public void setUniforms (float[] matrix, float elapsedTime, int textureId, float gravityFactor) {
 		glUniformMatrix4fv(uMatrixLocation, 1, false, matrix, 0);
 		glUniform1f(uTimeLocation, elapsedTime);

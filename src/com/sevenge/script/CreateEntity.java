@@ -59,10 +59,12 @@ public class CreateEntity implements NamedJavaFunction {
 				luaState.next(-2);
 				String textureRegion = luaState.checkString(-1);
 				sc.textureRegion = (TextureRegion)SevenGE.getAssetManager().getAsset(textureRegion);
-				radius = sc.textureRegion.height / 2 * scale;
-				luaState.pop(1);
-				luaState.next(-2);
-				e.addComponent(sc, position);
+				if (sc.textureRegion != null) {
+					radius = sc.textureRegion.height / 2 * scale;
+					luaState.pop(1);
+					luaState.next(-2);
+					e.addComponent(sc, position);
+				}
 				break;
 			case 4:
 				BodyDef bodyDef = new BodyDef();

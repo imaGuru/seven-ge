@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.sevenge.IO;
-import com.sevenge.utils.DebugLog;
 
 public class AssetManager {
 	private final String TAG = "AssetManager";
@@ -22,9 +21,9 @@ public class AssetManager {
 	private Map<String, Asset> assets = new HashMap<String, Asset>();
 	/** Holds asset loaders using type of loaded asset as key and asset as the value */
 	private Map<String, AssetLoader> loaders = new HashMap<String, AssetLoader>();
-	
+
 	private List<String> order = new ArrayList<String>();
-	
+
 	public AssetManager () {
 		loaders.put("assets", new OrderLoader(this));
 	}
@@ -32,31 +31,23 @@ public class AssetManager {
 	/** Reads the package file specified by the path and loads the specified assets
 	 * @param path leading to asset package file */
 	public void loadAssets (String path) {
-		/*
-		 * String content; try { content = IO.readToString(IO.openAsset(path)); JSONObject pkg = new JSONObject(content);
-		 * Iterator<?> keys = pkg.keys(); while (keys.hasNext()) { String key = (String)keys.next(); Log.d("ASSETMANAGER",
-		 * "Loading " + key); loaders.get(key).load(pkg.getJSONArray(key).toString()); // TODO handle missing loaders } System.gc();
-		 * } catch (JSONException e) { e.printStackTrace(); } catch (IOException e1) { // TODO Auto-generated catch block
-		 * e1.printStackTrace(); }
-		 */
 		String content;
 		try {
 			content = IO.readToString(IO.openAsset(path));
-			
+
 			JSONObject pkg = new JSONObject(content);
-			
+
 			AssetLoader al = loaders.get("assets");
-			
+
 			al.load(pkg.getJSONArray("assets").toString());
-		
+
 			for (String temp : order) {
-				
-				al= loaders.get(temp);
-				
+
+				al = loaders.get(temp);
+
 				al.load(pkg.getJSONArray(temp).toString());
 			}
-			
-			
+
 			System.gc();
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -97,10 +88,10 @@ public class AssetManager {
 			it.next().dispose();
 		assets.clear();
 	}
+
 	/** Add loader key to order list */
-	public void addLoaderToList(String key){
+	public void addLoaderToList (String key) {
 		order.add(key);
 	}
-	
-	
+
 }

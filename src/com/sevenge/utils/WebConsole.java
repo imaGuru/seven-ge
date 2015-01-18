@@ -1,5 +1,5 @@
 
-package fi.iki.elonen;
+package com.sevenge.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,14 +16,20 @@ import android.content.Context;
 import com.sevenge.IO;
 import com.sevenge.script.ScriptingEngine;
 
-public class HelloServer extends NanoHTTPD {
+import fi.iki.elonen.NanoHTTPD;
+import fi.iki.elonen.NanoHTTPD.IHTTPSession;
+import fi.iki.elonen.NanoHTTPD.Method;
+import fi.iki.elonen.NanoHTTPD.Response;
+import fi.iki.elonen.NanoHTTPD.ResponseException;
+
+public class WebConsole extends NanoHTTPD {
 
 	private ScriptingEngine scriptingEngine = null;
 	Context context;
 	private String commands[] = {"commands", "clear", "ls memorytype (internal, external, cache)",
 		"delete memorytype (internal, external, cache) filename"};
 
-	public HelloServer (Context context) {
+	public WebConsole (Context context) {
 		super(8080);
 		this.context = context;
 	}

@@ -37,6 +37,7 @@ public class VertexBuffer {
 		mFloatBuffer = ByteBuffer.allocateDirect(size * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
 	}
 
+	/** Should be called before garbage collection of this object to avoid memory leaks in VRAM */
 	public void dispose () {
 		glDeleteBuffers(1, buffers, 0);
 		mActualSize = 0;
@@ -50,12 +51,18 @@ public class VertexBuffer {
 		mActualSize += length;
 	}
 
+	/** Put data at the start position
+	 * @param vertexData data to input
+	 * @param start index to put data at
+	 * @param length of the data */
 	public void put (float[] vertexData, int start, int length) {
 		mFloatBuffer.position(mActualSize);
 		mFloatBuffer.put(vertexData, start, length);
 		mActualSize += length;
 	}
 
+	/** Uploads data to part of the VBO starting at start
+	 * @param start */
 	public void upload (int start) {
 		mFloatBuffer.position(0);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferId);
@@ -64,6 +71,7 @@ public class VertexBuffer {
 		mActualSize = 0;
 	}
 
+	/** Uploads data input to this buffer to VRAM */
 	public void upload () {
 		mFloatBuffer.position(0);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferId);
@@ -72,6 +80,8 @@ public class VertexBuffer {
 		mActualSize = 0;
 	}
 
+	/** Returns the number of floats stored by this array
+	 * @return number of floats held by this VBO */
 	public int size () {
 		return mActualSize;
 	}

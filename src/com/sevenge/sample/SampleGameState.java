@@ -31,11 +31,9 @@ import com.sevenge.GameState;
 import com.sevenge.SevenGE;
 import com.sevenge.assets.AssetManager;
 import com.sevenge.assets.AudioLoader;
-import com.sevenge.assets.ShaderLoader;
 import com.sevenge.assets.SpriteSheetFTLoader;
 import com.sevenge.assets.Texture;
 import com.sevenge.assets.TextureLoader;
-import com.sevenge.assets.TextureShaderProgramLoader;
 import com.sevenge.audio.Music;
 import com.sevenge.audio.Sound;
 import com.sevenge.ecs.AnimationComponent;
@@ -46,6 +44,7 @@ import com.sevenge.ecs.PhysicsComponent;
 import com.sevenge.ecs.PhysicsSystem;
 import com.sevenge.ecs.PositionComponent;
 import com.sevenge.ecs.RendererSystem;
+import com.sevenge.ecs.SceneManager;
 import com.sevenge.ecs.SpriteComponent;
 import com.sevenge.graphics.Camera;
 import com.sevenge.graphics.Emitter;
@@ -289,8 +288,6 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		assetManager.addLoader("spriteSheet", new SpriteSheetFTLoader(assetManager));
 		assetManager.addLoader("texture", new TextureLoader(assetManager));
-		assetManager.addLoader("program", new TextureShaderProgramLoader(assetManager));
-		assetManager.addLoader("shader", new ShaderLoader(assetManager));
 		assetManager.addLoader("audio", new AudioLoader(assetManager));
 		assetManager.loadAssets("package.pkg");
 

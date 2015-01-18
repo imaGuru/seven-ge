@@ -31,7 +31,7 @@ public final class TextureShaderProgram extends Asset {
 		mAttributeTextureCoordinatesLocation = glGetAttribLocation(mGlID, "a_TextureCoordinates");
 	}
 
-	/** Set texture and matrix to be used with the shader program
+	/** Set matrix to be used with the shader program
 	 * @param matrix
 	 * @param texture */
 	public void setMatrixUniform (float[] matrix) {
@@ -39,6 +39,8 @@ public final class TextureShaderProgram extends Asset {
 		glUniformMatrix4fv(mMatrixLocation, 1, false, matrix, 0);
 	}
 
+	/** Sets the texture uniform for this shader
+	 * @param texture glID */
 	public void setTextureUniform (int texture) {
 		glUniform1i(mTextureUnitLocation, 0);
 	}

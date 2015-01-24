@@ -256,19 +256,19 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 
 		Sprite sMoveButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight07.png"));
 		sMoveButton.setPosition(40, 40);
-		sMoveButton.setScale(1, 1);
+		sMoveButton.setScale(1.2f, 1.2f);
 
 		Sprite sAccelerateButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight00.png"));
 		sAccelerateButton.setPosition(SevenGE.getWidth() - 140, 40);
-		sAccelerateButton.setScale(1, 1);
+		sAccelerateButton.setScale(1.2f, 1.2f);
 
 		Sprite sFireButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight49.png"));
 		sFireButton.setPosition(SevenGE.getWidth() - 100, 160);
-		sFireButton.setScale(1, 1);
+		sFireButton.setScale(1.2f, 1.2f);
 
 		Sprite sCameraSwitchButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight48.png"));
 		sCameraSwitchButton.setPosition(SevenGE.getWidth() - 100, 300);
-		sCameraSwitchButton.setScale(1, 1);
+		sCameraSwitchButton.setScale(1.2f, 1.2f);
 
 		controls[0] = sFireButton;
 		controls[1] = sMoveButton;
@@ -402,7 +402,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 		eBullet.addComponent(fcBullet, 4);
 		eBullet.addComponent(scBullet, 1);
 
-		float angleRad = (float)Math.toRadians(spaceShipAngle);
+		float angleRad = angle;
 		fcBullet.getBody().setTransform(fcBullet.getBody().getPosition(), angleRad);
 		body.applyLinearImpulse(target.mul(2000), body.getPosition());
 
@@ -677,13 +677,13 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 				isCameraFollowingPlayer = false;
 				Sprite sCameraSwitchButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight45.png"));
 				sCameraSwitchButton.setPosition(SevenGE.getWidth() - 100, 300);
-				sCameraSwitchButton.setScale(1, 1);
+				sCameraSwitchButton.setScale(1.2f, 1.2f);
 				controls[3] = sCameraSwitchButton;
 			} else {
 				isCameraFollowingPlayer = true;
 				Sprite sCameraSwitchButton = new Sprite((TextureRegion)assetManager.getAsset("shadedLight48.png"));
 				sCameraSwitchButton.setPosition(SevenGE.getWidth() - 100, 300);
-				sCameraSwitchButton.setScale(1, 1);
+				sCameraSwitchButton.setScale(1.2f, 1.2f);
 				controls[3] = sCameraSwitchButton;
 			}
 			acceleratingPointer = pointer;

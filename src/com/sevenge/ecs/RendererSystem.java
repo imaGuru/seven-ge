@@ -8,7 +8,10 @@ import static android.opengl.GLES20.glClearColor;
 import com.sevenge.graphics.Camera;
 import com.sevenge.graphics.SpriteBatcher;
 import com.sevenge.graphics.TextureRegion;
-
+/**
+ * Render system is responsible for displaying entities with position component
+ * and sprite component on screen.
+ */
 public class RendererSystem extends SubSystem {
 
 	private Camera mCamera;

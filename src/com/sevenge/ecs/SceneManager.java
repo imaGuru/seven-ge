@@ -3,6 +3,9 @@ package com.sevenge.ecs;
 
 import java.math.*;
 
+/**
+ *SceneManager is class which is responsible for holding information about entities hierarchy.
+ */
 public class SceneManager {
 
 	private Entity root = new Entity();
@@ -10,13 +13,16 @@ public class SceneManager {
 	public Entity getRoot () {
 		return root;
 	}
-
+	
 	public void update () {
 
 		traverse(root);
 
 	}
-
+	/**
+	 * Go through all children of entity and update their relative position.
+	 * @param entity
+	 */
 	private void traverse (Entity entity) {
 
 		if (entity.isRelative) {

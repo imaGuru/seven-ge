@@ -2,7 +2,9 @@
 package com.sevenge.ecs;
 
 import com.sevenge.SevenGE;
-
+/**
+ *Animation system is responsible for calculating animation frames and durations of all frames. 
+ */
 public class AnimationSystem extends SubSystem {
 	private int i;
 

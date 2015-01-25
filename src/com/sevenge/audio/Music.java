@@ -8,7 +8,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 
 import com.sevenge.assets.Asset;
-
+/** Music class which manages the playback of audio files with the Android MediaPlayer**/
 public class Music extends Asset implements OnCompletionListener {
 	MediaPlayer mediaPlayer;
 	boolean isPrepared = false;
@@ -26,7 +26,10 @@ public class Music extends Asset implements OnCompletionListener {
 		}
 
 	}
-
+	
+	/**
+	 * Starts the playback
+	 */
 	public void play () {
 		if (mediaPlayer.isPlaying()) return;
 		try {
@@ -41,6 +44,9 @@ public class Music extends Asset implements OnCompletionListener {
 		}
 	}
 
+	/**
+	 * Stops the playback
+	 */
 	public void stop () {
 		mediaPlayer.stop();
 		synchronized (this) {
@@ -48,15 +54,24 @@ public class Music extends Asset implements OnCompletionListener {
 		}
 	}
 
+	/**
+	 * Pauses the playback
+	 */
 	public void pause () {
 		if (mediaPlayer.isPlaying()) mediaPlayer.pause();
 	}
 
+	/**
+	 * Sets playback mode to looping
+	 */
 	public void setLooping (boolean isLooping) {
 		mediaPlayer.setLooping(isLooping);
-
 	}
 
+	/**
+	 * Sets the volume
+	 * @param values from -1.0f to 1.0f
+	 */
 	public void setVolume (float volume) {
 		mediaPlayer.setVolume(volume, volume);
 	}

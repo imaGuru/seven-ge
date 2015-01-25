@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.sevenge.input.Input.Gesture;
-
+/** class responsible for intercepting and temporarily storing gesture events **/
 public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureListener implements OnGestureListener,
 	OnDoubleTapListener {
 

@@ -12,7 +12,8 @@ import android.view.View.OnTouchListener;
 
 import com.sevenge.utils.Pool;
 import com.sevenge.utils.Pool.PoolObjectFactory;
-
+/** Input class which is responsible for processing input events and calling the callbacks
+ *  of processors which have subscribed to receive them. **/
 public class Input implements OnTouchListener {
 
 	private static final int POOL_SIZE = 100;
@@ -69,7 +70,7 @@ public class Input implements OnTouchListener {
 		touchEventPool = new Pool<TouchEvent>(touchEventFactory, POOL_SIZE);
 		gesturePool = new Pool<Gesture>(gestureFactory, POOL_SIZE);
 	}
-
+	/** class representing a simple touch event**/
 	static class TouchEvent {
 		static final int TOUCH_DOWN = 0;
 		static final int TOUCH_UP = 1;
@@ -85,7 +86,7 @@ public class Input implements OnTouchListener {
 		int button;
 		int pointer;
 	}
-
+	/** class representing a gesture event**/
 	static class Gesture {
 		static final int TAP = 0;
 		static final int DOUBLETAP = 1;
@@ -118,37 +119,43 @@ public class Input implements OnTouchListener {
 		// }
 		return true;
 	}
-
+	/** returns the x coordinate for the first touch pointer **/
 	public int getX () {
 		synchronized (this) {
 			return touchX[0];
 		}
 	}
-
+	/** returns the y coordinate for the first touch pointer **/
 	public int getY () {
 		synchronized (this) {
 			return touchY[0];
 		}
 	}
-
+	/** returns the x coordinate for the touch pointer
+	 * @param pointer id **/
 	public int getX (int pointer) {
 		synchronized (this) {
 			return touchX[pointer];
 		}
 	}
-
+	/** returns the x coordinate for the touch pointer
+	 * @param pointer id **/
 	public int getY (int pointer) {
 		synchronized (this) {
 			return touchX[pointer];
 		}
 	}
-
+	/**
+	 * @param pointer id
+	 * @return true if the pointer with specified id is touching the screen, false otherwise **/
 	public boolean isTouched (int pointer) {
 		synchronized (this) {
 			return isPointerTouched[pointer];
 		}
 	}
-
+	/**
+	 * processes the input events and notifies listeners
+	 */
 	public void process () {
 
 		synchronized (this) {
@@ -180,7 +187,9 @@ public class Input implements OnTouchListener {
 		}
 
 	}
-
+	/**
+	 * processes intercepted touch events and notifies the processors
+	 */
 	private void processTouchEvents () {
 
 		if (!inputProcessors.isEmpty()) {
@@ -213,7 +222,9 @@ public class Input implements OnTouchListener {
 			}
 		}
 	}
-
+	/**
+	 * processes intercepted gesture events and notifies the processors
+	 */
 	private void processGestures () {
 
 		if (!gestureProcessors.isEmpty()) {
@@ -267,19 +278,19 @@ public class Input implements OnTouchListener {
 		}
 
 	}
-
+	/** adds the processor to the list of processors subscribing for gesture events **/
 	public void addGestureProcessor (GestureProcessor gestureProcessor) {
 		this.gestureProcessors.add(gestureProcessor);
 	}
-
+	/** adds the processor to the list of processors subscribing for input events **/
 	public void addInputProcessor (InputProcessor inputProcessor) {
 		this.inputProcessors.add(inputProcessor);
 	}
-
+	/** removes the processor from the list of processors subscribing for input events **/
 	public void removeGestureProcessor (GestureProcessor gestureProcessor) {
 		this.gestureProcessors.remove(gestureProcessor);
 	}
-
+	/** removes the processor from the list of processors subscribing for input events **/
 	public void removeInputProcessor (InputProcessor inputProcessor) {
 		this.inputProcessors.remove(inputProcessor);
 	}

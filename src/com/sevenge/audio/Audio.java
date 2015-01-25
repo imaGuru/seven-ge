@@ -8,7 +8,7 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
-
+/** Audio class which creates Music and Sound instances **/
 public class Audio {
 	AssetManager assets;
 	SoundPool soundPool;
@@ -22,7 +22,10 @@ public class Audio {
 		this.soundPool = new SoundPool(MAX_SIMULTANEOUS_SOUNDS, AudioManager.STREAM_MUSIC, 0);
 		this.activity = activity;
 	}
-
+	/**
+	 * Returns an instance of Music with the given filename 
+	 * @param filename
+	 */
 	public Music getMusic (String filename) {
 		try {
 			AssetFileDescriptor assetDescriptor = assets.openFd(filename);
@@ -32,7 +35,10 @@ public class Audio {
 			throw new RuntimeException("Couldn't load music '" + filename + "'");
 		}
 	}
-
+	/**
+	 * Returns an instance of Sound with the given filename 
+	 * @param filename
+	 */
 	public Sound getSound (String filename) {
 		try {
 			AssetFileDescriptor assetDescriptor = assets.openFd(filename);

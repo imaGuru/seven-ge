@@ -4,7 +4,7 @@ package com.sevenge.input;
 import android.view.MotionEvent;
 
 import com.sevenge.input.Input.TouchEvent;
-
+/** class responsible for intercepting and temporarily storing trouch events **/
 public class TouchHandler {
 
 	public void onTouchEvent (MotionEvent event, Input input) {

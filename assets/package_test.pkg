@@ -1,0 +1,11 @@
+{
+	"assets": [
+		{"key" ="audio"}
+		],
+	"audio": [
+		{
+			"id":"music1",
+			"type":"music",
+			"path":"Music/intro.mp3"
+		}]
+}

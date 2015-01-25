@@ -4,12 +4,18 @@ package com.sevenge.utils;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import com.sevenge.R;
+import com.sevenge.SevenGE;
+import com.sevenge.sample.SampleGameState;
+import com.sevenge.sample.TestState;
+
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
 public class UnitTestActivity extends Activity {
 	private GLSurfaceView surfaceView;
+	private SevenGE gameEngine;
 
 	public UnitTestActivity () {
 	}
@@ -18,12 +24,17 @@ public class UnitTestActivity extends Activity {
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		surfaceView = new GLSurfaceView(this);
-		surfaceView.setEGLContextClientVersion(2);
-		surfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-		// surfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-		surfaceView.setRenderer(new EmptyRenderer());
-		setContentView(surfaceView);
+		
+		setContentView(R.layout.activity_test);
+		surfaceView = (GLSurfaceView)findViewById(R.id.glSurfaceView);
+		gameEngine = new SevenGE(this, surfaceView, new SampleGameState());
+		
+//		surfaceView = new GLSurfaceView(this);
+//		surfaceView.setEGLContextClientVersion(2);
+//		surfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+//		// surfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+//		surfaceView.setRenderer(new EmptyRenderer());
+//		setContentView(surfaceView);
 	}
 
 	@Override

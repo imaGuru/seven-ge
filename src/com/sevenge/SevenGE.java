@@ -44,6 +44,7 @@ public class SevenGE implements Renderer {
 	private GLSurfaceView mGLSurfaceView;
 	private Activity mActivity;
 	private static WebConsole sServer;
+	private GameState mInitalGameState;
 
 	private long mStartTime = 0;
 	private long mLastTime = 0;
@@ -55,7 +56,7 @@ public class SevenGE implements Renderer {
 	/** Sets up game engine subsystems and configures given glSurface for rendering OpenGL ES 2.0
 	 * @param activity activity displaying the GLSurface
 	 * @param glSurfaceView GLSurface to be used for rendering */
-	public SevenGE (Activity activity, GLSurfaceView glSurfaceView) {
+	public SevenGE (Activity activity, GLSurfaceView glSurfaceView, GameState initalGameState) {
 		final ActivityManager activityManager = (ActivityManager)activity.getSystemService(Context.ACTIVITY_SERVICE);
 		final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
 		final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000
@@ -70,6 +71,7 @@ public class SevenGE implements Renderer {
 		SevenGE.mGameStateManager = new GameStateManager();
 		mActivity = activity;
 		mGLSurfaceView = glSurfaceView;
+		mInitalGameState = initalGameState;
 		sServer = new WebConsole(activity);
 		try {
 			sServer.start();
@@ -167,7 +169,7 @@ public class SevenGE implements Renderer {
 
 		DebugLog.d(TAG, "onSurfaceChanged");
 		synchronized (this) {
-			if (mState == GLGameState.Initialized) SevenGE.mGameStateManager.setCurrentState(new SampleGameState());
+			if (mState == GLGameState.Initialized) SevenGE.mGameStateManager.setCurrentState(mInitalGameState);
 			mState = GLGameState.Running;
 			DebugLog.d(TAG, "Running");
 			SevenGE.mGameStateManager.resume();

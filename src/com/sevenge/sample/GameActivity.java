@@ -26,7 +26,7 @@ public class GameActivity extends Activity {
 		DebugLog.d(TAG, "onCreate");
 		setContentView(R.layout.activity_main);
 		glSurfaceView = (GLSurfaceView)findViewById(R.id.glSurfaceView);
-		gameEngine = new SevenGE(this, glSurfaceView);
+		gameEngine = new SevenGE(this, glSurfaceView, new SampleGameState());
 	}
 
 	/** Handles pausing the game engine */

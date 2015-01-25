@@ -101,7 +101,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	private Vector3 position = new Vector3(0, 0, 0);;
 	private Vector3 direction = new Vector3(0, 0, 0);
 
-	SpriteBatcher mSpriteBatch = new SpriteBatcher(500);
+	SpriteBatcher mSpriteBatch; 
 
 	private float[] projectionMatrix = new float[16];
 	private FixedSizeArray<Layer> maplayers;
@@ -123,7 +123,7 @@ public class SampleGameState extends GameState implements InputProcessor, Gestur
 	@Override
 	public void load () {
 		globalStartTime = System.nanoTime();
-
+		mSpriteBatch = new SpriteBatcher(500);
 		actionManager = new ActionManager();
 		assetManager = SevenGE.getAssetManager();
 		registerInput();

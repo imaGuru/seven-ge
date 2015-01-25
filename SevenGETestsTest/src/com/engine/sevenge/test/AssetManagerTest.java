@@ -8,6 +8,9 @@ import com.sevenge.IO;
 import com.sevenge.SevenGE;
 import com.sevenge.assets.Asset;
 import com.sevenge.assets.AssetManager;
+import com.sevenge.assets.AudioLoader;
+import com.sevenge.assets.SpriteSheetFTLoader;
+import com.sevenge.assets.TextureLoader;
 import com.sevenge.audio.Audio;
 import com.sevenge.utils.UnitTestActivity;
 
@@ -30,37 +33,45 @@ public class AssetManagerTest extends ActivityUnitTestCase<UnitTestActivity> {
 		Intent intent = new Intent(getInstrumentation().getTargetContext(), UnitTestActivity.class);
 		startActivity(intent, null, null);
 		activity = getActivity();
-		SevenGE.audio = new Audio(activity);
-		IO.initialize(activity);
-		SevenGE.assetManager = new AssetManager();
+//		SevenGE.audio = new Audio(activity);
+		
+//		SevenGE.assetManager = new AssetManager();
+		
+//		SevenGE.getAssetManager().addLoader("spriteSheet", new SpriteSheetFTLoader(SevenGE.getAssetManager()));
+//		SevenGE.getAssetManager().addLoader("texture", new TextureLoader(SevenGE.getAssetManager()));
+//		SevenGE.getAssetManager().addLoader("audio", new AudioLoader(SevenGE.getAssetManager()));
+//		SevenGE.getAssetManager().loadAssets("package_test.pkg");
 
 	}
 
 	@Override
 	public void tearDown () {
-		SevenGE.assetManager = null;
+//		SevenGE.assetManager = null;
 	}
 
 	public void testGetNotExistingAsset () {
 		Asset asset = null;
-		asset = SevenGE.assetManager.getAsset("nonexistingasset");
+		asset = SevenGE.getAssetManager().getAsset("nonexistingasset");
 		assertNull(asset);
 	}
 
 	public void testLoadAssetAndGetAsset () {
 
 		Asset asset = null;
-		SevenGE.assetManager.loadAssets("sample.pkg");
-		asset = SevenGE.assetManager.getAsset("apple");
+		//SevenGE.getAssetManager().loadAssets("package.pkg");
+		IO.initialize(activity);
+		SevenGE.getAssetManager().addLoader("audio", new AudioLoader(SevenGE.getAssetManager()));
+		SevenGE.getAssetManager().loadAssets("package_test.pkg");
+		asset = SevenGE.getAssetManager().getAsset("music1");
 		assertNotNull(asset);
 	}
 
 	public void testClearAssetsTest () {
 
 		Asset asset = null;
-		SevenGE.assetManager.loadAssets("sample.pkg");
-		SevenGE.assetManager.clearAssets();
-		asset = SevenGE.assetManager.getAsset("apple");
+		//SevenGE.getAssetManager().loadAssets("package.pkg");
+		SevenGE.getAssetManager().clearAssets();
+		asset = SevenGE.getAssetManager().getAsset("music1");
 		assertNull(asset);
 	}
 }

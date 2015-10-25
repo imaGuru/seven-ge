@@ -1,10 +1,11 @@
-
 package com.sevenge;
-/** Action class which can be schedule for execution **/
+
+/** Represents an action which can be scheduled for execution **/
 public abstract class Action {
 
 	protected boolean finished = false;
 
-	abstract boolean execute ();
+	/** Executes the Action **/
+	abstract boolean execute();
 
 }

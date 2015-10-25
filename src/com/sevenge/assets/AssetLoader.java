@@ -1,7 +1,7 @@
 
 package com.sevenge.assets;
 
-/** Abstract class implemented by all asset loaders */
+/** Abstract class to be implemented by all asset loaders */
 public abstract class AssetLoader {
 
 	/** Injected assetManager reference for addition of the loaded asset */
@@ -12,6 +12,6 @@ public abstract class AssetLoader {
 	}
 
 	/** Handle loading from text
-	 * @param content string containing json description of the asset to be loaded */
+	 * @param content string containing a description of the asset to be loaded in json */
 	public abstract void load (String content);
 }

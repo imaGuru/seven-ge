@@ -12,8 +12,7 @@ import android.view.View.OnTouchListener;
 
 import com.sevenge.utils.Pool;
 import com.sevenge.utils.Pool.PoolObjectFactory;
-/** Input class which is responsible for processing input events and calling the callbacks
- *  of processors which have subscribed to receive them. **/
+/** Responsible for processing input events and notifying subscribers. **/
 public class Input implements OnTouchListener {
 
 	private static final int POOL_SIZE = 100;

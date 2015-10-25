@@ -11,7 +11,7 @@ import android.opengl.GLES20;
 
 import com.sevenge.IO;
 import com.sevenge.graphics.ShaderUtils;
-
+/** Loads Shader instances defined in JSON **/
 public class ShaderLoader extends AssetLoader {
 
 	public ShaderLoader (AssetManager as) {

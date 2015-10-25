@@ -6,7 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.sevenge.SevenGE;
-
+/** Loads Audio instances defined in JSON **/
 public class AudioLoader extends AssetLoader {
 
 	public AudioLoader (AssetManager as) {

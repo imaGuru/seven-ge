@@ -4,9 +4,10 @@ package com.sevenge.input;
 import android.view.MotionEvent;
 
 import com.sevenge.input.Input.TouchEvent;
-/** class responsible for intercepting and temporarily storing trouch events **/
+/** Responsible for intercepting and passing touch events to the Input instance **/
 public class TouchHandler {
 
+	/** Called when Android intercepts a MotionEvent and translates it into a TouchEvent **/
 	public void onTouchEvent (MotionEvent event, Input input) {
 
 		int action = event.getActionMasked();
@@ -68,28 +69,7 @@ public class TouchHandler {
 		}
 
 	}
-
-	private void logAction (int action, int pointer) {
-		String actionStr = "";
-		if (action == MotionEvent.ACTION_DOWN)
-			actionStr = "DOWN";
-		else if (action == MotionEvent.ACTION_POINTER_DOWN)
-			actionStr = "POINTER DOWN";
-		else if (action == MotionEvent.ACTION_UP)
-			actionStr = "UP";
-		else if (action == MotionEvent.ACTION_POINTER_UP)
-			actionStr = "POINTER UP";
-// else if (action == MotionEvent.ACTION_OUTSIDE)
-// actionStr = "OUTSIDE";
-		else if (action == MotionEvent.ACTION_CANCEL)
-			actionStr = "CANCEL";
-		else if (action == MotionEvent.ACTION_MOVE)
-			actionStr = "MOVE";
-		else
-			actionStr = "UNKNOWN";
-		// Log.d("TouchHandler", "action " + actionStr + ", Android pointer id: " + pointer);
-	}
-
+	/** Creates a TouchEvent instance and puts in the buffer **/
 	private void registerTouchEvent (Input input, int type, int x, int y, int deltaX, int deltaY, int pointer, int index,
 		long timeStamp) {
 		TouchEvent event = input.touchEventPool.newObject();
@@ -105,7 +85,6 @@ public class TouchHandler {
 		input.deltaX[index] = deltaX;
 		input.deltaY[index] = deltaY;
 		input.touchEventsBuffer.add(event);
-		// logAction(type, pointer);
 	}
 
 }

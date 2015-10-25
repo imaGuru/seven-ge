@@ -5,8 +5,7 @@ import java.util.Comparator;
 
 import com.sevenge.utils.FixedSizeArray;
 /**
- * SubSystem is abstract class based on which are created additional systems for example
- * PositionSystem, PhysicsSystem.
+ * Represents a System according to the ECS pattern.
  */
 public abstract class SubSystem {
 

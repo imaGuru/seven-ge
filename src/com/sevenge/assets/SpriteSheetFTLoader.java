@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import com.sevenge.IO;
 import com.sevenge.graphics.TextureRegion;
 import com.sevenge.utils.DebugLog;
-
+/** Loads SpriteSheetFTLoader instances defined in JSON **/
 public class SpriteSheetFTLoader extends AssetLoader {
 
 	public SpriteSheetFTLoader (AssetManager as) {

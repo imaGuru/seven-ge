@@ -3,7 +3,7 @@ package com.sevenge.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-/** Pool class which is used to avoid repetitive calls of garbage collector **/
+/** Pool class which is used to avoid repetitive calls of the garbage collector **/
 public class Pool<T> {
 	private final List<T> freeObjects;
 	private final PoolObjectFactory<T> factory;

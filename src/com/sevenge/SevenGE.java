@@ -14,10 +14,12 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
+import android.net.wifi.WifiManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Build;
 import android.os.SystemClock;
+import android.text.format.Formatter;
 
 import com.sevenge.assets.AssetManager;
 import com.sevenge.audio.Audio;
@@ -75,8 +77,10 @@ public class SevenGE implements Renderer {
 		sServer = new WebConsole(activity);
 		try {
 			sServer.start();
+			DebugLog.d("gowno", "started serwer");
 		} catch (IOException e) {
 			e.printStackTrace();
+			DebugLog.d("gowno", "server failed");
 		}
 
 		if (supportsEs2) {

@@ -3,7 +3,7 @@ package com.sevenge.assets;
 
 import com.sevenge.graphics.TextureRegion;
 
-/** Class holding information about font for drawing text in OpenGL */
+/** Font Asset implementation for drawing text in OpenGL */
 public class Font extends Asset {
 	public int fontPadX;
 	public int fontPadY;

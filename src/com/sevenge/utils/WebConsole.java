@@ -75,90 +75,126 @@ public class WebConsole extends NanoHTTPD {
 			return new NanoHTTPD.Response(msg);
 		}
 
-		String msg = "<html>\r\n"
-				+ "<script>\r\n"
-				+ "\r\n"
-				+ "window.onload = function() {\r\n"
-				+ "\r\n"
-				+ "    var form = document.getElementById('file-form');\r\n"
-				+ "    var fileSelect = document.getElementById('file-select');\r\n"
-				+ "    var uploadButton = document.getElementById('upload-button');\r\n"
-				+ "\r\n"
-				+ "    form.onsubmit = function(event) {\r\n"
-				+ "        event.preventDefault();\r\n"
-				+ "\r\n"
-				+ "        uploadButton.innerHTML = 'Uploading...';\r\n"
-				+ "\r\n"
-				+ "        var files = fileSelect.files;\r\n"
-				+ "\r\n"
-				+ "        var formData = new FormData();\r\n"
-				+ "\r\n"
-				+ "        for (var i = 0; i < files.length; i++) {\r\n"
-				+ "            var file = files[i];\r\n"
-				+ "\r\n"
-				+ "            formData.append('files[]', file, file.name);\r\n"
-				+ "        }\r\n"
-				+ "\r\n"
-				+ "        var filename = \"\";\r\n"
-				+ "\r\n"
-				+ "        formData.append(name, file, filename);\r\n"
-				+ "\r\n"
-				+ "        var xhr = new XMLHttpRequest();\r\n"
-				+ "\r\n"
-				+ "        xhr.open('POST', '', true);\r\n"
-				+ "\r\n"
-				+ "        xhr.onload = function() {\r\n"
-				+ "            if (xhr.status === 200) {\r\n"
-				+ "                uploadButton.innerHTML = 'Upload';\r\n"
-				+ "            } else {\r\n"
-				+ "                alert('An error occurred!');\r\n"
-				+ "            }\r\n"
-				+ "        };\r\n"
-				+ "\r\n"
-				+ "        xhr.send(formData);\r\n"
-				+ "\r\n"
-				+ "    }\r\n"
-				+ "\r\n"
-				+ "};\r\n"
-				+ "\r\n"
-				+ "function send_command(isScript) {\r\n"
-				+ "\r\n"
-				+ "    var xmlhttp;\r\n"
-				+ "\r\n"
-				+ "    xmlhttp = new XMLHttpRequest();\r\n"
-				+ "\r\n"
-				+ "    xmlhttp.onreadystatechange = function() {\r\n"
-				+ "        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {\r\n"
-				+ "        	if(xmlhttp.responseText != \"<span style='color:green;'>> clear</span><br>clear\"){\r\n"
-				+ "	            var div = document.createElement(\"div\");\r\n"
-				+ "	            div.innerHTML = xmlhttp.responseText;\r\n"
-				+ "	            document.getElementById(\"command_results\").appendChild(div);\r\n"
-				+ "        	}else{\r\n"
-				+ "        		document.getElementById(\"command_results\").innerHTML = \"\";\r\n"
-				+ "        	}\r\n"
-				+ "        }\r\n"
-				+ "    }\r\n"
-				+ "    var newvalue = encodeURIComponent(document.getElementById(\"value\").value);\r\n"
-				+ "    if(isScript){\r\n"
-				+ "        xmlhttp.open(\"GET\", \"script?value=\" + newvalue, true);\r\n"
-				+ "    }else {\r\n"
-				+ "        xmlhttp.open(\"GET\", \"command?value=\" + newvalue, true);\r\n"
-				+ "    }\r\n"
-				+ "    xmlhttp.send();\r\n"
-				+ "}\r\n"
-				+ "\r\n"
-				+ "</script>\r\n"
-				+ "<body>\r\n"
-				+ "	<h1>Hello, this is the seven-ge server</h1>\r\n"
-				+ "	<div id='command_results' style='overflow-y: scroll; height:300px;'></div>\r\n"
-				+ "	<textarea id='value' style='width:100%; height:200px;'></textarea> <br />\r\n"
-				+ "	<input type='button' value='submit as command' onclick='send_command(false)'>\r\n"
-				+ "    <input type='button' value='submit as script' onclick='send_command(true)'>\r\n"
-				+ "\r\n"
-				+ "		<form id=\"file-form\" action=\"\" method=\"POST\">\r\n"
-				+ "		<input type=\"file\" id=\"file-select\" name=\"files[]\" multiple/>\r\n"
-				+ "		<button type=\"submit\" id=\"upload-button\">Upload</button></form>\r\n"
-				+ "\r\n" + "</html>";
+		String msg = "<!DOCTYPE html>\r\n" + 
+				"<html>\r\n" + 
+				"<head>\r\n" + 
+				"    <script>\r\n" + 
+				"        window.onload = function() {\r\n" + 
+				"            var form = document.getElementById('file-form');\r\n" + 
+				"            var fileSelect = document.getElementById('file-select');\r\n" + 
+				"            var uploadButton = document.getElementById('upload-button');\r\n" + 
+				"            form.onsubmit = function(event) {\r\n" + 
+				"                event.preventDefault();\r\n" + 
+				"                uploadButton.innerHTML = 'Uploading...';\r\n" + 
+				"                var files = fileSelect.files;\r\n" + 
+				"                var formData = new FormData();\r\n" + 
+				"                for (var i = 0; i < files.length; i++) {\r\n" + 
+				"                    var file = files[i];\r\n" + 
+				"                    formData.append('files[]', file, file.name);\r\n" + 
+				"                }\r\n" + 
+				"                var filename = \"\";\r\n" + 
+				"                formData.append(name, file, filename);\r\n" + 
+				"                var xhr = new XMLHttpRequest();\r\n" + 
+				"                xhr.open('POST', '', true);\r\n" + 
+				"                xhr.onload = function() {\r\n" + 
+				"                    if (xhr.status === 200) {\r\n" + 
+				"                        uploadButton.innerHTML = 'Upload';\r\n" + 
+				"                    } else {\r\n" + 
+				"                        alert('An error occurred!');\r\n" + 
+				"                    }\r\n" + 
+				"                };\r\n" + 
+				"                xhr.send(formData);\r\n" + 
+				"            }\r\n" + 
+				"        };\r\n" + 
+				"        function send_command(isScript) {\r\n" + 
+				"            var xmlhttp;\r\n" + 
+				"            xmlhttp = new XMLHttpRequest();\r\n" + 
+				"            xmlhttp.onreadystatechange = function() {\r\n" + 
+				"                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {\r\n" + 
+				"                    if(xmlhttp.responseText != \"<span style='color:green;'>> clear</span><br>clear\"){\r\n" + 
+				"                        var div = document.createElement(\"div\");\r\n" + 
+				"                        div.innerHTML = xmlhttp.responseText;\r\n" + 
+				"                        document.getElementById(\"command_results\").appendChild(div);\r\n" + 
+				"                    }else{\r\n" + 
+				"                        document.getElementById(\"command_results\").innerHTML = \"\";\r\n" + 
+				"                    }\r\n" + 
+				"                }\r\n" + 
+				"            }\r\n" + 
+				"            var newvalue = encodeURIComponent(document.getElementById(\"value\").value);\r\n" + 
+				"            if(isScript){\r\n" + 
+				"                xmlhttp.open(\"GET\", \"script?value=\" + newvalue, true);\r\n" + 
+				"            }else {\r\n" + 
+				"                xmlhttp.open(\"GET\", \"command?value=\" + newvalue, true);\r\n" + 
+				"            }\r\n" + 
+				"            xmlhttp.send();\r\n" + 
+				"        }\r\n" + 
+				"    </script>\r\n" + 
+				"    <style>\r\n" + 
+				"        body {\r\n" + 
+				"            background-color: black;\r\n" + 
+				"            color:white;\r\n" + 
+				"            font-family: Tahoma, Arial;\r\n" + 
+				"            background-image: url(\"http://s3.amazonaws.com/rapgenius/matrix.gif\");\r\n" + 
+				"        }\r\n" + 
+				"        h1 {\r\n" + 
+				"            margin: 0;\r\n" + 
+				"            margin-bottom: 5px;\r\n" + 
+				"        }\r\n" + 
+				"        textarea {\r\n" + 
+				"            background-color: black;\r\n" + 
+				"            color: white;\r\n" + 
+				"            margin-top: 10px;\r\n" + 
+				"            resize: none;\r\n" + 
+				"        }\r\n" + 
+				"        div#command_results {\r\n" + 
+				"            overflow-y: auto;\r\n" + 
+				"            height: 290px !important;\r\n" + 
+				"            background-color: black;\r\n" + 
+				"            padding: 5px;\r\n" + 
+				"        }\r\n" + 
+				"        div.buttons {\r\n" + 
+				"            margin-top: 20px;\r\n" + 
+				"        }\r\n" + 
+				"        form {\r\n" + 
+				"            display: inline-block;\r\n" + 
+				"        }\r\n" + 
+				"        input[type=\"button\"],\r\n" + 
+				"        button[type=\"submit\"] {\r\n" + 
+				"            background-color: black;\r\n" + 
+				"            color: white;\r\n" + 
+				"            display: inline-block;\r\n" + 
+				"            padding: 10px;\r\n" + 
+				"            border: 1px solid white;\r\n" + 
+				"            text-transform: uppercase;\r\n" + 
+				"        }\r\n" + 
+				"        input[type=\"file\"] {\r\n" + 
+				"            background-color: black;\r\n" + 
+				"            color: white;\r\n" + 
+				"            display: inline-block;\r\n" + 
+				"            padding: 7px;\r\n" + 
+				"            border: 1px solid white;\r\n" + 
+				"            text-transform: uppercase;\r\n" + 
+				"        }\r\n" + 
+				"    </style>\r\n" + 
+				"</head>\r\n" + 
+				"<body>\r\n" + 
+				"    <h1>Hello, this is the seven-ge server</h1>\r\n" + 
+				"    <div id=\"command_results\" style=\"overflow-y: scroll; height:300px;\">\r\n" + 
+				"        <div>\r\n" + 
+				"            <span style=\"color:green;\">&gt; commands</span><br>commands<br>clear<br>ls memorytype (internal, external, cache)<br>delete memorytype (internal, external, cache) filename<br></div><div><span style=\"color:green;\">&gt; executed script</span><br></div>\r\n" + 
+				"        </div>\r\n" + 
+				"        <textarea tabindex=\"0\" autofocus id=\"value\" style=\"width:100%; height:200px;\"></textarea> <br>\r\n" + 
+				"        <div class=\"buttons\">\r\n" + 
+				"            <input type=\"button\" value=\"submit as command\" onclick=\"send_command(false)\">\r\n" + 
+				"            <input type=\"button\" value=\"submit as script\" onclick=\"send_command(true)\">\r\n" + 
+				"            <form id=\"file-form\" action=\"\" method=\"POST\">\r\n" + 
+				"                <input type=\"file\" id=\"file-select\" name=\"files[]\" multiple=\"\">\r\n" + 
+				"                <button type=\"submit\" id=\"upload-button\">Upload</button>\r\n" + 
+				"            </form>\r\n" + 
+				"        </div>\r\n" + 
+				"        \r\n" + 
+				"    </body>\r\n" + 
+				"    </html>";
 
 		if (Method.POST.equals(method)) {
 

@@ -18,8 +18,10 @@ package com.badlogic.gdx.physics.box2d;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * The class manages contact between two shapes. A contact exists for each overlapping AABB in the broad-phase (except if
- * filtered). Therefore a contact object may exist that has no contact points.
+ * The class manages contact between two shapes. A contact exists for each
+ * overlapping AABB in the broad-phase (except if filtered). Therefore a contact
+ * object may exist that has no contact points.
+ * 
  * @author mzechner
  * 
  */
@@ -33,7 +35,7 @@ public class Contact {
 	/** the world manifold **/
 	protected final WorldManifold worldManifold = new WorldManifold();
 
-	protected Contact (World world, long addr) {
+	protected Contact(World world, long addr) {
 		this.addr = addr;
 		this.world = world;
 	}
@@ -43,7 +45,7 @@ public class Contact {
 	 */
 	private final float[] tmp = new float[6];
 
-	public WorldManifold getWorldManifold () {
+	public WorldManifold getWorldManifold() {
 		int numContactPoints = jniGetWorldManifold(addr, tmp);
 
 		worldManifold.numContactPoints = numContactPoints;
@@ -57,48 +59,49 @@ public class Contact {
 		return worldManifold;
 	}
 
-	private native int jniGetWorldManifold (long addr, float[] manifold);
+	private native int jniGetWorldManifold(long addr, float[] manifold);
 
-	public boolean isTouching () {
+	public boolean isTouching() {
 		return jniIsTouching(addr);
 	}
 
-	private native boolean jniIsTouching (long addr);
+	private native boolean jniIsTouching(long addr);
 
 	/**
-	 * Enable/disable this contact. This can be used inside the pre-solve contact listener. The contact is only disabled for the
-	 * current time step (or sub-step in continuous collisions).
+	 * Enable/disable this contact. This can be used inside the pre-solve
+	 * contact listener. The contact is only disabled for the current time step
+	 * (or sub-step in continuous collisions).
 	 */
-	public void setEnabled (boolean flag) {
+	public void setEnabled(boolean flag) {
 		jniSetEnabled(addr, flag);
 	}
 
-	private native void jniSetEnabled (long addr, boolean flag);
+	private native void jniSetEnabled(long addr, boolean flag);
 
 	/**
 	 * Has this contact been disabled?
 	 */
-	public boolean isEnabled () {
+	public boolean isEnabled() {
 		return jniIsEnabled(addr);
 	}
 
-	private native boolean jniIsEnabled (long addr);
+	private native boolean jniIsEnabled(long addr);
 
 	/**
 	 * Get the first fixture in this contact.
 	 */
-	public Fixture getFixtureA () {
+	public Fixture getFixtureA() {
 		return world.fixtures.get(jniGetFixtureA(addr));
 	}
 
-	private native long jniGetFixtureA (long addr);
+	private native long jniGetFixtureA(long addr);
 
 	/**
 	 * Get the second fixture in this contact.
 	 */
-	public Fixture getFixtureB () {
+	public Fixture getFixtureB() {
 		return world.fixtures.get(jniGetFixtureB(addr));
 	}
 
-	private native long jniGetFixtureB (long addr);
+	private native long jniGetFixtureB(long addr);
 }

@@ -1,4 +1,3 @@
-
 package com.sevenge;
 
 import static android.opengl.GLES20.GL_CULL_FACE;
@@ -22,12 +21,14 @@ import android.os.SystemClock;
 import com.sevenge.assets.AssetManager;
 import com.sevenge.audio.Audio;
 import com.sevenge.input.Input;
-import com.sevenge.sample.SampleGameState;
 import com.sevenge.script.ScriptingEngine;
 import com.sevenge.utils.DebugLog;
 import com.sevenge.utils.WebConsole;
 
-/** Main game engine class. Initializes all engine subsystems and stores its settings. */
+/**
+ * Main game engine class. Initializes all engine subsystems and stores its
+ * settings.
+ */
 public class SevenGE implements Renderer {
 	private static final String TAG = "GameEngine";
 	public static long FRAME_TIME = 33;
@@ -53,16 +54,28 @@ public class SevenGE implements Renderer {
 	private static int sWidth;
 	private static int sHeight;
 
-	/** Sets up game engine subsystems and configures given glSurface for rendering OpenGL ES 2.0
-	 * @param activity activity displaying the GLSurface
-	 * @param glSurfaceView GLSurface to be used for rendering */
-	public SevenGE (Activity activity, GLSurfaceView glSurfaceView, GameState initalGameState) {
-		final ActivityManager activityManager = (ActivityManager)activity.getSystemService(Context.ACTIVITY_SERVICE);
-		final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+	/**
+	 * Sets up game engine subsystems and configures given glSurface for
+	 * rendering OpenGL ES 2.0
+	 * 
+	 * @param activity
+	 *            activity displaying the GLSurface
+	 * @param glSurfaceView
+	 *            GLSurface to be used for rendering
+	 */
+	public SevenGE(Activity activity, GLSurfaceView glSurfaceView,
+			GameState initalGameState) {
+		final ActivityManager activityManager = (ActivityManager) activity
+				.getSystemService(Context.ACTIVITY_SERVICE);
+		final ConfigurationInfo configurationInfo = activityManager
+				.getDeviceConfigurationInfo();
 		final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000
-			|| (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1 && (Build.FINGERPRINT.startsWith("generic")
-				|| Build.FINGERPRINT.startsWith("unknown") || Build.MODEL.contains("google_sdk") || Build.MODEL.contains("Emulator") || Build.MODEL
-					.contains("Android SDK built for x86")));
+				|| (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1 && (Build.FINGERPRINT
+						.startsWith("generic")
+						|| Build.FINGERPRINT.startsWith("unknown")
+						|| Build.MODEL.contains("google_sdk")
+						|| Build.MODEL.contains("Emulator") || Build.MODEL
+							.contains("Android SDK built for x86")));
 
 		IO.initialize(activity);
 		SevenGE.sInput = new Input(activity);
@@ -92,7 +105,7 @@ public class SevenGE implements Renderer {
 	}
 
 	/** Pauses the game engine */
-	public void onPause () {
+	public void onPause() {
 		synchronized (this) {
 			if (mActivity.isFinishing()) {
 				mState = GLGameState.Finished;
@@ -113,14 +126,16 @@ public class SevenGE implements Renderer {
 	}
 
 	/** Resumes running of the engine */
-	public void onResume () {
+	public void onResume() {
 		mGLSurfaceView.onResume();
 	}
 
-	/** Called continuously by the GLSurface. Implements the frame limited game loop. Executes update and draw calls of the
-	 * currently selected GameState */
+	/**
+	 * Called continuously by the GLSurface. Implements the frame limited game
+	 * loop. Executes update and draw calls of the currently selected GameState
+	 */
 	@Override
-	public void onDrawFrame (GL10 gl) {
+	public void onDrawFrame(GL10 gl) {
 		GLGameState state = null;
 		synchronized (this) {
 			state = this.mState;
@@ -130,7 +145,8 @@ public class SevenGE implements Renderer {
 			mStartTime = SystemClock.uptimeMillis();
 			long deltaTime = mStartTime - mLastTime;
 			mLastTime = mStartTime;
-			if (deltaTime > 250) deltaTime = 250;
+			if (deltaTime > 250)
+				deltaTime = 250;
 
 			mAccum += deltaTime;
 			while (mAccum >= FRAME_TIME) {
@@ -162,14 +178,15 @@ public class SevenGE implements Renderer {
 
 	/** Handles setup and changes to the size of the GLSurface */
 	@Override
-	public void onSurfaceChanged (GL10 gl, int width, int height) {
+	public void onSurfaceChanged(GL10 gl, int width, int height) {
 
 		SevenGE.sWidth = width;
 		SevenGE.sHeight = height;
 
 		DebugLog.d(TAG, "onSurfaceChanged");
 		synchronized (this) {
-			if (mState == GLGameState.Initialized) SevenGE.mGameStateManager.setCurrentState(mInitalGameState);
+			if (mState == GLGameState.Initialized)
+				SevenGE.mGameStateManager.setCurrentState(mInitalGameState);
 			mState = GLGameState.Running;
 			DebugLog.d(TAG, "Running");
 			SevenGE.mGameStateManager.resume();
@@ -180,49 +197,68 @@ public class SevenGE implements Renderer {
 
 	/** Called each time GLSurface is created */
 	@Override
-	public void onSurfaceCreated (GL10 gl, EGLConfig config) {
+	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		DebugLog.d(TAG, "onSurfaceCreated");
 		glEnable(GL_CULL_FACE);
 	}
 
-	/** Retrieves game engine's AssetManager
-	 * @return AssetManager */
-	public static AssetManager getAssetManager () {
+	/**
+	 * Retrieves game engine's AssetManager
+	 * 
+	 * @return AssetManager
+	 */
+	public static AssetManager getAssetManager() {
 		return sAssetManager;
 	}
 
-	/** Retrieves game engine's Audio
-	 * @return Audio */
-	public static Audio getAudio () {
+	/**
+	 * Retrieves game engine's Audio
+	 * 
+	 * @return Audio
+	 */
+	public static Audio getAudio() {
 		return sAudio;
 	}
 
-	/** Retrieves game engine's Input
-	 * @return Input */
-	public static Input getInput () {
+	/**
+	 * Retrieves game engine's Input
+	 * 
+	 * @return Input
+	 */
+	public static Input getInput() {
 		return sInput;
 	}
 
-	/** Retrieves game engine's GameStateManager
-	 * @return GameStateManager */
-	public static GameStateManager getStateManager () {
+	/**
+	 * Retrieves game engine's GameStateManager
+	 * 
+	 * @return GameStateManager
+	 */
+	public static GameStateManager getStateManager() {
 		return mGameStateManager;
 	}
 
-	/** Retrieves current GLSurface width
-	 * @return width of the surface */
-	public static int getWidth () {
+	/**
+	 * Retrieves current GLSurface width
+	 * 
+	 * @return width of the surface
+	 */
+	public static int getWidth() {
 		return sWidth;
 	}
 
-	/** Retrieves current GLSurface height
-	 * @return height of the surface */
-	public static int getHeight () {
+	/**
+	 * Retrieves current GLSurface height
+	 * 
+	 * @return height of the surface
+	 */
+	public static int getHeight() {
 		return sHeight;
 	}
 
 	/** Attaches scripting engine to webconsole */
-	public static void attachScriptingEngineToServer (ScriptingEngine scriptingEngine) {
+	public static void attachScriptingEngineToServer(
+			ScriptingEngine scriptingEngine) {
 		sServer.setScriptingEngine(scriptingEngine);
 	}
 

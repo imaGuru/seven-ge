@@ -1,4 +1,3 @@
-
 package com.sevenge.assets;
 
 import com.sevenge.graphics.TextureRegion;

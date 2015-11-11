@@ -1,4 +1,3 @@
-
 package com.sevenge.graphics;
 
 import static android.opengl.GLES20.glGetAttribLocation;
@@ -17,10 +16,16 @@ public final class ColorShaderProgram extends Asset {
 
 	public final int glID;
 
-	/** Creates a shader program with specified shaders and retrives attribute locations
-	 * @param vs vertex shader object suitable for coloring
-	 * @param fs fragment shader object suitable for coloring */
-	public ColorShaderProgram (int vs, int fs) {
+	/**
+	 * Creates a shader program with specified shaders and retrives attribute
+	 * locations
+	 * 
+	 * @param vs
+	 *            vertex shader object suitable for coloring
+	 * @param fs
+	 *            fragment shader object suitable for coloring
+	 */
+	public ColorShaderProgram(int vs, int fs) {
 		glID = ShaderUtils.linkShaderProgram(vs, fs);
 		// Retrieve uniform locations for the shader program.
 		mUniformMatrixLocation = glGetUniformLocation(glID, "u_Matrix");
@@ -29,9 +34,13 @@ public final class ColorShaderProgram extends Asset {
 		atributeColorLocation = glGetAttribLocation(glID, "a_Color");
 	}
 
-	/** Set matrix uniform for shader program
-	 * @param matrix location matrix */
-	public void setUniforms (float[] matrix) {
+	/**
+	 * Set matrix uniform for shader program
+	 * 
+	 * @param matrix
+	 *            location matrix
+	 */
+	public void setUniforms(float[] matrix) {
 		// Pass the matrix into the shader program.
 		glUniformMatrix4fv(mUniformMatrixLocation, 1, false, matrix, 0);
 	}

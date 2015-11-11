@@ -1,4 +1,3 @@
-
 package com.engine.sevenge.test;
 
 import android.test.ActivityInstrumentationTestCase2;
@@ -6,27 +5,29 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.sevenge.IO;
 import com.sevenge.utils.UnitTestActivity;
 
-public class BaseOpenGLES20UnitTest extends ActivityInstrumentationTestCase2<UnitTestActivity> {
+public class BaseOpenGLES20UnitTest extends
+		ActivityInstrumentationTestCase2<UnitTestActivity> {
 	private UnitTestActivity activity;
 
-	public BaseOpenGLES20UnitTest () {
+	public BaseOpenGLES20UnitTest() {
 		super(UnitTestActivity.class);
 	}
 
 	@Override
-	public void setUp () {
+	public void setUp() {
 		activity = getActivity();
 		IO.initialize(activity);
 	}
 
 	@Override
-	public void tearDown () {
+	public void tearDown() {
 		activity.finish();
 	}
 
-	public void runOnGLThread (final TestWrapper test) throws Throwable {
+	public void runOnGLThread(final TestWrapper test) throws Throwable {
 		Thread t = new Thread(new Runnable() {
-			public void run () {
+			@Override
+			public void run() {
 				test.executeWrapper();
 			}
 		});
@@ -39,10 +40,10 @@ public class BaseOpenGLES20UnitTest extends ActivityInstrumentationTestCase2<Uni
 		private Error error = null;
 		private Throwable throwable = null;
 
-		public TestWrapper () {
+		public TestWrapper() {
 		}
 
-		public void executeWrapper () {
+		public void executeWrapper() {
 			try {
 				executeTest();
 			} catch (Error e) {
@@ -56,19 +57,20 @@ public class BaseOpenGLES20UnitTest extends ActivityInstrumentationTestCase2<Uni
 			}
 		}
 
-		public void rethrowExceptions () {
+		public void rethrowExceptions() {
 			synchronized (this) {
 				if (error != null) {
 					throw error;
 				}
 
 				if (throwable != null) {
-					throw new RuntimeException("Unexpected exception", throwable);
+					throw new RuntimeException("Unexpected exception",
+							throwable);
 				}
 			}
 		}
 
-		public abstract void executeTest () throws Throwable;
+		public abstract void executeTest() throws Throwable;
 	}
 
 }

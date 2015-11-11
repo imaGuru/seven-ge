@@ -1,4 +1,3 @@
-
 package com.sevenge;
 
 import com.badlogic.gdx.math.Vector2;
@@ -18,7 +17,7 @@ public class Move extends Action {
 	private float slowingRadius = 400;
 	private float distance;
 
-	public Move (Entity entity, Vector2 target) {
+	public Move(Entity entity, Vector2 target) {
 
 		this.target = target.cpy();
 		this.entity = entity;
@@ -26,12 +25,12 @@ public class Move extends Action {
 	}
 
 	@Override
-	public boolean execute () {
+	public boolean execute() {
 
 		Vector2 tar = target.cpy();
 
-		PhysicsComponent phiC = (PhysicsComponent)entity.mComponents[4];
-		PositionComponent posC = (PositionComponent)entity.mComponents[0];
+		PhysicsComponent phiC = (PhysicsComponent) entity.mComponents[4];
+		PositionComponent posC = (PositionComponent) entity.mComponents[0];
 
 		Vector2 pos = phiC.getBody().getPosition().cpy();
 		Vector2 vel = phiC.getBody().getLinearVelocity().cpy();
@@ -55,7 +54,8 @@ public class Move extends Action {
 			// Inside the slowing area
 			// Log.d("move", "slowing dist = " + distance);
 			Vector2 temp = desired_velocity.cpy();
-			desired_velocity = temp.nor().mul(maxSpeed).mul(distance / slowingRadius).cpy();
+			desired_velocity = temp.nor().mul(maxSpeed)
+					.mul(distance / slowingRadius).cpy();
 		} else {
 			// Log.d("move", "not slowing dist = " + distance);
 			// Outside the slowing area.

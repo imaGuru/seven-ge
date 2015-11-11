@@ -1,4 +1,3 @@
-
 package com.sevenge.input;
 
 import android.view.GestureDetector.OnDoubleTapListener;
@@ -7,18 +6,20 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.sevenge.input.Input.Gesture;
+
 /** class responsible for intercepting and temporarily storing gesture events **/
-public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureListener implements OnGestureListener,
-	OnDoubleTapListener {
+public class GestureHandler extends
+		ScaleGestureDetector.SimpleOnScaleGestureListener implements
+		OnGestureListener, OnDoubleTapListener {
 
 	Input input;
 
-	public GestureHandler (Input input) {
+	public GestureHandler(Input input) {
 		this.input = input;
 	}
 
 	@Override
-	public boolean onDoubleTap (MotionEvent me) {
+	public boolean onDoubleTap(MotionEvent me) {
 		synchronized (input) {
 			Gesture g = input.gesturePool.newObject();
 			g.type = Gesture.DOUBLETAP;
@@ -31,12 +32,12 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 	}
 
 	@Override
-	public boolean onDoubleTapEvent (MotionEvent me) {
+	public boolean onDoubleTapEvent(MotionEvent me) {
 		return false;
 	}
 
 	@Override
-	public boolean onSingleTapConfirmed (MotionEvent me) {
+	public boolean onSingleTapConfirmed(MotionEvent me) {
 		synchronized (input) {
 			Gesture g = input.gesturePool.newObject();
 			g.type = Gesture.TAP;
@@ -49,13 +50,13 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 	}
 
 	@Override
-	public boolean onDown (MotionEvent arg0) {
+	public boolean onDown(MotionEvent arg0) {
 		// do not add code here !!!
 		return false;
 	}
 
 	@Override
-	public boolean onFling (MotionEvent me1, MotionEvent me2, float vx, float vy) {
+	public boolean onFling(MotionEvent me1, MotionEvent me2, float vx, float vy) {
 		synchronized (input) {
 			Gesture g = input.gesturePool.newObject();
 			g.type = Gesture.FLING;
@@ -71,7 +72,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 	}
 
 	@Override
-	public void onLongPress (MotionEvent me1) {
+	public void onLongPress(MotionEvent me1) {
 		synchronized (input) {
 			Gesture g = input.gesturePool.newObject();
 			g.type = Gesture.LONGPRESS;
@@ -83,7 +84,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 	}
 
 	@Override
-	public boolean onScroll (MotionEvent me1, MotionEvent me2, float dx, float dy) {
+	public boolean onScroll(MotionEvent me1, MotionEvent me2, float dx, float dy) {
 		synchronized (input) {
 			Gesture g = input.gesturePool.newObject();
 			g.type = Gesture.SCROLL;
@@ -97,19 +98,19 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 	}
 
 	@Override
-	public void onShowPress (MotionEvent arg0) {
+	public void onShowPress(MotionEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public boolean onSingleTapUp (MotionEvent arg0) {
+	public boolean onSingleTapUp(MotionEvent arg0) {
 		// do not add code here !!!
 		return false;
 	}
 
 	@Override
-	public boolean onScale (ScaleGestureDetector detector) {
+	public boolean onScale(ScaleGestureDetector detector) {
 
 		synchronized (input) {
 			Gesture g = input.gesturePool.newObject();
@@ -121,7 +122,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 	}
 
 	@Override
-	public boolean onScaleBegin (ScaleGestureDetector detector) {
+	public boolean onScaleBegin(ScaleGestureDetector detector) {
 
 		super.onScaleBegin(detector);
 
@@ -136,7 +137,7 @@ public class GestureHandler extends ScaleGestureDetector.SimpleOnScaleGestureLis
 	}
 
 	@Override
-	public void onScaleEnd (ScaleGestureDetector detector) {
+	public void onScaleEnd(ScaleGestureDetector detector) {
 
 		super.onScaleEnd(detector);
 

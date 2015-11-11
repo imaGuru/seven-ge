@@ -1,4 +1,3 @@
-
 package com.sevenge.utils;
 
 public class Quadtree<T> {
@@ -16,20 +15,20 @@ public class Quadtree<T> {
 	 * Constructor
 	 */
 	@SuppressWarnings("unchecked")
-	public Quadtree (int pLevel, AABB pBounds, int maxObjects, int maxLevels) {
+	public Quadtree(int pLevel, AABB pBounds, int maxObjects, int maxLevels) {
 		level = pLevel;
 		MAX_LEVELS = maxLevels;
 		MAX_OBJECTS = maxObjects;
 		objects = new FixedSizeArray<T>(MAX_OBJECTS, null);
 		bounds = pBounds;
-		nodes = (Quadtree<T>[])new Object[4];
+		nodes = (Quadtree<T>[]) new Object[4];
 		indices = new boolean[4];
 	}
 
 	/*
 	 * Clears the quadtree
 	 */
-	public void clear () {
+	public void clear() {
 		objects.clear();
 		for (int i = 0; i < nodes.length; i++) {
 			nodes[i] = null;
@@ -39,23 +38,27 @@ public class Quadtree<T> {
 	/*
 	 * Splits the node into 4 subnodes
 	 */
-	private void split () {
+	private void split() {
 		float subWidth = bounds.width / 2;
 		float subHeight = bounds.height / 2;
 		float x = bounds.x;
 		float y = bounds.y;
 
-		nodes[0] = new Quadtree<T>(level + 1, new AABB(x + subWidth, y + subHeight, subWidth, subHeight), MAX_OBJECTS, MAX_LEVELS);
-		nodes[1] = new Quadtree<T>(level + 1, new AABB(x, y + subHeight, subWidth, subHeight), MAX_OBJECTS, MAX_LEVELS);
-		nodes[2] = new Quadtree<T>(level + 1, new AABB(x, y, subWidth, subHeight), MAX_OBJECTS, MAX_LEVELS);
-		nodes[3] = new Quadtree<T>(level + 1, new AABB(x + subWidth, y, subWidth, subHeight), MAX_OBJECTS, MAX_LEVELS);
+		nodes[0] = new Quadtree<T>(level + 1, new AABB(x + subWidth, y
+				+ subHeight, subWidth, subHeight), MAX_OBJECTS, MAX_LEVELS);
+		nodes[1] = new Quadtree<T>(level + 1, new AABB(x, y + subHeight,
+				subWidth, subHeight), MAX_OBJECTS, MAX_LEVELS);
+		nodes[2] = new Quadtree<T>(level + 1, new AABB(x, y, subWidth,
+				subHeight), MAX_OBJECTS, MAX_LEVELS);
+		nodes[3] = new Quadtree<T>(level + 1, new AABB(x + subWidth, y,
+				subWidth, subHeight), MAX_OBJECTS, MAX_LEVELS);
 	}
 
 	/*
-	 * Determine which node the object belongs to. -1 means object cannot completely fit within a child node and is part of the
-	 * parent node
+	 * Determine which node the object belongs to. -1 means object cannot
+	 * completely fit within a child node and is part of the parent node
 	 */
-	private boolean[] getIndices (AABB pRect) {
+	private boolean[] getIndices(AABB pRect) {
 
 		indices[0] = false;
 		indices[1] = false;
@@ -66,12 +69,14 @@ public class Quadtree<T> {
 		double horizontalMidpoint = bounds.y + (bounds.height / 2);
 
 		// Object can completely fit within the bottom quadrants
-		boolean bottomQuadrant = (pRect.y < horizontalMidpoint && pRect.y + pRect.height < horizontalMidpoint);
+		boolean bottomQuadrant = (pRect.y < horizontalMidpoint && pRect.y
+				+ pRect.height < horizontalMidpoint);
 		// Object can completely fit within the top quadrants
 		boolean topQuadrant = (pRect.y > horizontalMidpoint);
 
 		// Object can completely fit within the left quadrants
-		if (pRect.x < verticalMidpoint && pRect.x + pRect.width < verticalMidpoint) {
+		if (pRect.x < verticalMidpoint
+				&& pRect.x + pRect.width < verticalMidpoint) {
 			if (topQuadrant) {
 				indices[1] = true;
 			} else if (bottomQuadrant) {
@@ -98,10 +103,10 @@ public class Quadtree<T> {
 	}
 
 	/*
-	 * Insert the object into the quadtree. If the node exceeds the capacity, it will split and add all objects to their
-	 * corresponding nodes.
+	 * Insert the object into the quadtree. If the node exceeds the capacity, it
+	 * will split and add all objects to their corresponding nodes.
 	 */
-	public void insert (T object, AABB pRect) {
+	public void insert(T object, AABB pRect) {
 		if (nodes[0] != null) {
 			getIndices(pRect);
 			for (int i = 0; i < 4; i++) {
@@ -124,7 +129,8 @@ public class Quadtree<T> {
 					if (indices[j]) {
 						objectAABBs.swapWithLast(i);
 						objects.swapWithLast(i);
-						nodes[j].insert(objects.removeLast(), objectAABBs.removeLast());
+						nodes[j].insert(objects.removeLast(),
+								objectAABBs.removeLast());
 					}
 				}
 			}
@@ -135,7 +141,8 @@ public class Quadtree<T> {
 	 * Return all objects that could collide with the given object
 	 */
 	/*
-	 * public FixedSizeArray<T> query (AABB pRect) { int index = getIndex(pRect); if (index != -1 && nodes[0] != null) {
+	 * public FixedSizeArray<T> query (AABB pRect) { int index =
+	 * getIndex(pRect); if (index != -1 && nodes[0] != null) {
 	 * nodes[index].retrieve(pRect); }
 	 * 
 	 * returnObjects.addAll(objects);

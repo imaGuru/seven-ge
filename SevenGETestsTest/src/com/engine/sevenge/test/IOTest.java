@@ -1,4 +1,3 @@
-
 package com.engine.sevenge.test;
 
 import java.io.File;
@@ -14,21 +13,21 @@ import com.sevenge.IO;
 
 public class IOTest extends AndroidTestCase {
 
-	public IOTest () {
+	public IOTest() {
 	}
 
 	@Override
-	public void setUp () {
+	public void setUp() {
 		IO.initialize(mContext);
 	}
 
 	@Override
-	public void tearDown () {
+	public void tearDown() {
 		IO.internal("testCopy.pkg").delete();
 		IO.internal("renamed.pkg").delete();
 	}
 
-	public void testOpenAssetsValid () {
+	public void testOpenAssetsValid() {
 		InputStream asset = null;
 		try {
 			asset = IO.openAsset("Textures/SpaceSheet.png");
@@ -38,7 +37,7 @@ public class IOTest extends AndroidTestCase {
 		assertNotNull(asset);
 	}
 
-	public void testOpenAssetsInvalid () {
+	public void testOpenAssetsInvalid() {
 		try {
 			IO.openAsset("nonexistent.png");
 			Assert.fail();
@@ -46,22 +45,22 @@ public class IOTest extends AndroidTestCase {
 		}
 	}
 
-	public void testOpenInternalFile () {
+	public void testOpenInternalFile() {
 		File file = IO.internal("Scripts/main.lua");
 		assertFalse(file.exists());
 	}
 
-	public void testOpenExternalFile () {
+	public void testOpenExternalFile() {
 		File file = IO.external("Scripts/main.lua");
 		assertFalse(file.exists());
 	}
 
-	public void testOpenCacheFile () {
+	public void testOpenCacheFile() {
 		File file = IO.cache("Scripts/main.lua");
 		assertFalse(file.exists());
 	}
 
-	public void testReadToString () {
+	public void testReadToString() {
 		try {
 			String s = IO.readToString(IO.openAsset("Scripts/main.lua"));
 			assertFalse(s.isEmpty());
@@ -71,7 +70,7 @@ public class IOTest extends AndroidTestCase {
 		}
 	}
 
-	public void testRenameFile () {
+	public void testRenameFile() {
 		try {
 			File file1 = IO.internal("test.pkg");
 			file1.createNewFile();
@@ -84,7 +83,7 @@ public class IOTest extends AndroidTestCase {
 		}
 	}
 
-	public void testCopyFile () {
+	public void testCopyFile() {
 		try {
 			File file1 = IO.internal("test.pkg");
 			file1.createNewFile();

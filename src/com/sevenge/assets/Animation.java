@@ -1,4 +1,3 @@
-
 package com.sevenge.assets;
 
 /** Animation asset class holding frame durations and names */

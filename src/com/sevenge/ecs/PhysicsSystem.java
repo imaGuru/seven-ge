@@ -1,14 +1,13 @@
-
 package com.sevenge.ecs;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+
 /**
  * 
- * @author lol
- *Physics system is responsible for calling box2d calculations, updating 
- *position component and calculating between box2d coordinates to world 
- *coordinates. 
+ * @author lol Physics system is responsible for calling box2d calculations,
+ *         updating position component and calculating between box2d coordinates
+ *         to world coordinates.
  */
 public class PhysicsSystem extends SubSystem {
 
@@ -22,30 +21,33 @@ public class PhysicsSystem extends SubSystem {
 
 	private World world;
 
-	public PhysicsSystem (int size) {
+	public PhysicsSystem(int size) {
 		super(PhysicsComponent.MASK | PositionComponent.MASK, size);
 
 		this.world = new World(gravityVector, true);
 
 	}
 
-	public World getWorld () {
+	public World getWorld() {
 		return this.world;
 	}
 
 	@Override
-	public void process () {
+	public void process() {
 
 		world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS);
 
 		for (int j = 0; j < mEntities.getCount(); j++) {
 			Entity entity = mEntities.get(j);
-			PositionComponent positionComponent = (PositionComponent)entity.mComponents[0];
-			PhysicsComponent physicsComponent = (PhysicsComponent)entity.mComponents[4];
+			PositionComponent positionComponent = (PositionComponent) entity.mComponents[0];
+			PhysicsComponent physicsComponent = (PhysicsComponent) entity.mComponents[4];
 
-			positionComponent.x = BOX_TO_WORLD * physicsComponent.getBody().getPosition().x;
-			positionComponent.y = BOX_TO_WORLD * physicsComponent.getBody().getPosition().y;
-			positionComponent.rotation = (float)-Math.toDegrees(physicsComponent.getBody().getAngle()) + 90;
+			positionComponent.x = BOX_TO_WORLD
+					* physicsComponent.getBody().getPosition().x;
+			positionComponent.y = BOX_TO_WORLD
+					* physicsComponent.getBody().getPosition().y;
+			positionComponent.rotation = (float) -Math
+					.toDegrees(physicsComponent.getBody().getAngle()) + 90;
 
 		}
 	}

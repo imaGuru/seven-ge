@@ -1,4 +1,3 @@
-
 package com.sevenge.graphics;
 
 import static android.opengl.GLES20.glGetAttribLocation;
@@ -18,30 +17,43 @@ public final class TextureShaderProgram extends Asset {
 
 	public final int mGlID;
 
-	/** Texture shader program for drawing textured objects in OpenGL
-	 * @param vs vertex shader
-	 * @param fs fragment shader */
-	public TextureShaderProgram (int vs, int fs) {
+	/**
+	 * Texture shader program for drawing textured objects in OpenGL
+	 * 
+	 * @param vs
+	 *            vertex shader
+	 * @param fs
+	 *            fragment shader
+	 */
+	public TextureShaderProgram(int vs, int fs) {
 		mGlID = ShaderUtils.linkShaderProgram(vs, fs);
 
 		mMatrixLocation = glGetUniformLocation(mGlID, "u_Matrix");
 		mTextureUnitLocation = glGetUniformLocation(mGlID, "u_TextureUnit");
 		// Retrieve attribute locations for the shader program.
 		mAttributePositionLocation = glGetAttribLocation(mGlID, "a_Position");
-		mAttributeTextureCoordinatesLocation = glGetAttribLocation(mGlID, "a_TextureCoordinates");
+		mAttributeTextureCoordinatesLocation = glGetAttribLocation(mGlID,
+				"a_TextureCoordinates");
 	}
 
-	/** Set matrix to be used with the shader program
+	/**
+	 * Set matrix to be used with the shader program
+	 * 
 	 * @param matrix
-	 * @param texture */
-	public void setMatrixUniform (float[] matrix) {
+	 * @param texture
+	 */
+	public void setMatrixUniform(float[] matrix) {
 		// Pass the matrix into the shader program.
 		glUniformMatrix4fv(mMatrixLocation, 1, false, matrix, 0);
 	}
 
-	/** Sets the texture uniform for this shader
-	 * @param texture glID */
-	public void setTextureUniform (int texture) {
+	/**
+	 * Sets the texture uniform for this shader
+	 * 
+	 * @param texture
+	 *            glID
+	 */
+	public void setTextureUniform(int texture) {
 		glUniform1i(mTextureUnitLocation, 0);
 	}
 }

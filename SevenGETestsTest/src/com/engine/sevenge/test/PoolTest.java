@@ -1,4 +1,3 @@
-
 package com.engine.sevenge.test;
 
 import java.util.ArrayList;
@@ -16,10 +15,10 @@ public class PoolTest extends TestCase {
 	private static final int POOL_SIZE = 20;
 
 	@Override
-	protected void setUp () throws Exception {
+	protected void setUp() throws Exception {
 		objectFactory = new PoolObjectFactory<Object>() {
 			@Override
-			public Object createObject () {
+			public Object createObject() {
 				return new Object();
 			}
 		};
@@ -28,7 +27,7 @@ public class PoolTest extends TestCase {
 
 	}
 
-	public void testFreePool () {
+	public void testFreePool() {
 
 		ArrayList<Object> objects = new ArrayList<Object>();
 

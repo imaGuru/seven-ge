@@ -1,4 +1,3 @@
-
 package com.sevenge.ecs;
 
 import com.sevenge.graphics.TextureRegion;

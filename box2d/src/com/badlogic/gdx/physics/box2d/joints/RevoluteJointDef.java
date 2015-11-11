@@ -20,21 +20,25 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.JointDef;
 
 /**
- * Revolute joint definition. This requires defining an anchor point where the bodies are joined. The definition uses local anchor
- * points so that the initial configuration can violate the constraint slightly. You also need to specify the initial relative
- * angle for joint limits. This helps when saving and loading a game. The local anchor points are measured from the body's origin
- * rather than the center of mass because: 1. you might not know where the center of mass will be. 2. if you add/remove shapes
- * from a body and recompute the mass, the joints will be broken.
+ * Revolute joint definition. This requires defining an anchor point where the
+ * bodies are joined. The definition uses local anchor points so that the
+ * initial configuration can violate the constraint slightly. You also need to
+ * specify the initial relative angle for joint limits. This helps when saving
+ * and loading a game. The local anchor points are measured from the body's
+ * origin rather than the center of mass because: 1. you might not know where
+ * the center of mass will be. 2. if you add/remove shapes from a body and
+ * recompute the mass, the joints will be broken.
  */
 public class RevoluteJointDef extends JointDef {
-	public RevoluteJointDef () {
+	public RevoluteJointDef() {
 		type = JointType.RevoluteJoint;
 	}
 
 	/**
-	 * Initialize the bodies, anchors, and reference angle using a world anchor point.
+	 * Initialize the bodies, anchors, and reference angle using a world anchor
+	 * point.
 	 */
-	public void initialize (Body bodyA, Body bodyB, Vector2 anchor) {
+	public void initialize(Body bodyA, Body bodyB, Vector2 anchor) {
 		this.bodyA = bodyA;
 		this.bodyB = bodyB;
 		localAnchorA.set(bodyA.getLocalPoint(anchor));
@@ -83,7 +87,8 @@ public class RevoluteJointDef extends JointDef {
 	public float motorSpeed = 0;
 
 	/**
-	 * The maximum motor torque used to achieve the desired motor speed. Usually in N-m.
+	 * The maximum motor torque used to achieve the desired motor speed. Usually
+	 * in N-m.
 	 */
 	public float maxMotorTorque = 0;
 }

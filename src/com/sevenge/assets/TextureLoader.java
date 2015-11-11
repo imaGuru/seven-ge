@@ -1,4 +1,3 @@
-
 package com.sevenge.assets;
 
 import java.io.IOException;
@@ -14,20 +13,23 @@ import com.sevenge.graphics.TextureUtils;
 
 public class TextureLoader extends AssetLoader {
 
-	public TextureLoader (AssetManager as) {
+	public TextureLoader(AssetManager as) {
 		super(as);
 	}
 
 	@Override
-	public void load (String content) {
+	public void load(String content) {
 		JSONArray jarr;
 		try {
 			jarr = new JSONArray(content);
 			for (int i = 0; i < jarr.length(); i++) {
 				JSONObject jTexture = jarr.getJSONObject(i);
 				assetManager.registerAsset(jTexture.getString("id"),
-					TextureUtils.createTexture(IO.openAsset(jTexture.getString("path"))));
-				Log.d("assets",jTexture.getString("id")+" "+jTexture.getString("path") );
+						TextureUtils.createTexture(IO.openAsset(jTexture
+								.getString("path"))));
+				Log.d("assets",
+						jTexture.getString("id") + " "
+								+ jTexture.getString("path"));
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

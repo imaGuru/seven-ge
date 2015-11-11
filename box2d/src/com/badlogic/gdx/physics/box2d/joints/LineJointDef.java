@@ -20,20 +20,23 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.JointDef;
 
 /**
- * Line joint definition. This requires defining a line of motion using an axis and an anchor point. The definition uses local
- * anchor points and a local axis so that the initial configuration can violate the constraint slightly. The joint translation is
- * zero when the local anchor points coincide in world space. Using local anchors and a local axis helps when saving and loading a
+ * Line joint definition. This requires defining a line of motion using an axis
+ * and an anchor point. The definition uses local anchor points and a local axis
+ * so that the initial configuration can violate the constraint slightly. The
+ * joint translation is zero when the local anchor points coincide in world
+ * space. Using local anchors and a local axis helps when saving and loading a
  * game.
  */
 public class LineJointDef extends JointDef {
-	public LineJointDef () {
+	public LineJointDef() {
 		type = JointType.LineJoint;
 	}
 
 	/**
-	 * Initialize the bodies, anchors, axis, and reference angle using the world anchor and world axis.
+	 * Initialize the bodies, anchors, axis, and reference angle using the world
+	 * anchor and world axis.
 	 */
-	public void initialize (Body bodyA, Body bodyB, Vector2 anchor, Vector2 axis) {
+	public void initialize(Body bodyA, Body bodyB, Vector2 anchor, Vector2 axis) {
 		this.bodyA = bodyA;
 		this.bodyB = bodyB;
 		localAnchorA.set(bodyA.getLocalPoint(anchor));

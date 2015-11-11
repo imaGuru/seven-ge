@@ -1,4 +1,3 @@
-
 package com.sevenge.audio;
 
 import java.io.IOException;
@@ -8,16 +7,21 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 
 import com.sevenge.assets.Asset;
-/** Music class which manages the playback of audio files with the Android MediaPlayer**/
+
+/**
+ * Music class which manages the playback of audio files with the Android
+ * MediaPlayer
+ **/
 public class Music extends Asset implements OnCompletionListener {
 	MediaPlayer mediaPlayer;
 	boolean isPrepared = false;
 
-	public Music (AssetFileDescriptor assetDescriptor) {
+	public Music(AssetFileDescriptor assetDescriptor) {
 		mediaPlayer = new MediaPlayer();
 		try {
-			mediaPlayer.setDataSource(assetDescriptor.getFileDescriptor(), assetDescriptor.getStartOffset(),
-				assetDescriptor.getLength());
+			mediaPlayer.setDataSource(assetDescriptor.getFileDescriptor(),
+					assetDescriptor.getStartOffset(),
+					assetDescriptor.getLength());
 			mediaPlayer.prepare();
 			isPrepared = true;
 			mediaPlayer.setOnCompletionListener(this);
@@ -26,15 +30,17 @@ public class Music extends Asset implements OnCompletionListener {
 		}
 
 	}
-	
+
 	/**
 	 * Starts the playback
 	 */
-	public void play () {
-		if (mediaPlayer.isPlaying()) return;
+	public void play() {
+		if (mediaPlayer.isPlaying())
+			return;
 		try {
 			synchronized (this) {
-				if (!isPrepared) mediaPlayer.prepare();
+				if (!isPrepared)
+					mediaPlayer.prepare();
 				mediaPlayer.start();
 			}
 		} catch (IllegalStateException e) {
@@ -47,7 +53,7 @@ public class Music extends Asset implements OnCompletionListener {
 	/**
 	 * Stops the playback
 	 */
-	public void stop () {
+	public void stop() {
 		mediaPlayer.stop();
 		synchronized (this) {
 			isPrepared = false;
@@ -57,39 +63,42 @@ public class Music extends Asset implements OnCompletionListener {
 	/**
 	 * Pauses the playback
 	 */
-	public void pause () {
-		if (mediaPlayer.isPlaying()) mediaPlayer.pause();
+	public void pause() {
+		if (mediaPlayer.isPlaying())
+			mediaPlayer.pause();
 	}
 
 	/**
 	 * Sets playback mode to looping
 	 */
-	public void setLooping (boolean isLooping) {
+	public void setLooping(boolean isLooping) {
 		mediaPlayer.setLooping(isLooping);
 	}
 
 	/**
 	 * Sets the volume
-	 * @param values from -1.0f to 1.0f
+	 * 
+	 * @param values
+	 *            from -1.0f to 1.0f
 	 */
-	public void setVolume (float volume) {
+	public void setVolume(float volume) {
 		mediaPlayer.setVolume(volume, volume);
 	}
 
-	public boolean isPlaying () {
+	public boolean isPlaying() {
 		return mediaPlayer.isPlaying();
 	}
 
-	public boolean isStopped () {
+	public boolean isStopped() {
 		return !isPrepared;
 	}
 
-	public boolean isLooping () {
+	public boolean isLooping() {
 		return mediaPlayer.isLooping();
 	}
 
 	@Override
-	public void dispose () {
+	public void dispose() {
 		if (mediaPlayer.isPlaying()) {
 			mediaPlayer.stop();
 		}
@@ -98,7 +107,7 @@ public class Music extends Asset implements OnCompletionListener {
 	}
 
 	@Override
-	public void onCompletion (MediaPlayer arg0) {
+	public void onCompletion(MediaPlayer arg0) {
 		synchronized (this) {
 			isPrepared = false;
 		}

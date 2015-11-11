@@ -1,4 +1,3 @@
-
 package com.sevenge.graphics;
 
 import static android.opengl.GLES20.GL_LINEAR;
@@ -25,9 +24,13 @@ import com.sevenge.utils.DebugLog;
 public class TextureUtils {
 	private static final String TAG = "Texture2D";
 
-	/** Loads the texture from specified inputstream
-	 * @param in InputStream with texture data */
-	public static Texture createTexture (InputStream in) {
+	/**
+	 * Loads the texture from specified inputstream
+	 * 
+	 * @param in
+	 *            InputStream with texture data
+	 */
+	public static Texture createTexture(InputStream in) {
 		int[] textureID = new int[1];
 		glGenTextures(1, textureID, 0);
 		if (textureID[0] == 0) {
@@ -42,7 +45,8 @@ public class TextureUtils {
 			glDeleteTextures(1, textureID, 0);
 		}
 		glBindTexture(GL_TEXTURE_2D, textureID[0]);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+				GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
 		bitmap.recycle();
@@ -51,10 +55,13 @@ public class TextureUtils {
 		return new Texture(textureID[0], bitmap.getWidth(), bitmap.getHeight());
 	}
 
-	/** Creates a new OpenGL texture from given bitmap
+	/**
+	 * Creates a new OpenGL texture from given bitmap
+	 * 
 	 * @param bitmap
-	 * @return */
-	public static Texture createTexture (Bitmap bitmap) {
+	 * @return
+	 */
+	public static Texture createTexture(Bitmap bitmap) {
 		int[] textureID = new int[1];
 		glGenTextures(1, textureID, 0);
 		if (textureID[0] == 0) {
@@ -66,7 +73,8 @@ public class TextureUtils {
 			glDeleteTextures(1, textureID, 0);
 		}
 		glBindTexture(GL_TEXTURE_2D, textureID[0]);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+				GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		GLUtils.texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
 		bitmap.recycle();

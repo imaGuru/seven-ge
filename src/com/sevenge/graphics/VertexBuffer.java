@@ -1,4 +1,3 @@
-
 package com.sevenge.graphics;
 
 import static android.opengl.GLES20.GL_ARRAY_BUFFER;
@@ -23,76 +22,110 @@ public class VertexBuffer {
 	private int mType;
 	private final int buffers[];
 
-	/** Creates new vertex array object with specified data
-	 * @param vertices */
-	public VertexBuffer (int size, int type) {
+	/**
+	 * Creates new vertex array object with specified data
+	 * 
+	 * @param vertices
+	 */
+	public VertexBuffer(int size, int type) {
 		// Allocate a buffer.
 		mType = type;
 		buffers = new int[1];
 		glGenBuffers(buffers.length, buffers, 0);
 		if (buffers[0] == 0) {
-			throw new RuntimeException("Could not create a new vertex buffer object.");
+			throw new RuntimeException(
+					"Could not create a new vertex buffer object.");
 		}
 		bufferId = buffers[0];
-		mFloatBuffer = ByteBuffer.allocateDirect(size * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		mFloatBuffer = ByteBuffer.allocateDirect(size * BYTES_PER_FLOAT)
+				.order(ByteOrder.nativeOrder()).asFloatBuffer();
 	}
 
-	/** Should be called before garbage collection of this object to avoid memory leaks in VRAM */
-	public void dispose () {
+	/**
+	 * Should be called before garbage collection of this object to avoid memory
+	 * leaks in VRAM
+	 */
+	public void dispose() {
 		glDeleteBuffers(1, buffers, 0);
 		mActualSize = 0;
 	}
 
-	/** Put data at the end of vertex array
-	 * @param vertexData */
-	public void put (float[] vertexData, int length) {
+	/**
+	 * Put data at the end of vertex array
+	 * 
+	 * @param vertexData
+	 */
+	public void put(float[] vertexData, int length) {
 		mFloatBuffer.position(mActualSize);
 		mFloatBuffer.put(vertexData, 0, length);
 		mActualSize += length;
 	}
 
-	/** Put data at the start position
-	 * @param vertexData data to input
-	 * @param start index to put data at
-	 * @param length of the data */
-	public void put (float[] vertexData, int start, int length) {
+	/**
+	 * Put data at the start position
+	 * 
+	 * @param vertexData
+	 *            data to input
+	 * @param start
+	 *            index to put data at
+	 * @param length
+	 *            of the data
+	 */
+	public void put(float[] vertexData, int start, int length) {
 		mFloatBuffer.position(mActualSize);
 		mFloatBuffer.put(vertexData, start, length);
 		mActualSize += length;
 	}
 
-	/** Uploads data to part of the VBO starting at start
-	 * @param start */
-	public void upload (int start) {
+	/**
+	 * Uploads data to part of the VBO starting at start
+	 * 
+	 * @param start
+	 */
+	public void upload(int start) {
 		mFloatBuffer.position(0);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferId);
-		glBufferSubData(GL_ARRAY_BUFFER, start * BYTES_PER_FLOAT, mActualSize * BYTES_PER_FLOAT, mFloatBuffer);
+		glBufferSubData(GL_ARRAY_BUFFER, start * BYTES_PER_FLOAT, mActualSize
+				* BYTES_PER_FLOAT, mFloatBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		mActualSize = 0;
 	}
 
 	/** Uploads data input to this buffer to VRAM */
-	public void upload () {
+	public void upload() {
 		mFloatBuffer.position(0);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferId);
-		glBufferData(GL_ARRAY_BUFFER, mActualSize * BYTES_PER_FLOAT, mFloatBuffer, mType);
+		glBufferData(GL_ARRAY_BUFFER, mActualSize * BYTES_PER_FLOAT,
+				mFloatBuffer, mType);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		mActualSize = 0;
 	}
 
-	/** Returns the number of floats stored by this array
-	 * @return number of floats held by this VBO */
-	public int size () {
+	/**
+	 * Returns the number of floats stored by this array
+	 * 
+	 * @return number of floats held by this VBO
+	 */
+	public int size() {
 		return mActualSize;
 	}
 
-	/** Attribute location setting
-	 * @param dataOffset start location of attribute data in the buffer
-	 * @param attributeLocation attribute we want to use
-	 * @param componentCount size of the single data
-	 * @param stride number of indices to skip for next part of data */
-	public void setVertexAttribPointer (int dataOffset, int attributeLocation, int componentCount, int stride) {
-		glVertexAttribPointer(attributeLocation, componentCount, GL_FLOAT, false, stride, dataOffset * BYTES_PER_FLOAT);
+	/**
+	 * Attribute location setting
+	 * 
+	 * @param dataOffset
+	 *            start location of attribute data in the buffer
+	 * @param attributeLocation
+	 *            attribute we want to use
+	 * @param componentCount
+	 *            size of the single data
+	 * @param stride
+	 *            number of indices to skip for next part of data
+	 */
+	public void setVertexAttribPointer(int dataOffset, int attributeLocation,
+			int componentCount, int stride) {
+		glVertexAttribPointer(attributeLocation, componentCount, GL_FLOAT,
+				false, stride, dataOffset * BYTES_PER_FLOAT);
 		glEnableVertexAttribArray(attributeLocation);
 	}
 }

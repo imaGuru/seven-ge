@@ -1,4 +1,3 @@
-
 package com.sevenge.graphics;
 
 import static android.opengl.Matrix.invertM;
@@ -27,60 +26,91 @@ public class Camera {
 	private float zoom = 1f;
 	private boolean mUpdated = true;
 
-	/** Creates camera with given width and height
-	 * @param w width
-	 * @param h height */
-	public Camera (int w, int h) {
+	/**
+	 * Creates camera with given width and height
+	 * 
+	 * @param w
+	 *            width
+	 * @param h
+	 *            height
+	 */
+	public Camera(int w, int h) {
 		height = h;
 		width = w;
 	}
 
-	/** Sets the zoom of this camera. Values above 1 zoom out. Values below 1 zoom in
-	 * @param z zoom factor */
-	public void setZoom (float z) {
+	/**
+	 * Sets the zoom of this camera. Values above 1 zoom out. Values below 1
+	 * zoom in
+	 * 
+	 * @param z
+	 *            zoom factor
+	 */
+	public void setZoom(float z) {
 		zoom = z;
 		mUpdated = true;
 	}
 
-	/** Returns current camera zoom
-	 * @return zoom */
-	public float getZoom () {
+	/**
+	 * Returns current camera zoom
+	 * 
+	 * @return zoom
+	 */
+	public float getZoom() {
 		return zoom;
 	}
 
-	/** Sets position of the camera to x,y
-	 * @param x new camera x coordinate
-	 * @param y new camera y coordinate */
-	public void setPostion (float x, float y) {
+	/**
+	 * Sets position of the camera to x,y
+	 * 
+	 * @param x
+	 *            new camera x coordinate
+	 * @param y
+	 *            new camera y coordinate
+	 */
+	public void setPostion(float x, float y) {
 		position.x = x;
 		position.y = y;
 		mUpdated = true;
 	}
 
-	/** Returns current camera position
-	 * @return vector with camera location */
-	public Vector2 getPosition () {
+	/**
+	 * Returns current camera position
+	 * 
+	 * @return vector with camera location
+	 */
+	public Vector2 getPosition() {
 		return position;
 	}
 
-	/** Sets the rotation of the camera
-	 * @param angle in radians */
-	public void setRotation (float angle) {
+	/**
+	 * Sets the rotation of the camera
+	 * 
+	 * @param angle
+	 *            in radians
+	 */
+	public void setRotation(float angle) {
 		rotation = angle;
-		up.x = (float)Math.sin(rotation);
-		up.y = (float)Math.cos(rotation);
+		up.x = (float) Math.sin(rotation);
+		up.y = (float) Math.cos(rotation);
 		mUpdated = true;
 	}
 
-	/** Returns the current rotation of the camera
-	 * @return camera rotation in radians */
-	public float getRotation () {
+	/**
+	 * Returns the current rotation of the camera
+	 * 
+	 * @return camera rotation in radians
+	 */
+	public float getRotation() {
 		return rotation;
 	}
 
-	/** Returns the combined camera matrix for the focal layer
-	 * @return combined viewProjectionMatrix */
-	public float[] getCameraMatrix () {
+	/**
+	 * Returns the combined camera matrix for the focal layer
+	 * 
+	 * @return combined viewProjectionMatrix
+	 */
+	public float[] getCameraMatrix() {
 		if (mUpdated) {
 			float hw = width / 2 * zoom;
 			float hh = height / 2 * zoom;
@@ -88,35 +118,53 @@ public class Camera {
 			float x = position.x;
 			float y = position.y;
 			setLookAtM(viewMatrix, 0, x, y, 1f, x, y, 0f, up.x, up.y, up.z);
-			multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+			multiplyMM(viewProjectionMatrix, 0, projectionMatrix, 0,
+					viewMatrix, 0);
 		}
 		return viewProjectionMatrix;
 	}
 
-	/** Returns the combined camera matrix with specified parallax factor. Parallax factor larger than one means the layer scrolls
-	 * faster than the focal layer. Parallax factor less than one means the layer scrolls slower than the focal layer
-	 * @param parallax positive float
-	 * @param outMatrix float array of size 16
-	 * @return combined camera matrix */
-	public float[] getCameraMatrix (float parallax, float[] outMatrix) {
+	/**
+	 * Returns the combined camera matrix with specified parallax factor.
+	 * Parallax factor larger than one means the layer scrolls faster than the
+	 * focal layer. Parallax factor less than one means the layer scrolls slower
+	 * than the focal layer
+	 * 
+	 * @param parallax
+	 *            positive float
+	 * @param outMatrix
+	 *            float array of size 16
+	 * @return combined camera matrix
+	 */
+	public float[] getCameraMatrix(float parallax, float[] outMatrix) {
 		float hw = width / 2 * (1 + (zoom - 1) * parallax);
 		float hh = height / 2 * (1 + (zoom - 1) * parallax);
 		orthoM(projectionMatrixParallax, 0, -hw, hw, -hh, hh, -1f, 1f);
 		float x = position.x * parallax;
 		float y = position.y * parallax;
 		setLookAtM(viewMatrixParallax, 0, x, y, 1f, x, y, 0f, up.x, up.y, up.z);
-		multiplyMM(outMatrix, 0, projectionMatrixParallax, 0, viewMatrixParallax, 0);
+		multiplyMM(outMatrix, 0, projectionMatrixParallax, 0,
+				viewMatrixParallax, 0);
 		return outMatrix;
 	}
 
-	/** Unprojects x y screen coordinates into world coordinates
-	 * @param x coordinate in device coordinates
-	 * @param y coordinate in device coordinates
-	 * @param wScreen width of the screen
-	 * @param hScreen height of the screen
-	 * @param cameraMatrix combined camera matrix
-	 * @return */
-	public float[] unproject (int x, int y, int wScreen, int hScreen, float[] cameraMatrix) {
+	/**
+	 * Unprojects x y screen coordinates into world coordinates
+	 * 
+	 * @param x
+	 *            coordinate in device coordinates
+	 * @param y
+	 *            coordinate in device coordinates
+	 * @param wScreen
+	 *            width of the screen
+	 * @param hScreen
+	 *            height of the screen
+	 * @param cameraMatrix
+	 *            combined camera matrix
+	 * @return
+	 */
+	public float[] unproject(int x, int y, int wScreen, int hScreen,
+			float[] cameraMatrix) {
 		mDevCoords[0] = 1.0f * x / wScreen * 2 - 1;
 		mDevCoords[1] = -1.0f * y / hScreen * 2 + 1;
 		mDevCoords[2] = 0;

@@ -24,14 +24,15 @@ import com.badlogic.gdx.physics.box2d.JointDef;
  */
 public class FrictionJointDef extends JointDef {
 
-	public FrictionJointDef () {
+	public FrictionJointDef() {
 		type = JointType.FrictionJoint;
 	}
 
 	/**
-	 * Initialize the bodies, anchors, axis, and reference angle using the world anchor and world axis.
+	 * Initialize the bodies, anchors, axis, and reference angle using the world
+	 * anchor and world axis.
 	 */
-	public void initialize (Body bodyA, Body bodyB, Vector2 anchor) {
+	public void initialize(Body bodyA, Body bodyB, Vector2 anchor) {
 		this.bodyA = bodyA;
 		this.bodyB = bodyB;
 		localAnchorA.set(bodyA.getLocalPoint(anchor));

@@ -20,13 +20,13 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.JointDef;
 
 public class WeldJointDef extends JointDef {
-	public WeldJointDef () {
+	public WeldJointDef() {
 		type = JointType.WeldJoint;
 	}
 
 	// / Initialize the bodies, anchors, and reference angle using a world
 	// / anchor point.
-	public void initialize (Body body1, Body body2, Vector2 anchor) {
+	public void initialize(Body body1, Body body2, Vector2 anchor) {
 		this.bodyA = body1;
 		this.bodyB = body2;
 		this.localAnchorA.set(body1.getLocalPoint(anchor));

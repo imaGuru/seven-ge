@@ -20,22 +20,23 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.JointDef;
 
 /**
- * Pulley joint definition. This requires two ground anchors, two dynamic body anchor points, max lengths for each side, and a
- * pulley ratio.
+ * Pulley joint definition. This requires two ground anchors, two dynamic body
+ * anchor points, max lengths for each side, and a pulley ratio.
  */
 public class PulleyJointDef extends JointDef {
 	private final static float minPulleyLength = 2.0f;
 
-	public PulleyJointDef () {
+	public PulleyJointDef() {
 		type = JointType.PulleyJoint;
 		collideConnected = true;
 	}
 
 	/**
-	 * Initialize the bodies, anchors, lengths, max lengths, and ratio using the world anchors.
+	 * Initialize the bodies, anchors, lengths, max lengths, and ratio using the
+	 * world anchors.
 	 */
-	public void initialize (Body bodyA, Body bodyB, Vector2 groundAnchorA, Vector2 groundAnchorB, Vector2 anchorA,
-		Vector2 anchorB, float ratio) {
+	public void initialize(Body bodyA, Body bodyB, Vector2 groundAnchorA,
+			Vector2 groundAnchorB, Vector2 anchorA, Vector2 anchorB, float ratio) {
 		this.bodyA = bodyA;
 		this.bodyB = bodyB;
 		this.groundAnchorA.set(groundAnchorA);

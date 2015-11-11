@@ -1,4 +1,3 @@
-
 package com.sevenge.script;
 
 import com.sevenge.ecs.EntityManager;

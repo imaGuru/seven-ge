@@ -36,9 +36,11 @@ public abstract class Joint {
 
 	/**
 	 * Constructs a new joint
-	 * @param addr the address of the joint
+	 * 
+	 * @param addr
+	 *            the address of the joint
 	 */
-	protected Joint (World world, long addr) {
+	protected Joint(World world, long addr) {
 		this.world = world;
 		this.addr = addr;
 	}
@@ -46,7 +48,7 @@ public abstract class Joint {
 	/**
 	 * Get the type of the concrete joint.
 	 */
-	public JointType getType () {
+	public JointType getType() {
 		int type = jniGetType(addr);
 		if (type > 0 && type < JointType.valueTypes.length)
 			return JointType.valueTypes[type];
@@ -54,92 +56,93 @@ public abstract class Joint {
 			return JointType.Unknown;
 	}
 
-	private native int jniGetType (long addr);
+	private native int jniGetType(long addr);
 
 	/**
 	 * Get the first body attached to this joint.
 	 */
-	public Body getBodyA () {
+	public Body getBodyA() {
 		return world.bodies.get(jniGetBodyA(addr));
 	}
 
-	private native long jniGetBodyA (long addr);
+	private native long jniGetBodyA(long addr);
 
 	/**
 	 * Get the second body attached to this joint.
 	 */
-	public Body getBodyB () {
+	public Body getBodyB() {
 		return world.bodies.get(jniGetBodyB(addr));
 	}
 
-	private native long jniGetBodyB (long addr);
+	private native long jniGetBodyB(long addr);
 
 	/**
 	 * Get the anchor point on bodyA in world coordinates.
 	 */
 	private final Vector2 anchorA = new Vector2();
 
-	public Vector2 getAnchorA () {
+	public Vector2 getAnchorA() {
 		jniGetAnchorA(addr, tmp);
 		anchorA.x = tmp[0];
 		anchorA.y = tmp[1];
 		return anchorA;
 	}
 
-	private native void jniGetAnchorA (long addr, float[] anchorA);
+	private native void jniGetAnchorA(long addr, float[] anchorA);
 
 	/**
 	 * Get the anchor point on bodyB in world coordinates.
 	 */
 	private final Vector2 anchorB = new Vector2();
 
-	public Vector2 getAnchorB () {
+	public Vector2 getAnchorB() {
 		jniGetAnchorB(addr, tmp);
 		anchorB.x = tmp[0];
 		anchorB.y = tmp[1];
 		return anchorB;
 	}
 
-	private native void jniGetAnchorB (long addr, float[] anchorB);
+	private native void jniGetAnchorB(long addr, float[] anchorB);
 
 	/**
 	 * Get the reaction force on body2 at the joint anchor in Newtons.
 	 */
 	private final Vector2 reactionForce = new Vector2();
 
-	public Vector2 getReactionForce (float inv_dt) {
+	public Vector2 getReactionForce(float inv_dt) {
 		jniGetReactionForce(addr, inv_dt, tmp);
 		reactionForce.x = tmp[0];
 		reactionForce.y = tmp[1];
 		return reactionForce;
 	}
 
-	private native void jniGetReactionForce (long addr, float inv_dt, float[] reactionForce);
+	private native void jniGetReactionForce(long addr, float inv_dt,
+			float[] reactionForce);
 
 	/**
 	 * Get the reaction torque on body2 in N*m.
 	 */
-	public float getReactionTorque (float inv_dt) {
+	public float getReactionTorque(float inv_dt) {
 		return jniGetReactionTorque(addr, inv_dt);
 	}
 
-	private native float jniGetReactionTorque (long addr, float inv_dt);
+	private native float jniGetReactionTorque(long addr, float inv_dt);
 
-// /// Get the next joint the world joint list.
-// b2Joint* GetNext();
-//
-// /// Get the user data pointer.
-// void* GetUserData() const;
-//
-// /// Set the user data pointer.
-// void SetUserData(void* data);
+	// /// Get the next joint the world joint list.
+	// b2Joint* GetNext();
+	//
+	// /// Get the user data pointer.
+	// void* GetUserData() const;
+	//
+	// /// Set the user data pointer.
+	// void SetUserData(void* data);
 
 	/**
 	 * Short-cut function to determine if either body is inactive.
 	 */
-	public boolean isActive () {
+	public boolean isActive() {
 		return jniIsActive(addr);
 	}
 
-	private native boolean jniIsActive (long addr);
+	private native boolean jniIsActive(long addr);
 }

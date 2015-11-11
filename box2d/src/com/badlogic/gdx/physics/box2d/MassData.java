@@ -19,6 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 
 /**
  * This holds the mass data computed for a shape.
+ * 
  * @author mzechner
  * 
  */

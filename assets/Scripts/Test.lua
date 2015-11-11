@@ -1,15 +1,13 @@
--- And a function to demo it all:
 runProcess(function ()
-    waitSeconds(2)
-    SevenGE.log("SCRIPTS","We've got a problem:(.")
-    entity = Entity.create()
-    entity:addComponent(1,{x=-100,y=-100,rotation=45})
-    entity:addComponent(2,{scale=1,textureRegion="starbase-tex.png"})
-    entity:addComponent(5,{density=50,friction=0.1,restitution=0.15});
-    EntityManager.create(entity)
-    SevenGE.log("SCRIPTS","Created entity with id " .. entity.id)
-    Audio.playMusic("podbaydoors")
-    waitSeconds(10)
-    Audio.playSound("explosion2")
-    SevenGE.setFrameTime(16)
+	Audio.playMusic("podbaydoors")
+	for i=0,10 do
+		waitSeconds(1)
+		SevenGE.log("SCRIPTS","Creating space station "..i)
+		entity = Entity.create()
+		entity:addComponent(1,{-100,-100,45})
+		entity:addComponent(2,{1,"starbase-tex.png"})
+		entity:addComponent(5,{50,0.1,0.15});
+		EntityManager.create(entity)
+	end
+	SevenGE.setFrameTime(16)
 end)

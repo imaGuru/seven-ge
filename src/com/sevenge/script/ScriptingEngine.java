@@ -67,6 +67,9 @@ public class ScriptingEngine {
 		} catch (LuaRuntimeException e) {
 			Log.e("SCRIPTS", e.getLocalizedMessage());
 			e.printLuaStackTrace();
+		} catch (LuaSyntaxException e) {
+			Log.e("SCRIPTS", e.getLocalizedMessage());
+			e.printStackTrace();
 		}
 	}
 }

@@ -178,20 +178,21 @@ public class WebConsole extends NanoHTTPD {
 				+ "    </style>\r\n"
 				+ "</head>\r\n"
 				+ "<body>\r\n"
-				+ "    <h1>Hello, this is the seven-ge server</h1>\r\n"
+				+ "    <h1>SevenGE WebConsole</h1>\r\n"
 				+ "    <div id=\"command_results\" style=\"overflow-y: scroll; height:300px;\">\r\n"
-				+ "        <div>\r\n"
-				+ "            <span style=\"color:green;\">&gt; commands</span><br>commands<br>clear<br>ls memorytype (internal, external, cache)<br>delete memorytype (internal, external, cache) filename<br></div><div><span style=\"color:green;\">&gt; executed script</span><br></div>\r\n"
-				+ "        </div>\r\n"
-				+ "        <textarea tabindex=\"0\" autofocus id=\"value\" style=\"width:100%; height:200px;\"></textarea> <br>\r\n"
-				+ "        <div class=\"buttons\">\r\n"
-				+ "            <input type=\"button\" value=\"submit as command\" onclick=\"send_command(false)\">\r\n"
-				+ "            <input type=\"button\" value=\"submit as script\" onclick=\"send_command(true)\">\r\n"
+				+ "    </div>\r\n"
+				+ "    <textarea tabindex=\"0\" autofocus id=\"value\" style=\"width:100%; height:200px;\"></textarea> <br>\r\n"
+				+ "    <div class=\"buttons\">\r\n"
+				+ "        <input type=\"button\" value=\"submit as command\" onclick=\"send_command(false)\">\r\n"
+				+ "        <input type=\"button\" value=\"submit as script\" onclick=\"send_command(true)\">\r\n"
 				+ "            <form id=\"file-form\" action=\"\" method=\"POST\">\r\n"
 				+ "                <input type=\"file\" id=\"file-select\" name=\"files[]\" multiple=\"\">\r\n"
 				+ "                <button type=\"submit\" id=\"upload-button\">Upload</button>\r\n"
-				+ "            </form>\r\n" + "        </div>\r\n"
-				+ "        \r\n" + "    </body>\r\n" + "    </html>";
+				+ "            </form>\r\n" 
+				+ "    </div>\r\n"
+				+ "    \r\n" 
+				+ "    </body>\r\n" 
+				+ "    </html>";
 
 		if (Method.POST.equals(method)) {
 

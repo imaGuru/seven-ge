@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import com.sevenge.SevenGE;
 
+/** Loads the order in which all other loaders should be loaded, defined in JSON **/
 public class OrderLoader extends AssetLoader {
 
 	protected OrderLoader(AssetManager as) {

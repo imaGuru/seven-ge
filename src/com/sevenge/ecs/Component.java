@@ -1,5 +1,5 @@
 package com.sevenge.ecs;
 
-/** Every component has to extend this class */
+/** Class representing a Component according to the ECS pattern. */
 public abstract class Component {
 }

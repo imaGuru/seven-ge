@@ -1,5 +1,6 @@
 package com.sevenge.utils;
 
+/** Quadtree implementation **/
 public class Quadtree<T> {
 	private final int MAX_OBJECTS;
 	private final int MAX_LEVELS;

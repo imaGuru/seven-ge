@@ -199,8 +199,8 @@ public class FontUtils {
 		for (int i = 0; i < strLen; i++) { // For Each Character in String
 											// (Except Last
 			int c = text.charAt(i) - CHAR_START; // Calculate Character
-														// Index (Offset by
-														// First Char in Font)
+													// Index (Offset by
+													// First Char in Font)
 			len += (font.charWidths[c] * font.scaleX); // Add Scaled Character
 														// Width to Total Length
 		}

@@ -1,5 +1,6 @@
 package com.sevenge.utils;
 
+/** Representation of a three-dimensional vector **/
 public class Vector3 {
 	public float x;
 	public float y;

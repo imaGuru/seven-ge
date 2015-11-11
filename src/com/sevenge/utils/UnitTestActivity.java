@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
+/** Helper Activity for performing unit tests **/
 public class UnitTestActivity extends Activity {
 	private GLSurfaceView surfaceView;
 	private SevenGE gameEngine;

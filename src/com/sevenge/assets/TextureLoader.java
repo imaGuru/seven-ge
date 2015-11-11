@@ -11,6 +11,7 @@ import android.util.Log;
 import com.sevenge.IO;
 import com.sevenge.graphics.TextureUtils;
 
+/** Loads Texture instances defined in JSON **/
 public class TextureLoader extends AssetLoader {
 
 	public TextureLoader(AssetManager as) {

@@ -336,12 +336,12 @@ public class SpriteBatcher {
 																	// Y
 		for (int i = 0; i < len; i++) { // FOR Each Character in String
 			int c = text.charAt(i) - FontUtils.CHAR_START; // Calculate
-																	// Character
-																	// Index
-																	// (Offset
-																	// by First
-																	// Char in
-																	// Font)
+															// Character
+															// Index
+															// (Offset
+															// by First
+															// Char in
+															// Font)
 			if (c < 0 || c >= FontUtils.CHAR_CNT) // IF Character Not In Font
 				c = FontUtils.CHAR_UNKNOWN; // Set to Unknown Character Index
 			drawSprite(x, y, 0, font.scaleX, font.scaleY, font.charRgn[c]); // Draw

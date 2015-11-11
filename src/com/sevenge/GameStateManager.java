@@ -1,5 +1,6 @@
 package com.sevenge;
 
+/** Manages GameState instances **/
 public class GameStateManager {
 
 	private GameState currentState = null;
@@ -30,6 +31,7 @@ public class GameStateManager {
 
 	}
 
+	/** Invokes the load() method of the current GameState */
 	public void load() {
 		this.currentState.load();
 	}

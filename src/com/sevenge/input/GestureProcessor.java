@@ -1,6 +1,6 @@
 package com.sevenge.input;
 
-/** interface which provides handlers for gesture events **/
+/** Interface which provides handlers for gesture events **/
 import android.view.MotionEvent;
 
 public interface GestureProcessor {

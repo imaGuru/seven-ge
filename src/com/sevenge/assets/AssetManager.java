@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import com.sevenge.IO;
 
+/** Manages Asset instances **/
 public class AssetManager {
 	private final String TAG = "AssetManager";
 

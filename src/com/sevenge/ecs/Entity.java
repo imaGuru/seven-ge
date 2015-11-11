@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Class representing an entity. An entity is composed of components holding
- * properties of the given entity. The type of components held by this entity
- * can be devised by looking at its component mask.
- */
+/** Class representing an entity according to the ECS pattern. */
 public class Entity {
 	public int mId;
+	/** mask containing information about linked components **/
 	public int mMask;
 	public Component[] mComponents;
 	public Entity parent;

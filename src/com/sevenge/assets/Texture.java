@@ -1,5 +1,6 @@
 package com.sevenge.assets;
 
+/** Texture Asset implementation **/
 public class Texture extends Asset {
 
 	public final int glID;

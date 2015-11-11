@@ -1,5 +1,6 @@
 package com.sevenge.assets;
 
+/** Shader Asset implementation **/
 public class Shader extends Asset {
 
 	public int glID;

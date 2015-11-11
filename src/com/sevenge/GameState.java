@@ -31,6 +31,7 @@ public abstract class GameState {
 	/** Handles resuming of the game state */
 	public abstract void resume();
 
+	/** Handles loading assets */
 	public abstract void load();
 
 }

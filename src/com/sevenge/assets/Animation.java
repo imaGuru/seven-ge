@@ -1,6 +1,6 @@
 package com.sevenge.assets;
 
-/** Animation asset class holding frame durations and names */
+/** Animation Asset implementation **/
 public class Animation extends Asset {
 	public int[] durations;
 	public String[] frames;

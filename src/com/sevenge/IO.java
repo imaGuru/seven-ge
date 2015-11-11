@@ -11,10 +11,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
-/**
- * Utility class providing easy execution of common IO task in android file
- * system such as creating moving renaming and opening files
- */
+/** Provides helper methods for Android IO **/
 public class IO {
 	private static Context context = null;
 	public static String INTERNAL_PATH;

@@ -4,10 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
- * 
- * @author lol Physics system is responsible for calling box2d calculations,
- *         updating position component and calculating between box2d coordinates
- *         to world coordinates.
+ * System responsible for performing box2d calculations, updating components and
+ * converting coordinates
  */
 public class PhysicsSystem extends SubSystem {
 

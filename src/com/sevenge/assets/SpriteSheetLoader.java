@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import com.sevenge.IO;
 import com.sevenge.graphics.TextureRegion;
 
+/** Loads SpriteSheetLoader instances defined in JSON **/
 public class SpriteSheetLoader extends AssetLoader {
 
 	public SpriteSheetLoader(AssetManager as) {

@@ -3,7 +3,7 @@
 	<name>seven-geTests</name>
 	<comment></comment>
 	<projects>
-		<project>SevenGE</project>
+		<project>seven-ge</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -31,4 +31,16 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>libgen</name>
+			<type>2</type>
+			<location>/home/guru/adtworkspace/seven-ge/gen</location>
+		</link>
+		<link>
+			<name>libsrc</name>
+			<type>2</type>
+			<location>/home/guru/adtworkspace/seven-ge/src</location>
+		</link>
+	</linkedResources>
 </projectDescription>

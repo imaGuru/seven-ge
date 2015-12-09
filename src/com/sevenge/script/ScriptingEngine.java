@@ -9,6 +9,7 @@ import com.naef.jnlua.LuaState;
 import com.naef.jnlua.LuaSyntaxException;
 import com.naef.jnlua.NamedJavaFunction;
 import com.sevenge.IO;
+import com.sevenge.SevenGE;
 import com.sevenge.utils.FixedSizeArray;
 
 public class ScriptingEngine {
@@ -34,6 +35,8 @@ public class ScriptingEngine {
 			mLuaState.load(IO.openAsset("Scripts/Threading.lua"), "=Threading",
 					"t");
 			mLuaState.call(0, 0); // No arguments, no returns
+			mLuaState.pushJavaObject(eh.camera);
+			mLuaState.setGlobal("test");
 		} catch (LuaSyntaxException e) {
 			Log.e("SCRIPTS", e.getMessage());
 			e.printStackTrace();
